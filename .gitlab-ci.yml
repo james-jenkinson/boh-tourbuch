@@ -1,0 +1,26 @@
+image: cirrusci/flutter:stable
+
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  paths:
+    - .pub-cache/global_packages
+
+stages:
+  - analyze_and_test
+
+before_script:
+  - export PATH="$PATH":"$HOME/.flutter-sdk/.pub-cache/bin"
+  - flutter pub get
+
+analyze_and_test:
+  stage: analyze_and_test
+  script:
+    - flutter analyze
+    - flutter test --coverage
+    - lcov --list coverage/lcov.info
+    - genhtml coverage/lcov.info --output=coverage
+  coverage: '/\s*lines\.*:\s*([\d\.]+%)/'
+  tags:
+    - docker
