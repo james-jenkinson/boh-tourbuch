@@ -1,5 +1,6 @@
 import 'package:boh_tourbuch/screens/orders/bloc/orders_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -13,7 +14,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   void initState() {
-    _ordersBloc = OrdersBloc();
+    _ordersBloc = OrdersBloc()..add(OrdersListFilterEvent(""));
     super.initState();
   }
 
@@ -28,14 +29,38 @@ class _OrdersScreenState extends State<OrdersScreen> {
       appBar: AppBar(
         title: const Text('Orders'),
       ),
-      body: const SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-            ],
-          ),
-        ),
-      ),
+      body: BlocBuilder<OrdersBloc, OrdersState>(
+        bloc: _ordersBloc,
+        builder: (context, state) {
+          if (state is OrdersInitial) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is OrdersListChanged) {
+            return SafeArea(
+              child: Center(
+                child: Column(
+                  children: [
+                    TextField(
+                      onChanged: (value) => _ordersBloc.add(OrdersListFilterEvent(value)),
+                    ),
+                    ListView.builder(
+                      itemCount: state.names.length,
+                      itemBuilder: (context, index) {
+                        return Text(state.names[index]);
+                      },
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                    )
+                  ],
+                ),
+              ),
+            );
+          }
+          return Container();
+        }
+      )
     );
   }
 }
