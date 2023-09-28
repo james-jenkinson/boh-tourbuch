@@ -1,4 +1,4 @@
-image: cirrusci/flutter:stable
+image: fischerscode/flutter:stable
 
 
 # Cache downloaded dependencies and plugins between builds.
@@ -12,6 +12,7 @@ stages:
 
 before_script:
   - export PATH="$PATH":"$HOME/.flutter-sdk/.pub-cache/bin"
+  - flutter --version
   - flutter pub get
 
 analyze_and_test:
@@ -19,8 +20,5 @@ analyze_and_test:
   script:
     - flutter analyze
     - flutter test --coverage
-    - lcov --list coverage/lcov.info
-    - genhtml coverage/lcov.info --output=coverage
-  coverage: '/\s*lines\.*:\s*([\d\.]+%)/'
   tags:
     - docker
