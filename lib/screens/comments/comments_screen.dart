@@ -25,18 +25,14 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Comments'),
-      ),
-      body: const SafeArea(
+    return const SafeArea(
         child: Center(
           child: Column(
             children: [
+              const Text("Comments")
             ],
           ),
         ),
-      ),
     );
   }
 }

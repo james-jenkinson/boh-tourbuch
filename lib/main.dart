@@ -1,6 +1,5 @@
 import 'package:boh_tourbuch/screens/comments/comments_screen.dart';
 import 'package:boh_tourbuch/screens/faq/faq_screen.dart';
-import 'package:boh_tourbuch/screens/home/home_screen.dart';
 import 'package:boh_tourbuch/screens/orders/orders_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,13 +18,45 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/orders': (context) => const OrdersScreen(),
-        '/faq': (context) => const FaqScreen(),
-        '/comments': (context) => const CommentsScreen(),
-      },
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Home'),
+              bottom: const TabBar(
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.person_search),
+                        SizedBox(width: 10),
+                        Text('Bestellungen')
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.list_alt_sharp),
+                      SizedBox(width: 10),
+                      Text('Kommentare')
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.question_answer),
+                      SizedBox(width: 10),
+                      Text('FAQ')
+                    ],
+                  )
+                ],
+              ),
+            ),
+            body: const TabBarView(
+                children: [OrdersScreen(), CommentsScreen(), FaqScreen()])),
+      ),
     );
   }
 }

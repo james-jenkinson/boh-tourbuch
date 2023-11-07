@@ -24,18 +24,13 @@ class _FaqScreenState extends State<FaqScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('FAQ'),
-      ),
-      body: const SafeArea(
+    return const SafeArea(
         child: Center(
           child: Column(
             children: [
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

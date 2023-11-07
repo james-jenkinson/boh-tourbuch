@@ -25,11 +25,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Orders'),
-      ),
-      body: BlocBuilder<OrdersBloc, OrdersState>(
+    return BlocBuilder<OrdersBloc, OrdersState>(
         bloc: _ordersBloc,
         builder: (context, state) {
           if (state is OrdersInitial) {
@@ -60,7 +56,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
           }
           return Container();
         }
-      )
     );
   }
 }
