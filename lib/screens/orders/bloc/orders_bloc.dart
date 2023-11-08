@@ -1,3 +1,5 @@
+import 'package:boh_tourbuch/models/person.dart';
+import 'package:boh_tourbuch/repository/person_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -7,24 +9,31 @@ part 'orders_event.dart';
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
-  List<String> names = [
-    "John Marston",
-    "Tomislav Piplica",
-    "Fredi Bobic",
-    "Theo Walcott",
-    "Jaromir Jagr",
-    "Ludwig Walter",
-    "Karl Marx",
-    "Tamara Bunke"
-  ];
+  final _personRepository = PersonRepository();
+
+  String _filter = '';
 
   OrdersBloc() : super(OrdersInitial()) {
-    on<OrdersEvent>((event, emit) {
+    on<OrdersEvent>((event, emit) async {
       if (event is OrdersListFilterEvent) {
-        emit(OrdersListChanged(
-            extractAllSorted(query: event.filter, choices: names)
-                .map((e) => e.choice)
-                .toList()));
+        _filter = event.filter;
+        final persons = await _personRepository.getAllPersons();
+        if (_filter.isEmpty) {
+          emit(OrdersListChanged(persons));
+          return;
+        }
+        final filteredPersons = extractAllSorted(
+            query: event.filter,
+            choices: persons,
+            cutoff: 35,
+            getter: (person) => person.name);
+        emit(OrdersListChanged(filteredPersons
+            .map((extractedResult) => extractedResult.choice)
+            .toList()));
+      } else if (event is OrdersAddPersonClickedEvent) {
+        await _personRepository.createPerson(Person(name: _filter));
+        final persons = await _personRepository.getAllPersons();
+        emit(OrdersListChanged(persons));
       }
     });
   }

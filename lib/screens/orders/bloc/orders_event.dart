@@ -8,3 +8,7 @@ class OrdersListFilterEvent extends OrdersEvent {
 
   OrdersListFilterEvent(this.filter);
 }
+
+class OrdersAddPersonClickedEvent extends OrdersEvent {
+  OrdersAddPersonClickedEvent();
+}

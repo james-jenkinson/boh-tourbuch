@@ -29,7 +29,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         child: Center(
           child: Column(
             children: [
-              const Text("Comments")
+              Text("Comments")
             ],
           ),
         ),

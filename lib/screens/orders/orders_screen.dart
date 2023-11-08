@@ -42,13 +42,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       onChanged: (value) => _ordersBloc.add(OrdersListFilterEvent(value)),
                     ),
                     ListView.builder(
-                      itemCount: state.names.length,
+                      itemCount: state.persons.length,
                       itemBuilder: (context, index) {
-                        return Text(state.names[index]);
+                        return Text('${state.persons[index].id} : ${state.persons[index].name}');
                       },
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                    )
+                    ),
+                    ElevatedButton(onPressed: () => _ordersBloc.add(OrdersAddPersonClickedEvent()), child: const Text('Add'))
                   ],
                 ),
               ),
