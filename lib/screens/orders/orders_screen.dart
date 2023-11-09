@@ -44,7 +44,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ListView.builder(
                       itemCount: state.persons.length,
                       itemBuilder: (context, index) {
-                        return Text('${state.persons[index].id} : ${state.persons[index].name}');
+                        return Text('${state.persons[index].id} : ${state.persons[index].firstName} ${state.persons[index].lastName}');
                       },
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,

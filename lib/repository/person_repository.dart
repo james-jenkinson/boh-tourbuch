@@ -5,7 +5,9 @@ import '../models/person.dart';
 class PersonRepository {
   final personDao = PersonDao();
 
-  Future createPerson(Person person) => personDao.createPerson(person);
+  Future<int> createPerson(Person person) => personDao.createPerson(person);
 
-  Future<List<Person>> getAllPersons() => personDao.getPersons();
+  Future<Person?> getPersonById(int id) => personDao.getPersonById(id);
+
+  Future<List<Person>> getAllPersons() => personDao.getAllPersons();
 }

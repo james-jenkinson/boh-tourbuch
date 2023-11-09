@@ -1,11 +1,12 @@
 class Person {
-  int id = -1;
-  String name;
+  int id;
+  String firstName;
+  String lastName;
+  bool blocked = false;
 
-  Person({this.id = -1, required this.name});
-
-  factory Person.fromDatabaseJson(Map<String, dynamic> data) =>
-      Person( id: data['id'], name: data['name']);
-
-  Map<String, dynamic> toDatabaseJson() => {"name": name};
+  Person(
+      {this.id = -1,
+      required this.firstName,
+      required this.lastName,
+      this.blocked = false});
 }
