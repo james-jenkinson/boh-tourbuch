@@ -33,6 +33,8 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
         await _personRepository.createPerson(Person(firstName: _filter, lastName: _filter));
         final persons = await _personRepository.getAllPersons();
         emit(PersonListChanged(persons));
+      } else if (event is PersonListNavigateEvent) {
+        emit(PersonListNavigateToOrder(event.person));
       }
     });
   }

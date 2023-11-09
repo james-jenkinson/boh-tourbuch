@@ -28,8 +28,10 @@ class OrdersDao {
 
   Future<List<Order>> getOrdersByPersonId(int personId) async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result = await db
-        .query(orderTable, where: 'person_id = ?', whereArgs: [personId]);
+    List<Map<String, dynamic>> result = await db.query(orderTable,
+        where: 'person_id = ?',
+        whereArgs: [personId],
+        orderBy: 'order_date desc');
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 

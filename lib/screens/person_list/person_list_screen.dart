@@ -14,7 +14,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
 
   @override
   void initState() {
-    _ordersBloc = PersonListBloc()..add(PersonListFilterEvent(""));
+    _ordersBloc = PersonListBloc()..add(PersonListFilterEvent(''));
     super.initState();
   }
 
@@ -23,10 +23,18 @@ class _PersonListScreenState extends State<PersonListScreen> {
     _ordersBloc.close();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonListBloc, PersonListState>(
+    return BlocConsumer<PersonListBloc, PersonListState>(
         bloc: _ordersBloc,
+        listener: (context, state) {
+          if (state is PersonListNavigateToOrder) {
+            Navigator.pushNamed(context, '/order',
+                    arguments: state.selectedPerson)
+                .then((value) => _ordersBloc.add(PersonListFilterEvent('')));
+          }
+        },
         builder: (context, state) {
           if (state is PersonListInitial) {
             return const Center(
@@ -39,24 +47,31 @@ class _PersonListScreenState extends State<PersonListScreen> {
                 child: Column(
                   children: [
                     TextField(
-                      onChanged: (value) => _ordersBloc.add(PersonListFilterEvent(value)),
+                      onChanged: (value) =>
+                          _ordersBloc.add(PersonListFilterEvent(value)),
                     ),
-                    ListView.builder(
+                    Expanded(child: ListView.builder(
                       itemCount: state.persons.length,
                       itemBuilder: (context, index) {
-                        return Text('${state.persons[index].id} : ${state.persons[index].firstName} ${state.persons[index].lastName}');
+                        return ListTile(
+                          title: Text(
+                              '${state.persons[index].id} : ${state.persons[index].firstName} ${state.persons[index].lastName}'),
+                          onTap: () => _ordersBloc.add(
+                              PersonListNavigateEvent(state.persons[index])),
+                        );
                       },
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                    ),
-                    ElevatedButton(onPressed: () => _ordersBloc.add(PersonListAddEvent()), child: const Text('Add'))
+                    )),
+                    ElevatedButton(
+                        onPressed: () => _ordersBloc.add(PersonListAddEvent()),
+                        child: const Text('Add'))
                   ],
                 ),
               ),
             );
           }
           return Container();
-        }
-    );
+        });
   }
 }

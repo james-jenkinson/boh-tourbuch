@@ -12,3 +12,9 @@ class PersonListFilterEvent extends PersonListEvent {
 class PersonListAddEvent extends PersonListEvent {
   PersonListAddEvent();
 }
+
+class PersonListNavigateEvent extends PersonListEvent {
+  final Person person;
+
+  PersonListNavigateEvent(this.person);
+}

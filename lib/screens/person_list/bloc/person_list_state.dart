@@ -11,3 +11,9 @@ class PersonListChanged extends PersonListState {
 
   PersonListChanged(this.persons);
 }
+
+class PersonListNavigateToOrder extends PersonListState {
+  final Person selectedPerson;
+
+  PersonListNavigateToOrder(this.selectedPerson);
+}

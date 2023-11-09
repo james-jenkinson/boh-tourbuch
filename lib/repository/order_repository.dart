@@ -3,10 +3,10 @@ import 'package:boh_tourbuch/dao/orders_dao.dart';
 import '../models/order.dart';
 
 class OrderRepository {
-  final orderDao = OrdersDao();
+  final _orderDao = OrdersDao();
 
-  Future<int> createOrder(Order order) => orderDao.createOrder(order);
+  Future<int> createOrder(Order order) => _orderDao.createOrder(order);
 
   Future<List<Order>> getOrdersByPersonId(int personId) =>
-      orderDao.getOrdersByPersonId(personId);
+      _orderDao.getOrdersByPersonId(personId);
 }

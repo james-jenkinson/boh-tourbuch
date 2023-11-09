@@ -1,5 +1,6 @@
 import 'package:boh_tourbuch/screens/comments/comments_screen.dart';
 import 'package:boh_tourbuch/screens/faq/faq_screen.dart';
+import 'package:boh_tourbuch/screens/orders/orders_screen.dart';
 import 'package:boh_tourbuch/screens/person_list/person_list_screen.dart';
 import 'package:boh_tourbuch/widgets/main_menu_tab.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
             body: const TabBarView(
                 children: [PersonListScreen(), CommentsScreen(), FaqScreen()])),
       ),
+      routes: {
+        '/order': (context) => const OrdersScreen()
+      },
     );
   }
 }
