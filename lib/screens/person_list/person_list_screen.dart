@@ -1,20 +1,20 @@
-import 'package:boh_tourbuch/screens/orders/bloc/orders_bloc.dart';
+import 'package:boh_tourbuch/screens/person_list/bloc/person_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({super.key});
+class PersonListScreen extends StatefulWidget {
+  const PersonListScreen({super.key});
 
   @override
-  State<OrdersScreen> createState() => _OrdersScreenState();
+  State<PersonListScreen> createState() => _PersonListScreenState();
 }
 
-class _OrdersScreenState extends State<OrdersScreen> {
-  late OrdersBloc _ordersBloc;
+class _PersonListScreenState extends State<PersonListScreen> {
+  late PersonListBloc _ordersBloc;
 
   @override
   void initState() {
-    _ordersBloc = OrdersBloc()..add(OrdersListFilterEvent(""));
+    _ordersBloc = PersonListBloc()..add(PersonListFilterEvent(""));
     super.initState();
   }
 
@@ -25,21 +25,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
+    return BlocBuilder<PersonListBloc, PersonListState>(
         bloc: _ordersBloc,
         builder: (context, state) {
-          if (state is OrdersInitial) {
+          if (state is PersonListInitial) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          if (state is OrdersListChanged) {
+          if (state is PersonListChanged) {
             return SafeArea(
               child: Center(
                 child: Column(
                   children: [
                     TextField(
-                      onChanged: (value) => _ordersBloc.add(OrdersListFilterEvent(value)),
+                      onChanged: (value) => _ordersBloc.add(PersonListFilterEvent(value)),
                     ),
                     ListView.builder(
                       itemCount: state.persons.length,
@@ -49,7 +49,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                     ),
-                    ElevatedButton(onPressed: () => _ordersBloc.add(OrdersAddPersonClickedEvent()), child: const Text('Add'))
+                    ElevatedButton(onPressed: () => _ordersBloc.add(PersonListAddEvent()), child: const Text('Add'))
                   ],
                 ),
               ),
