@@ -1,6 +1,7 @@
 import 'package:boh_tourbuch/screens/comments/comments_screen.dart';
 import 'package:boh_tourbuch/screens/faq/faq_screen.dart';
 import 'package:boh_tourbuch/screens/person_list/person_list_screen.dart';
+import 'package:boh_tourbuch/widgets/main_menu_tab.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,32 +29,9 @@ class MyApp extends StatelessWidget {
               ],
               bottom: const TabBar(
                 tabs: [
-                  Tab(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.person_search),
-                        SizedBox(width: 10),
-                        Text('Personen')
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.list_alt_sharp),
-                      SizedBox(width: 10),
-                      Text('Kommentare')
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.question_answer),
-                      SizedBox(width: 10),
-                      Text('FAQ')
-                    ],
-                  )
+                  MainMenuTab(title: 'Personen', iconData: Icons.person_search),
+                  MainMenuTab(title: 'Kommentare', iconData: Icons.list_alt_sharp),
+                  MainMenuTab(title: 'FAQ', iconData: Icons.question_answer)
                 ],
               ),
             ),
