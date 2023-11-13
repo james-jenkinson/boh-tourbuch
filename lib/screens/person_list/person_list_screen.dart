@@ -2,6 +2,8 @@ import 'package:boh_tourbuch/screens/person_list/bloc/person_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../widgets/person_text_widget.dart';
+
 class PersonListScreen extends StatefulWidget {
   const PersonListScreen({super.key});
 
@@ -54,8 +56,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                       itemCount: state.persons.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(
-                              '${state.persons[index].id} : ${state.persons[index].firstName} ${state.persons[index].lastName}'),
+                          title: PersonText(person: state.persons[index]),
                           onTap: () => _personListBloc.add(
                               PersonListNavigateEvent(state.persons[index])),
                         );

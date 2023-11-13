@@ -29,6 +29,10 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
             await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
         emit(OrdersLoaded(_selectedPerson, orders));
          */
+      } else if (event is NavigateBackFromNewOrderEvent) {
+        List<Order> orders =
+        await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
+        emit(OrdersLoaded(_selectedPerson, orders));
       }
     });
   }

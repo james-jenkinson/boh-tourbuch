@@ -1,4 +1,5 @@
 import 'package:boh_tourbuch/screens/new_order/bloc/new_order_bloc.dart';
+import 'package:boh_tourbuch/widgets/person_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   @override
   void initState() {
     _newOrderBloc = NewOrderBloc();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _newOrderBloc.add(NewOrderInitialEvent(
           ModalRoute.of(context)!.settings.arguments as Person));
     });
@@ -32,26 +33,27 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: BlocBuilder<NewOrderBloc, NewOrderState>(
-          bloc: _newOrderBloc,
-          builder: (context, state) {
-            if (state is NewOrderInitialState) {
-              return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()));
-            } else if (state is NewOrderPersonLoaded) {
-              return Scaffold(
-                  body: Column(
-                children: [
-                  Center(child: Text(state.selectedPerson.firstName)),
-                ],
-              ));
-            }
-            return Container();
-          }),
-    );
+    return BlocBuilder<NewOrderBloc, NewOrderState>(
+        bloc: _newOrderBloc,
+        builder: (context, state) {
+          if (state is NewOrderInitialState) {
+            return const Scaffold(
+                body: Center(child: CircularProgressIndicator()));
+          } else if (state is NewOrderPersonLoaded) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Neue Bestellung'),
+                ),
+                body: Column(
+                  children: [
+                    Center(
+                        child: PersonText(
+                            person: state.selectedPerson,
+                            style: const TextStyle(fontSize: 24)))
+                  ],
+                ));
+          }
+          return Container();
+        });
   }
 }

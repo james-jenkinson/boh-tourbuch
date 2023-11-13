@@ -2,6 +2,7 @@ import 'package:boh_tourbuch/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../widgets/person_text_widget.dart';
 import 'bloc/orders_bloc.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -36,9 +37,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
         bloc: _ordersBloc,
         listener: (context, state) {
           if (state is NavigateToNewOrder) {
-            print('Navigation ${state.selectedPerson.firstName}');
             Navigator.pushNamed(context, '/new_order',
                 arguments: state.selectedPerson)
+                .then((value) => _ordersBloc.add(NavigateBackFromNewOrderEvent(state.selectedPerson)))
             ;
           }
         },
@@ -51,8 +52,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: Column(
               children: [
                 Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    '${state.selectedPerson.firstName} ${state.selectedPerson.lastName}',
+                  PersonText(
+                    person: state.selectedPerson,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   ),

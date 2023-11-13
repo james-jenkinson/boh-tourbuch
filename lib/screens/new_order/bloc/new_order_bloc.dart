@@ -13,9 +13,7 @@ class NewOrderBloc extends Bloc<NewOrderEvent, NewOrderState> {
   NewOrderBloc() : super(NewOrderInitialState()) {
     on<NewOrderEvent>((event, emit) async {
       if (event is NewOrderInitialEvent) {
-        print('Reacting to initial event ${event.selectedPerson.firstName}');
         _selectedPerson = event.selectedPerson;
-        print('All set ${_selectedPerson.firstName}');
         emit(NewOrderPersonLoaded(_selectedPerson));
       }
     });

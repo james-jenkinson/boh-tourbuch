@@ -13,3 +13,9 @@ class OrdersAddEvent extends OrdersEvent {
 
   OrdersAddEvent();
 }
+
+class NavigateBackFromNewOrderEvent extends OrdersEvent {
+  final Person selectedPerson;
+
+  NavigateBackFromNewOrderEvent(this.selectedPerson);
+}
