@@ -5,15 +5,15 @@ import 'package:sqflite_sqlcipher/sqflite.dart';
 import '../models/order.dart';
 
 class OrdersDao {
-  final database = DatabaseInstance.databaseInstance;
+  final _database = DatabaseInstance.databaseInstance;
 
   Future<int> createOrder(Order order) async {
-    final Database db = await database.database;
+    final Database db = await _database.database;
     return db.insert(orderTable, toDatabaseJson(order));
   }
 
   Future<Order?> getOrderById(int id) async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result =
         await db.query(orderTable, where: 'id = ?', whereArgs: [id]);
     if (result.length == 1) {
@@ -27,7 +27,7 @@ class OrdersDao {
   }
 
   Future<List<Order>> getOrdersByPersonId(int personId) async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result = await db
         .query(orderTable, where: 'person_id = ?', whereArgs: [personId]);
     return result.map((e) => fromDatabaseJson(e)).toList();

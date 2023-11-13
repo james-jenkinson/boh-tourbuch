@@ -5,21 +5,21 @@ import 'package:sqflite_sqlcipher/sqflite.dart';
 import '../models/person.dart';
 
 class PersonDao {
-  final database = DatabaseInstance.databaseInstance;
+  final _database = DatabaseInstance.databaseInstance;
 
   Future<int> createPerson(Person person) async {
-    final Database db = await database.database;
+    final Database db = await _database.database;
     return db.insert(personTable, toDatabaseJson(person));
   }
 
   Future<List<Person>> getAllPersons() async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result = await db.query(personTable);
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
   Future<Person?> getPersonById(int id) async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result = await db.query(personTable, where: 'id = ?', whereArgs: [id]);
     if (result.length == 1) {
       return fromDatabaseJson(result.first);

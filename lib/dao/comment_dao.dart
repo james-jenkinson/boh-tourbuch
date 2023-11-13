@@ -4,22 +4,22 @@ import 'package:flutter/foundation.dart';
 import '../databases/database.dart';
 
 class CommentDao {
-  final database = DatabaseInstance.databaseInstance;
+  final _database = DatabaseInstance.databaseInstance;
 
   Future<int> createComment(Comment comment) async {
-    final db = await database.database;
+    final db = await _database.database;
     return db.insert(commentTable, toDatabaseJson(comment));
   }
 
   Future<List<Comment>> getAllComments() async {
-    final db = await database.database;
+    final db = await _database.database;
     return (await db.query(commentTable))
         .map((comment) => fromDatabaseJson(comment))
         .toList();
   }
 
   Future<Comment?> getCommentById(int id) async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result =
         await db.query(commentTable, where: 'id = ?', whereArgs: [id]);
     if (result.length == 1) {
@@ -33,7 +33,7 @@ class CommentDao {
   }
 
   Future<Comment?> getCommentByOrderId(int orderId) async {
-    final db = await database.database;
+    final db = await _database.database;
     List<Map<String, dynamic>> result = await db
         .query(commentTable, where: 'order_id = ?', whereArgs: [orderId]);
     if (result.length == 1) {
