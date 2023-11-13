@@ -1,5 +1,6 @@
 import 'package:boh_tourbuch/screens/comments/comments_screen.dart';
 import 'package:boh_tourbuch/screens/faq/faq_screen.dart';
+import 'package:boh_tourbuch/screens/new_order/new_order_screen.dart';
 import 'package:boh_tourbuch/screens/orders/orders_screen.dart';
 import 'package:boh_tourbuch/screens/person_list/person_list_screen.dart';
 import 'package:boh_tourbuch/widgets/main_menu_tab.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
                 children: [PersonListScreen(), CommentsScreen(), FaqScreen()])),
       ),
       routes: {
-        '/order': (context) => const OrdersScreen()
+        '/order': (context) => const OrdersScreen(),
+        '/new_order': (context) => const NewOrderScreen()
       },
     );
   }

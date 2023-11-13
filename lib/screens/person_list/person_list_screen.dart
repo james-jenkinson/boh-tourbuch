@@ -10,29 +10,29 @@ class PersonListScreen extends StatefulWidget {
 }
 
 class _PersonListScreenState extends State<PersonListScreen> {
-  late PersonListBloc _ordersBloc;
+  late PersonListBloc _personListBloc;
 
   @override
   void initState() {
-    _ordersBloc = PersonListBloc()..add(PersonListFilterEvent(''));
+    _personListBloc = PersonListBloc()..add(PersonListFilterEvent(''));
     super.initState();
   }
 
   @override
   void dispose() {
-    _ordersBloc.close();
+    _personListBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PersonListBloc, PersonListState>(
-        bloc: _ordersBloc,
+        bloc: _personListBloc,
         listener: (context, state) {
           if (state is PersonListNavigateToOrder) {
             Navigator.pushNamed(context, '/order',
                     arguments: state.selectedPerson)
-                .then((value) => _ordersBloc.add(PersonListFilterEvent('')));
+                .then((value) => _personListBloc.add(PersonListFilterEvent('')));
           }
         },
         builder: (context, state) {
@@ -48,7 +48,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                   children: [
                     TextField(
                       onChanged: (value) =>
-                          _ordersBloc.add(PersonListFilterEvent(value)),
+                          _personListBloc.add(PersonListFilterEvent(value)),
                     ),
                     Expanded(child: ListView.builder(
                       itemCount: state.persons.length,
@@ -56,7 +56,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                         return ListTile(
                           title: Text(
                               '${state.persons[index].id} : ${state.persons[index].firstName} ${state.persons[index].lastName}'),
-                          onTap: () => _ordersBloc.add(
+                          onTap: () => _personListBloc.add(
                               PersonListNavigateEvent(state.persons[index])),
                         );
                       },
@@ -64,7 +64,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                       shrinkWrap: true,
                     )),
                     ElevatedButton(
-                        onPressed: () => _ordersBloc.add(PersonListAddEvent()),
+                        onPressed: () => _personListBloc.add(PersonListAddEvent()),
                         child: const Text('Add'))
                   ],
                 ),

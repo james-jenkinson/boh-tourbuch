@@ -32,8 +32,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
+    return BlocConsumer<OrdersBloc, OrdersState>(
         bloc: _ordersBloc,
+        listener: (context, state) {
+          if (state is NavigateToNewOrder) {
+            print('Navigation ${state.selectedPerson.firstName}');
+            Navigator.pushNamed(context, '/new_order',
+                arguments: state.selectedPerson)
+            ;
+          }
+        },
         builder: (context, state) {
           if (state is OrdersInitial) {
             return getScaffold(
@@ -54,22 +62,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 Expanded(
                     child: Row(children: [
                   Expanded(
-                    flex: 1,
+                      flex: 1,
                       child: Column(children: [
-                    const Text("Letzte Bestellungen"),
-                    const SizedBox(height: 10),
-                    Expanded(child: ListView.builder(
-                      itemCount: state.orders.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                              state.orders[index].orderDate.toIso8601String()),
-                        );
-                      },
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                    ))
-                  ])),
+                        const Text("Letzte Bestellungen"),
+                        const SizedBox(height: 10),
+                        Expanded(
+                            child: ListView.builder(
+                          itemCount: state.orders.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(state.orders[index].orderDate
+                                  .toIso8601String()),
+                            );
+                          },
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                        ))
+                      ])),
                   Expanded(
                       flex: 1,
                       child: Column(children: [

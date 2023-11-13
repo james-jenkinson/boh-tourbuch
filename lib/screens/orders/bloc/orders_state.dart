@@ -11,3 +11,9 @@ class OrdersLoaded extends OrdersState {
 
   OrdersLoaded(this.selectedPerson, this.orders);
 }
+
+class NavigateToNewOrder extends OrdersState {
+  final Person selectedPerson;
+
+  NavigateToNewOrder(this.selectedPerson);
+}
