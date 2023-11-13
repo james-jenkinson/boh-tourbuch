@@ -5,6 +5,7 @@ import 'package:boh_tourbuch/screens/orders/orders_screen.dart';
 import 'package:boh_tourbuch/screens/person_list/person_list_screen.dart';
 import 'package:boh_tourbuch/widgets/main_menu_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // enable fullscreen
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
