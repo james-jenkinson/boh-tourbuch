@@ -39,6 +39,7 @@ dependencies:
   fuzzywuzzy: ^1.1.6
   sqflite_sqlcipher: ^2.2.1
   path_provider: ^2.1.1
+  intl: ^0.18.1
 
 
 dev_dependencies:
