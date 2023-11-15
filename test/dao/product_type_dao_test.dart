@@ -11,7 +11,9 @@ void main() {
     Map<String, dynamic> data = {
       'id': 161,
       'name': 'Zelt',
-      'material_icon_identifier': 'tent'
+      'symbol': '⛺',
+      'days_blocked': 90,
+      'deletable': 1
     };
 
     final result = productTypeDao.fromDatabaseJson(data);
@@ -19,21 +21,23 @@ void main() {
     expect(result, isA<ProductType>());
     expect(result.id, 161);
     expect(result.name, 'Zelt');
-    expect(result.materialIconIdentifier, 'tent');
+    expect(result.symbol, '⛺');
+    expect(result.daysBlocked, 90);
+    expect(result.deletable, true);
   });
 
   test('toDatabaseJson should return db map', () {
     final productType = ProductType(
-        id: 161,
-        name: 'Zelt',
-        materialIconIdentifier: 'tent');
+        id: 161, name: 'Zelt', symbol: '⛺', daysBlocked: 90, deletable: false);
 
     final result = productTypeDao.toDatabaseJson(productType);
 
     expect(result, {
       'id': 161,
       'name': 'Zelt',
-      'material_icon_identifier': 'tent'
+      'symbol': '⛺',
+      'deletable': 0,
+      'days_blocked': 90
     });
   });
 }

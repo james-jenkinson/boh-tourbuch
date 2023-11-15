@@ -32,16 +32,31 @@ class ProductTypeDao {
     }
   }
 
+  Future<int> deleteProductTypeById(int id) async {
+    final db = await _database.database;
+    return await db.delete(productTypeTable, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> updateProductType(ProductType productType) async {
+    final db = await _database.database;
+    return await db.update(productTypeTable, toDatabaseJson(productType),
+        where: 'id = ?', whereArgs: [productType.id]);
+  }
+
   ProductType fromDatabaseJson(Map<String, dynamic> data) {
     return ProductType(
         id: data['id'],
         name: data['name'],
-        materialIconIdentifier: data['material_icon_identifier']);
+        symbol: data['symbol'],
+        daysBlocked: data['days_blocked'],
+        deletable: data['deletable'] == 1);
   }
 
   Map<String, dynamic> toDatabaseJson(ProductType productType) => {
         "id": productType.id == -1 ? null : productType.id,
         "name": productType.name,
-        "material_icon_identifier": productType.materialIconIdentifier,
+        "symbol": productType.symbol,
+        "days_blocked": productType.daysBlocked,
+        "deletable": productType.deletable ? 1 : 0
       };
 }

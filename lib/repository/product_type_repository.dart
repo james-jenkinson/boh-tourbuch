@@ -12,4 +12,10 @@ class ProductTypeRepository {
 
   Future<ProductType?> getProductTypeById(int id) =>
       _productTypeDao.getProductTypeById(id);
+
+  Future<int> deleteProductTypeById(int id) =>
+      _productTypeDao.deleteProductTypeById(id);
+
+  Future<int> updateProductType(ProductType productType) =>
+      _productTypeDao.updateProductType(productType);
 }
