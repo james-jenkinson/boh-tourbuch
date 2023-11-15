@@ -65,7 +65,33 @@ class DatabaseInstance {
     await database.execute("create table $productTypeTable ("
         "id integer primary key, "
         "name text not null, "
-        "material_icon_identifier text not null"
+        "symbol text not null, "
+        "deletable int not null, "
+        "days_blocked int not null"
         ")");
+    await database.insert(productTypeTable, {
+      'name': 'Zelt',
+      'symbol': '⛺',
+      'days_blocked': 90,
+      'deletable': 0
+    });
+    await database.insert(productTypeTable, {
+      'name': 'Schlafsack',
+      'symbol': '💤',
+      'days_blocked': 90,
+      'deletable': 0
+    });
+    await database.insert(productTypeTable, {
+      'name': 'Isomatte',
+      'symbol': '🛏️',
+      'days_blocked': 90,
+      'deletable': 0
+    });
+    await database.insert(productTypeTable, {
+      'name': 'Rucksack',
+      'symbol': '🎒',
+      'days_blocked': 90,
+      'deletable': 0
+    });
   }
 }
