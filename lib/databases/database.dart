@@ -32,36 +32,36 @@ class DatabaseInstance {
   }
 
   Future<void> _initDb(Database database, int version) async {
-    await database.execute("create table $personTable ("
-        "id integer primary key, "
-        "first_name text not null, "
-        "last_name text not null, "
-        "blocked integer not null"
-        ")");
-    await database.execute("create table $orderTable ("
-        "id integer primary key, "
-        "person_id integer not null, "
-        "comment text not null, "
-        "comment_done integer not null, "
-        "order_date text not null, "
-        "foreign key(person_id) references $personTable(id)"
-        ")");
-    await database.execute("create table $productTable ("
-        "id integer primary key, "
-        "order_id integer not null, "
-        "product_type_id integer not null, "
-        "status text not null, "
-        "received_date text, "
-        "foreign key(product_type_id) references $productTypeTable(id), "
-        "foreign key(order_id) references $orderTable(id)"
-        ")");
-    await database.execute("create table $productTypeTable ("
-        "id integer primary key, "
-        "name text not null, "
-        "symbol text not null, "
-        "deletable int not null, "
-        "days_blocked int not null"
-        ")");
+    await database.execute('create table $personTable ('
+        'id integer primary key, '
+        'first_name text not null, '
+        'last_name text not null, '
+        'blocked integer not null'
+        ')');
+    await database.execute('create table $orderTable ('
+        'id integer primary key, '
+        'person_id integer not null, '
+        'comment text not null, '
+        'comment_done integer not null, '
+        'order_date text not null, '
+        'foreign key(person_id) references $personTable(id)'
+        ')');
+    await database.execute('create table $productTable ('
+        'id integer primary key, '
+        'order_id integer not null, '
+        'product_type_id integer not null, '
+        'status text not null, '
+        'received_date text, '
+        'foreign key(product_type_id) references $productTypeTable(id), '
+        'foreign key(order_id) references $orderTable(id)'
+        ')');
+    await database.execute('create table $productTypeTable ('
+        'id integer primary key, '
+        'name text not null, '
+        'symbol text not null, '
+        'deletable int not null, '
+        'days_blocked int not null'
+        ')');
     await database.insert(productTypeTable, {
       'name': 'Zelt',
       'symbol': '⛺',

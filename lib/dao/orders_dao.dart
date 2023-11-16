@@ -37,7 +37,7 @@ class OrdersDao {
 
   Future<Iterable<Order>> getAllOrdersWithComment(bool commentOpen) async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result = await db.query(orderTable,
+    final List<Map<String, dynamic>> result = await db.query(orderTable,
         where:
             'comment IS NOT "" AND comment_done != ?',
         whereArgs: [commentOpen ? 1 : 0],

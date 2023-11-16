@@ -72,10 +72,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
       TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold);
   static const TableRow _headerRow = TableRow(children: [
     Padding(
-        padding: _tableCellPadding, child: Text("Datum", style: _headerStyle)),
+        padding: _tableCellPadding, child: Text('Datum', style: _headerStyle)),
     Padding(
       padding: _tableCellPadding,
-      child: Text("Kommentar", style: _headerStyle),
+      child: Text('Kommentar', style: _headerStyle),
     )
   ]);
 
