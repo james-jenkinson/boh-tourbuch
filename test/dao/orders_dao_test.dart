@@ -12,7 +12,7 @@ void main() {
       'id': 161,
       'person_id': 12,
       'order_date': '2011-10-05T14:48:00.000Z',
-      'comment': null,
+      'comment': '',
       'comment_done': 0
     };
 
@@ -21,7 +21,7 @@ void main() {
     expect(result, isA<Order>());
     expect(result.id, 161);
     expect(result.personId, 12);
-    expect(result.comment, null);
+    expect(result.comment, '');
     expect(result.commentDone, false);
     expect(result.orderDate, DateTime.parse('2011-10-05T14:48:00.000Z'));
   });

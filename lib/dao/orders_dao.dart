@@ -39,7 +39,7 @@ class OrdersDao {
     final db = await _database.database;
     List<Map<String, dynamic>> result = await db.query(orderTable,
         where:
-            '(comment IS NOT NULL OR comment IS NOT "") AND comment_done != ?',
+            'comment IS NOT "" AND comment_done != ?',
         whereArgs: [commentOpen ? 1 : 0],
         orderBy: 'order_date desc',
         limit: 1000);

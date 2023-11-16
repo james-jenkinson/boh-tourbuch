@@ -95,7 +95,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               child: TableRowInkWell(
             onTap: () => goToOrder(item.id),
             child: Padding(
-                padding: _tableCellPadding, child: Text(item.comment ?? '')),
+                padding: _tableCellPadding, child: Text(item.comment)),
           ))
         ]));
 
