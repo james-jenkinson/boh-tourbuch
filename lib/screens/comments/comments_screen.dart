@@ -1,4 +1,5 @@
 import 'package:boh_tourbuch/screens/comments/bloc/comments_bloc.dart';
+import 'package:boh_tourbuch/until/date_time_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -87,7 +88,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
             onTap: () => print('goTo orderId ${item.id}'),
             child: Padding(
                 padding: _tableCellPadding,
-                child: Text(item.orderDate.toIso8601String())),
+                child: Text(item.orderDate.toCalendarDate())),
           )),
           TableCell(
               child: TableRowInkWell(
