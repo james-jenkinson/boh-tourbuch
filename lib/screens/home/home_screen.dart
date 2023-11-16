@@ -1,4 +1,3 @@
-import 'package:boh_tourbuch/screens/home/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,6 +5,7 @@ import '../../widgets/main_menu_tab.dart';
 import '../comments/comments_screen.dart';
 import '../faq/faq_screen.dart';
 import '../person_list/person_list_screen.dart';
+import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _homeBloc.add(
                 DialogCompletedEvent(await buildShowDialog(context, true)));
           } else if (state is NavigateToSettings) {
-            Navigator.pushNamed(context, '/settings')
+            await Navigator.pushNamed(context, '/settings')
                 .then((value) => _homeBloc.add(CloseDialogEvent()));
           }
         },
@@ -73,8 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  Future<dynamic> buildShowDialog(BuildContext context, bool wrongPassword) {
-    return showDialog(
+  Future<bool> buildShowDialog(BuildContext context, bool wrongPassword) async {
+    final state = await showDialog<bool>(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -107,5 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           );
         });
+
+    return state == true;
   }
 }

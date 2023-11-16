@@ -1,8 +1,8 @@
-import 'package:boh_tourbuch/screens/person_list/bloc/person_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/person_text_widget.dart';
+import 'bloc/person_list_bloc.dart';
 
 class PersonListScreen extends StatefulWidget {
   const PersonListScreen({super.key});

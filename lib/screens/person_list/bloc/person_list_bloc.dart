@@ -1,8 +1,9 @@
-import 'package:boh_tourbuch/models/person.dart';
-import 'package:boh_tourbuch/repository/person_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+
+import '../../../models/person.dart';
+import '../../../repository/person_repository.dart';
 
 part 'person_list_event.dart';
 part 'person_list_state.dart';

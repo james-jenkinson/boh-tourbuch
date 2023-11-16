@@ -1,9 +1,9 @@
-import 'package:boh_tourbuch/screens/new_order/bloc/new_order_bloc.dart';
-import 'package:boh_tourbuch/widgets/person_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
+import '../../widgets/person_text_widget.dart';
+import 'bloc/new_order_bloc.dart';
 
 class NewOrderScreen extends StatefulWidget {
   const NewOrderScreen({super.key});

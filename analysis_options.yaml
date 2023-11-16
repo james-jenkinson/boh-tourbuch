@@ -9,6 +9,15 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  plugins:
+    - dart_code_metrics
+  language:
+    strict-casts: true
+    strict-raw-types: true
+    strict-inference: true
+
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
@@ -21,8 +30,31 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    cancel_subscriptions: true
+    close_sinks: true
+    invalid_case_patterns: true
+    library_annotations: true
+    avoid_shadowing_type_parameters: true
+    await_only_futures: true
+
+    always_declare_return_types: true
+    avoid_dynamic_calls: true # avoid call/invoke on something that is not typed
+    avoid_returning_null_for_future: true
+    avoid_type_to_string: true # would result in different output for minified code
+    curly_braces_in_flow_control_structures: false # allows more concise code
+    directives_ordering: true
+    # Do not import from lib/src of other packages, considered package-private.
+    implementation_imports: true
+    prefer_final_in_for_each: true
+    prefer_final_locals: true
+    # prefer relative imports within same package (follows Effective Dart)
+    prefer_relative_imports: true
+    prefer_single_quotes: true
+    # Forgetting "await" on futures is very common, we therefore require "await" or wrapping in "unawaited".
+    unawaited_futures: true
+    unnecessary_parenthesis: true
+    use_raw_strings: true
+
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

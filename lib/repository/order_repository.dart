@@ -1,5 +1,4 @@
-import 'package:boh_tourbuch/dao/orders_dao.dart';
-
+import '../dao/orders_dao.dart';
 import '../models/order.dart';
 
 class OrderRepository {

@@ -8,7 +8,7 @@ void main() {
   setUp(() => productTypeDao = ProductTypeDao());
 
   test('fromDatabaseJson should return correct object', () {
-    Map<String, dynamic> data = {
+    final Map<String, dynamic> data = {
       'id': 161,
       'name': 'Zelt',
       'symbol': '⛺',

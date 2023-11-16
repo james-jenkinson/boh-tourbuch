@@ -1,7 +1,7 @@
-import 'package:boh_tourbuch/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/person.dart';
 import '../../widgets/person_text_widget.dart';
 import 'bloc/orders_bloc.dart';
 
@@ -65,7 +65,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   Expanded(
                       flex: 1,
                       child: Column(children: [
-                        const Text("Letzte Bestellungen"),
+                        const Text('Letzte Bestellungen'),
                         const SizedBox(height: 10),
                         Expanded(
                             child: ListView.builder(

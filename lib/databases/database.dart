@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
-const personTable = "Persons";
-const orderTable = "Orders";
-const commentTable = "Comments";
-const productTable = "Products";
-const productTypeTable = "ProductTypes";
+const personTable = 'Persons';
+const orderTable = 'Orders';
+const commentTable = 'Comments';
+const productTable = 'Products';
+const productTypeTable = 'ProductTypes';
 
 class DatabaseInstance {
   static final DatabaseInstance databaseInstance = DatabaseInstance();
@@ -23,15 +23,15 @@ class DatabaseInstance {
     }
   }
 
-  _createDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = "${documentsDirectory.path}boh.db";
+  Future<Database> _createDatabase() async {
+    final Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    final String path = '${documentsDirectory.path}boh.db';
 
     return await openDatabase(path,
-        version: 1, onCreate: _initDb, password: "123456");
+        version: 1, onCreate: _initDb, password: '123456');
   }
 
-  _initDb(Database database, int version) async {
+  Future<void> _initDb(Database database, int version) async {
     await database.execute("create table $personTable ("
         "id integer primary key, "
         "first_name text not null, "

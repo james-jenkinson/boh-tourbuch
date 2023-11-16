@@ -1,8 +1,9 @@
-import 'package:boh_tourbuch/screens/comments/bloc/comments_bloc.dart';
-import 'package:boh_tourbuch/until/date_time_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../until/date_time_ext.dart';
+import 'bloc/comments_bloc.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({super.key});
@@ -83,7 +84,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       return const Center(child: Text('Keine Einträge vorhanden'));
     }
 
-    var contentRows = state.orders.map((item) => TableRow(children: [
+    final contentRows = state.orders.map((item) => TableRow(children: [
           TableCell(
               child: TableRowInkWell(
             onTap: () => goToOrder(item.id),

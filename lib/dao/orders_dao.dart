@@ -1,7 +1,7 @@
-import 'package:boh_tourbuch/databases/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
+import '../databases/database.dart';
 import '../models/order.dart';
 
 class OrdersDao {
@@ -14,13 +14,13 @@ class OrdersDao {
 
   Future<Order?> getOrderById(int id) async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result =
+    final List<Map<String, dynamic>> result =
         await db.query(orderTable, where: 'id = ?', whereArgs: [id]);
     if (result.length == 1) {
       return fromDatabaseJson(result.first);
     } else {
       if (kDebugMode) {
-        print("0 or more than 1 orders found for id $id");
+        print('0 or more than 1 orders found for id $id');
       }
       return null;
     }
@@ -28,7 +28,7 @@ class OrdersDao {
 
   Future<List<Order>> getOrdersByPersonId(int personId) async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result = await db.query(orderTable,
+    final List<Map<String, dynamic>> result = await db.query(orderTable,
         where: 'person_id = ?',
         whereArgs: [personId],
         orderBy: 'order_date desc');
@@ -48,15 +48,16 @@ class OrdersDao {
 
   Order fromDatabaseJson(Map<String, dynamic> data) {
     return Order(
-        id: data['id'],
-        personId: data['person_id'],
-        orderDate: DateTime.parse(data['order_date']),
-        comment: data['comment'],
+        id: int.parse(data['id'].toString()),
+        personId: int.parse(data['person_id'].toString()),
+        // TODO rename to create date
+        orderDate: DateTime.parse(data['order_date'].toString()),
+        comment: data['comment'].toString(),
         commentDone: data['comment_done'] == 1);
   }
 
   Map<String, dynamic> toDatabaseJson(Order order) => {
-        "id": order.id == -1 ? null : order.id,
+        'id': order.id == -1 ? null : order.id,
         'person_id': order.personId,
         'order_date': order.orderDate.toIso8601String(),
         'comment': order.comment,
