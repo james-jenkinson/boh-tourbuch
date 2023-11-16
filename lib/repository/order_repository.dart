@@ -9,4 +9,7 @@ class OrderRepository {
 
   Future<List<Order>> getOrdersByPersonId(int personId) =>
       _orderDao.getOrdersByPersonId(personId);
+
+  Future<Iterable<Order>> getAllOrdersWithComment(bool commentDone) =>
+      _orderDao.getAllOrdersWithComment(commentDone);
 }
