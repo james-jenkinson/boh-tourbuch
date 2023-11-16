@@ -72,7 +72,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           itemCount: state.orders.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(state.orders[index].orderDate
+                              title: Text(state.orders[index].createDate
                                   .toIso8601String()),
                             );
                           },

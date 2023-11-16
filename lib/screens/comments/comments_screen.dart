@@ -90,7 +90,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
             onTap: () => goToOrder(item.id),
             child: Padding(
                 padding: _tableCellPadding,
-                child: Text(item.orderDate.toCalendarDate())),
+                child: Text(item.createDate.toCalendarDate())),
           )),
           TableCell(
               child: TableRowInkWell(

@@ -43,7 +43,7 @@ class DatabaseInstance {
         'person_id integer not null, '
         'comment text not null, '
         'comment_done integer not null, '
-        'order_date text not null, '
+        'create_date text not null, '
         'foreign key(person_id) references $personTable(id)'
         ')');
     await database.execute('create table $productTable ('

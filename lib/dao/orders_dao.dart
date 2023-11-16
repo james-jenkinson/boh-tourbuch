@@ -31,7 +31,7 @@ class OrdersDao {
     final List<Map<String, dynamic>> result = await db.query(orderTable,
         where: 'person_id = ?',
         whereArgs: [personId],
-        orderBy: 'order_date desc');
+        orderBy: 'create_date desc');
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
@@ -41,7 +41,7 @@ class OrdersDao {
         where:
             'comment IS NOT "" AND comment_done != ?',
         whereArgs: [commentOpen ? 1 : 0],
-        orderBy: 'order_date desc',
+        orderBy: 'create_date desc',
         limit: 1000);
     return result.map((e) => fromDatabaseJson(e));
   }
@@ -50,8 +50,7 @@ class OrdersDao {
     return Order(
         id: int.parse(data['id'].toString()),
         personId: int.parse(data['person_id'].toString()),
-        // TODO rename to create date
-        orderDate: DateTime.parse(data['order_date'].toString()),
+        createDate: DateTime.parse(data['create_date'].toString()),
         comment: data['comment'].toString(),
         commentDone: data['comment_done'] == 1);
   }
@@ -59,7 +58,7 @@ class OrdersDao {
   Map<String, dynamic> toDatabaseJson(Order order) => {
         'id': order.id == -1 ? null : order.id,
         'person_id': order.personId,
-        'order_date': order.orderDate.toIso8601String(),
+        'create_date': order.createDate.toIso8601String(),
         'comment': order.comment,
         'comment_done': order.commentDone ? 1 : 0
       };
