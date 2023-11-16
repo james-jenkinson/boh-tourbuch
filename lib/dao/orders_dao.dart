@@ -35,18 +35,31 @@ class OrdersDao {
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
+  Future<Iterable<Order>> getAllOrdersWithComment(bool commentOpen) async {
+    final db = await _database.database;
+    List<Map<String, dynamic>> result = await db.query(orderTable,
+        where:
+            'comment IS NOT "" AND comment_done != ?',
+        whereArgs: [commentOpen ? 1 : 0],
+        orderBy: 'order_date desc',
+        limit: 1000);
+    return result.map((e) => fromDatabaseJson(e));
+  }
+
   Order fromDatabaseJson(Map<String, dynamic> data) {
     return Order(
         id: data['id'],
         personId: data['person_id'],
         orderDate: DateTime.parse(data['order_date']),
-        commentId: data['comment_id']);
+        comment: data['comment'],
+        commentDone: data['comment_done'] == 1);
   }
 
   Map<String, dynamic> toDatabaseJson(Order order) => {
         "id": order.id == -1 ? null : order.id,
         'person_id': order.personId,
         'order_date': order.orderDate.toIso8601String(),
-        'comment_id': order.commentId
+        'comment': order.comment,
+        'comment_done': order.commentDone ? 1 : 0
       };
 }

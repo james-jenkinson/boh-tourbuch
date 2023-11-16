@@ -12,7 +12,8 @@ void main() {
       'id': 161,
       'person_id': 12,
       'order_date': '2011-10-05T14:48:00.000Z',
-      'comment_id': null
+      'comment': '',
+      'comment_done': 0
     };
 
     final result = ordersDao.fromDatabaseJson(data);
@@ -20,7 +21,8 @@ void main() {
     expect(result, isA<Order>());
     expect(result.id, 161);
     expect(result.personId, 12);
-    expect(result.commentId, null);
+    expect(result.comment, '');
+    expect(result.commentDone, false);
     expect(result.orderDate, DateTime.parse('2011-10-05T14:48:00.000Z'));
   });
 
@@ -29,7 +31,8 @@ void main() {
         personId: 12,
         orderDate: DateTime.parse('2011-10-05T14:48:00.000Z'),
         id: 161,
-        commentId: 11);
+        comment: 'juhu',
+        commentDone: true);
 
     final result = ordersDao.toDatabaseJson(order);
 
@@ -37,7 +40,8 @@ void main() {
       'id': 161,
       'person_id': 12,
       'order_date': '2011-10-05T14:48:00.000Z',
-      'comment_id': 11
+      'comment': 'juhu',
+      'comment_done': 1
     });
   });
 }
