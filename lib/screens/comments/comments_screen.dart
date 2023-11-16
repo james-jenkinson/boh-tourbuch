@@ -1,5 +1,6 @@
 import 'package:boh_tourbuch/screens/comments/bloc/comments_bloc.dart';
 import 'package:boh_tourbuch/until/date_time_ext.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -85,14 +86,14 @@ class _CommentsScreenState extends State<CommentsScreen> {
     var contentRows = state.orders.map((item) => TableRow(children: [
           TableCell(
               child: TableRowInkWell(
-            onTap: () => print('goTo orderId ${item.id}'),
+            onTap: () => goToOrder(item.id),
             child: Padding(
                 padding: _tableCellPadding,
                 child: Text(item.orderDate.toCalendarDate())),
           )),
           TableCell(
               child: TableRowInkWell(
-            onTap: () => print('goTo orderId ${item.id}'),
+            onTap: () => goToOrder(item.id),
             child: Padding(
                 padding: _tableCellPadding, child: Text(item.comment ?? '')),
           ))
@@ -114,5 +115,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 ...contentRows,
               ],
             )));
+  }
+
+  void goToOrder(int orderId) {
+    // TODO replace with navigation to order
+    if (kDebugMode) {
+      print('goTo orderId $orderId');
+    }
   }
 }
