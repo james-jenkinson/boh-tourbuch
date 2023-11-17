@@ -1,7 +1,8 @@
-import 'package:boh_tourbuch/models/product_type.dart';
-import 'package:boh_tourbuch/widgets/edit_product_type_dialog/bloc/edit_product_type_dialog_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../models/product_type.dart';
+import 'bloc/edit_product_type_dialog_bloc.dart';
 
 class EditProductTypeDialog extends StatefulWidget {
   final ProductType? productType;

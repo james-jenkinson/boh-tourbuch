@@ -56,6 +56,6 @@ class EditProductTypeDialogBloc
     name.dispose();
     daysBlocked.dispose();
     symbol.dispose();
-    super.close();
+    await super.close();
   }
 }

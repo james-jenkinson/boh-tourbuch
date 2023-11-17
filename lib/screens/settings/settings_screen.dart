@@ -1,8 +1,9 @@
-import 'package:boh_tourbuch/models/product_type.dart';
-import 'package:boh_tourbuch/screens/settings/bloc/settings_bloc.dart';
-import 'package:boh_tourbuch/widgets/edit_product_type_dialog/edit_product_type_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../models/product_type.dart';
+import '../../widgets/edit_product_type_dialog/edit_product_type_dialog.dart';
+import 'bloc/settings_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -90,13 +91,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void openDialog(ProductType? productType) async {
     _settingsBloc.add(
       DialogClosedEvent(
-        await showDialog(
+        await showDialog<bool>(
           barrierDismissible: false,
           context: context,
           builder: (context) {
             return EditProductTypeDialog(productType: productType);
           },
-        ),
+        ) == true,
       ),
     );
   }

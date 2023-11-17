@@ -1,7 +1,7 @@
-import 'package:boh_tourbuch/models/product_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../models/product_type.dart';
 import '../../../repository/product_type_repository.dart';
 
 part 'settings_event.dart';
@@ -10,7 +10,7 @@ part 'settings_state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final ProductTypeRepository _productTypeRepository = ProductTypeRepository();
   final TextEditingController textEditingControllerName = TextEditingController();
-  
+
   SettingsBloc() : super(SettingsInitial()) {
     on<SettingsEvent>((event, emit) async {
       if (event is LoadOrdersEvent) {

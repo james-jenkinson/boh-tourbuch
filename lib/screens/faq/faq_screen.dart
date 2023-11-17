@@ -1,5 +1,6 @@
-import 'package:boh_tourbuch/screens/faq/bloc/faq_bloc.dart';
 import 'package:flutter/material.dart';
+
+import 'bloc/faq_bloc.dart';
 
 class FaqScreen extends StatefulWidget {
   const FaqScreen({super.key});

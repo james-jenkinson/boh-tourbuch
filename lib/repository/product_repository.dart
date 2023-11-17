@@ -1,5 +1,4 @@
-import 'package:boh_tourbuch/dao/product_dao.dart';
-
+import '../dao/product_dao.dart';
 import '../models/product.dart';
 
 class ProductRepository {

@@ -1,5 +1,6 @@
-import 'package:boh_tourbuch/databases/database.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
+
+import '../databases/database.dart';
 import '../models/product.dart';
 
 class ProductDao {
@@ -20,20 +21,20 @@ class ProductDao {
 
   Product fromDatabaseJson(Map<String, dynamic> data) {
     return Product(
-        id: data['id'],
-        orderId: data['order_id'],
-        productTypeId: data['product_type_id'],
-        status: ProductStatus.values.byName(data['status']),
+        id: int.parse(data['id'].toString()),
+        orderId: int.parse(data['order_id'].toString()),
+        productTypeId: int.parse(data['product_type_id'].toString()),
+        status: ProductStatus.values.byName(data['status'].toString()),
         receivedDate: data['received_date'] == null
             ? null
-            : DateTime.parse(data['received_date']));
+            : DateTime.parse(data['received_date'].toString()));
   }
 
   Map<String, dynamic> toDatabaseJson(Product product) => {
-        "id": product.id == -1 ? null : product.id,
-        "order_id": product.orderId,
-        "product_type_id": product.productTypeId,
-        "status": product.status.name,
-        "received_date": product.receivedDate?.toIso8601String()
+        'id': product.id == -1 ? null : product.id,
+        'order_id': product.orderId,
+        'product_type_id': product.productTypeId,
+        'status': product.status.name,
+        'received_date': product.receivedDate?.toIso8601String()
       };
 }

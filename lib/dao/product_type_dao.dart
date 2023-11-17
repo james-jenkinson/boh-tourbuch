@@ -1,7 +1,7 @@
-import 'package:boh_tourbuch/databases/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
+import '../databases/database.dart';
 import '../models/product_type.dart';
 
 class ProductTypeDao {
@@ -14,19 +14,19 @@ class ProductTypeDao {
 
   Future<List<ProductType>> getProductTypes() async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result = await db.query(productTypeTable);
+    final List<Map<String, dynamic>> result = await db.query(productTypeTable);
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
   Future<ProductType?> getProductTypeById(int id) async {
     final db = await _database.database;
-    List<Map<String, dynamic>> result =
+    final List<Map<String, dynamic>> result =
         await db.query(productTypeTable, where: 'id = ?', whereArgs: [id]);
     if (result.length == 1) {
       return fromDatabaseJson(result.first);
     } else {
       if (kDebugMode) {
-        print("0 or more than 1 productTypes found for id $id");
+        print('0 or more than 1 productTypes found for id $id');
       }
       return null;
     }
@@ -45,18 +45,18 @@ class ProductTypeDao {
 
   ProductType fromDatabaseJson(Map<String, dynamic> data) {
     return ProductType(
-        id: data['id'],
-        name: data['name'],
-        symbol: data['symbol'],
-        daysBlocked: data['days_blocked'],
+        id: int.parse(data['id'].toString()),
+        name: data['name'].toString(),
+        symbol: data['symbol'].toString(),
+        daysBlocked: int.parse(data['days_blocked'].toString()),
         deletable: data['deletable'] == 1);
   }
 
   Map<String, dynamic> toDatabaseJson(ProductType productType) => {
-        "id": productType.id == -1 ? null : productType.id,
-        "name": productType.name,
-        "symbol": productType.symbol,
-        "days_blocked": productType.daysBlocked,
-        "deletable": productType.deletable ? 1 : 0
+        'id': productType.id == -1 ? null : productType.id,
+        'name': productType.name,
+        'symbol': productType.symbol,
+        'days_blocked': productType.daysBlocked,
+        'deletable': productType.deletable ? 1 : 0
       };
 }

@@ -1,10 +1,10 @@
-import 'package:boh_tourbuch/models/order.dart';
-import 'package:boh_tourbuch/repository/order_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../models/order.dart';
+import '../../../repository/order_repository.dart';
 
 part 'comments_event.dart';
-
 part 'comments_state.dart';
 
 class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {

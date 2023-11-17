@@ -8,10 +8,10 @@ void main() {
   setUp(() => ordersDao = OrdersDao());
 
   test('fromDatabaseJson should return correct object', () {
-    Map<String, dynamic> data = {
+    final Map<String, dynamic> data = {
       'id': 161,
       'person_id': 12,
-      'order_date': '2011-10-05T14:48:00.000Z',
+      'create_date': '2011-10-05T14:48:00.000Z',
       'comment': '',
       'comment_done': 0
     };
@@ -23,13 +23,13 @@ void main() {
     expect(result.personId, 12);
     expect(result.comment, '');
     expect(result.commentDone, false);
-    expect(result.orderDate, DateTime.parse('2011-10-05T14:48:00.000Z'));
+    expect(result.createDate, DateTime.parse('2011-10-05T14:48:00.000Z'));
   });
 
   test('toDatabaseJson should return db map', () {
     final order = Order(
         personId: 12,
-        orderDate: DateTime.parse('2011-10-05T14:48:00.000Z'),
+        createDate: DateTime.parse('2011-10-05T14:48:00.000Z'),
         id: 161,
         comment: 'juhu',
         commentDone: true);
@@ -39,7 +39,7 @@ void main() {
     expect(result, {
       'id': 161,
       'person_id': 12,
-      'order_date': '2011-10-05T14:48:00.000Z',
+      'create_date': '2011-10-05T14:48:00.000Z',
       'comment': 'juhu',
       'comment_done': 1
     });

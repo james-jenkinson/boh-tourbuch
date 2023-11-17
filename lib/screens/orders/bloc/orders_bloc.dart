@@ -1,9 +1,9 @@
-import 'package:boh_tourbuch/repository/order_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/order.dart';
 import '../../../models/person.dart';
+import '../../../repository/order_repository.dart';
 
 part 'orders_event.dart';
 part 'orders_state.dart';
@@ -17,7 +17,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     on<OrdersEvent>((event, emit) async {
       if (event is OrdersInitialEvent) {
         _selectedPerson = event.selectedPerson;
-        List<Order> orders =
+        final List<Order> orders =
             await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
         emit(OrdersLoaded(_selectedPerson, orders));
       } else if (event is OrdersAddEvent) {
@@ -30,7 +30,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
         emit(OrdersLoaded(_selectedPerson, orders));
          */
       } else if (event is NavigateBackFromNewOrderEvent) {
-        List<Order> orders =
+        final List<Order> orders =
         await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
         emit(OrdersLoaded(_selectedPerson, orders));
       }

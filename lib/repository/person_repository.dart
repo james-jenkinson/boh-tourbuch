@@ -1,5 +1,4 @@
-import 'package:boh_tourbuch/dao/person_dao.dart';
-
+import '../dao/person_dao.dart';
 import '../models/person.dart';
 
 class PersonRepository {
