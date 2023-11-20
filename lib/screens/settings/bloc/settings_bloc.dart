@@ -9,7 +9,6 @@ part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final ProductTypeRepository _productTypeRepository = ProductTypeRepository();
-  final TextEditingController textEditingControllerName = TextEditingController();
 
   SettingsBloc() : super(SettingsInitial()) {
     on<SettingsEvent>((event, emit) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
+import '../../until/date_time_ext.dart';
 import '../../widgets/person_text_widget.dart';
 import 'bloc/orders_bloc.dart';
 
@@ -72,8 +73,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           itemCount: state.orders.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(state.orders[index].createDate
-                                  .toIso8601String()),
+                              title: Text(
+                                  '${state.orders[index].createDate.toCalendarDate()}: ${state.orders[index].comment}'
+                              ),
                             );
                           },
                           scrollDirection: Axis.vertical,
