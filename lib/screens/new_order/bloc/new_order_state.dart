@@ -5,8 +5,10 @@ abstract class NewOrderState {}
 
 class NewOrderInitialState extends NewOrderState {}
 
-class NewOrderPersonLoaded extends NewOrderState {
-  final Person selectedPerson;
+class NewOrderUpdatedState extends NewOrderState {
+  final List<(ProductType, bool)> productTypes;
 
-  NewOrderPersonLoaded(this.selectedPerson);
+  NewOrderUpdatedState(this.productTypes);
 }
+
+class NewOrderSavedState extends NewOrderState {}
