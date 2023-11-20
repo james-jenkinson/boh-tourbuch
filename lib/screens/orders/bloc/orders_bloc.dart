@@ -6,12 +6,13 @@ import '../../../models/person.dart';
 import '../../../repository/order_repository.dart';
 
 part 'orders_event.dart';
+
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   final OrderRepository _orderRepository = OrderRepository();
 
-  late final Person _selectedPerson;
+  late Person _selectedPerson;
 
   OrdersBloc() : super(OrdersInitial()) {
     on<OrdersEvent>((event, emit) async {
@@ -31,8 +32,16 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
          */
       } else if (event is NavigateBackFromNewOrderEvent) {
         final List<Order> orders =
-        await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
+            await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
         emit(OrdersLoaded(_selectedPerson, orders));
+      } else if (event is PersonEditedEvent) {
+        final person = event.person;
+        if (person != null) {
+          _selectedPerson = person;
+          final List<Order> orders =
+              await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
+          emit(OrdersLoaded(_selectedPerson, orders));
+        }
       }
     });
   }

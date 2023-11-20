@@ -6,6 +6,7 @@ import '../../../models/person.dart';
 import '../../../repository/person_repository.dart';
 
 part 'person_list_event.dart';
+
 part 'person_list_state.dart';
 
 class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
@@ -14,29 +15,32 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
   String _filter = '';
 
   PersonListBloc() : super(PersonListInitial()) {
-    on<PersonListEvent>((event, emit) async {
-      if (event is PersonListFilterEvent) {
-        _filter = event.filter;
-        final persons = await _personRepository.getAllPersons();
-        if (_filter.isEmpty) {
-          emit(PersonListChanged(persons));
-          return;
-        }
-        final filteredPersons = extractAllSorted(
-            query: event.filter,
-            choices: persons,
-            cutoff: 35,
-            getter: (person) => '${person.firstName} ${person.lastName}');
-        emit(PersonListChanged(filteredPersons
-            .map((extractedResult) => extractedResult.choice)
-            .toList()));
-      } else if (event is PersonListAddEvent) {
-        await _personRepository.createPerson(Person(firstName: _filter, lastName: _filter));
-        final persons = await _personRepository.getAllPersons();
+    on<PersonListFilterEvent>((event, emit) async {
+      _filter = event.filter;
+      final persons = await _personRepository.getAllPersons();
+      if (_filter.isEmpty) {
         emit(PersonListChanged(persons));
-      } else if (event is PersonListNavigateEvent) {
-        emit(PersonListNavigateToOrder(event.person));
+        return;
       }
+      final filteredPersons = extractAllSorted(
+          query: event.filter,
+          choices: persons,
+          cutoff: 35,
+          getter: (person) => person.name);
+      emit(PersonListChanged(filteredPersons
+          .map((extractedResult) => extractedResult.choice)
+          .toList()));
+    });
+
+    on<PersonListAddEvent>((event, emit) async {
+      await _personRepository
+          .createPerson(Person(name: _filter));
+      final persons = await _personRepository.getAllPersons();
+      emit(PersonListChanged(persons));
+    });
+
+    on<PersonListNavigateEvent>((event, emit) async {
+      emit(PersonListNavigateToOrder(event.person));
     });
   }
 }

@@ -12,9 +12,16 @@ class PersonDao {
     return db.insert(personTable, toDatabaseJson(person));
   }
 
+  Future<int> updatePerson(Person person) async {
+    final Database db = await _database.database;
+    return await db.update(personTable, toDatabaseJson(person),
+        where: 'id = ?', whereArgs: [person.id]);
+  }
+
   Future<List<Person>> getAllPersons() async {
     final db = await _database.database;
-    final List<Map<String, dynamic>> result = await db.query(personTable);
+    final List<Map<String, dynamic>> result =
+        await db.query(personTable, orderBy: 'name COLLATE NOCASE ASC');
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
@@ -33,17 +40,20 @@ class PersonDao {
   }
 
   Person fromDatabaseJson(Map<String, dynamic> data) {
+    final blockedSince = data['blocked_since'];
     return Person(
-        id:  int.parse(data['id'].toString()),
-        firstName: data['first_name'].toString(),
-        lastName: data['last_name'].toString(),
-        blocked: data['blocked'] == 1);
+        id: int.parse(data['id'].toString()),
+        name: data['name'].toString().trim(),
+        blockedSince: blockedSince != null
+            ? DateTime.parse(blockedSince.toString())
+            : null,
+        comment: data['comment'].toString().trim());
   }
 
   Map<String, dynamic> toDatabaseJson(Person person) => {
         'id': person.id == -1 ? null : person.id,
-        'first_name': person.firstName,
-        'last_name': person.lastName,
-        'blocked':  person.blocked ? 1 : 0
+        'name': person.name,
+        'blocked_since': person.blockedSince?.toIso8601String(),
+        'comment': person.comment
       };
 }

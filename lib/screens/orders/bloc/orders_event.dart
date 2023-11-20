@@ -19,3 +19,9 @@ class NavigateBackFromNewOrderEvent extends OrdersEvent {
 
   NavigateBackFromNewOrderEvent(this.selectedPerson);
 }
+
+class PersonEditedEvent extends OrdersEvent {
+  final Person? person;
+
+  PersonEditedEvent(this.person);
+}

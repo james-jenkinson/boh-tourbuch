@@ -34,7 +34,8 @@ class _PersonListScreenState extends State<PersonListScreen> {
           if (state is PersonListNavigateToOrder) {
             Navigator.pushNamed(context, '/order',
                     arguments: state.selectedPerson)
-                .then((value) => _personListBloc.add(PersonListFilterEvent('')));
+                .then(
+                    (value) => _personListBloc.add(PersonListFilterEvent('')));
           }
         },
         builder: (context, state) {
@@ -44,31 +45,36 @@ class _PersonListScreenState extends State<PersonListScreen> {
             );
           }
           if (state is PersonListChanged) {
-            return SafeArea(
-              child: Center(
-                child: Column(
-                  children: [
-                    TextField(
-                      onChanged: (value) =>
-                          _personListBloc.add(PersonListFilterEvent(value)),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
                     ),
-                    Expanded(child: ListView.builder(
-                      itemCount: state.persons.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: PersonText(person: state.persons[index]),
-                          onTap: () => _personListBloc.add(
-                              PersonListNavigateEvent(state.persons[index])),
-                        );
-                      },
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                    )),
-                    ElevatedButton(
-                        onPressed: () => _personListBloc.add(PersonListAddEvent()),
-                        child: const Text('Add'))
-                  ],
-                ),
+                    onChanged: (value) =>
+                        _personListBloc.add(PersonListFilterEvent(value)),
+                  ),
+                  // TODO empty list/filter Text
+                  Expanded(
+                      child: ListView.builder(
+                    itemCount: state.persons.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: PersonText(person: state.persons[index]),
+                      onTap: () => _personListBloc
+                          .add(PersonListNavigateEvent(state.persons[index])),
+                    ),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                  )),
+                  ElevatedButton(
+                      onPressed: () =>
+                          _personListBloc.add(PersonListAddEvent()),
+                      // TODO add validation -> currently empty name users are created
+                      child: const Text('Add'))
+                ],
               ),
             );
           }

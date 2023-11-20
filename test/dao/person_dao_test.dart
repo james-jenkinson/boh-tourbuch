@@ -10,34 +10,31 @@ void main() {
   test('fromDatabaseJson should return correct object', () {
     final Map<String, dynamic> data = {
       'id': 161,
-      'first_name': 'Tomislav',
-      'last_name': 'Piplica',
-      'blocked': 1
+      'name': 'Tomislav Piplica',
+      'blocked_since': '2011-10-05T14:48:00.000Z',
+      'comment': 'abc'
     };
 
     final result = personDao.fromDatabaseJson(data);
 
     expect(result, isA<Person>());
     expect(result.id, 161);
-    expect(result.firstName, 'Tomislav');
-    expect(result.lastName, 'Piplica');
-    expect(result.blocked, true);
+    expect(result.name, 'Tomislav Piplica');
+    expect(result.blockedSince, DateTime.parse('2011-10-05T14:48:00.000Z'));
+    expect(result.comment, 'abc');
   });
 
   test('toDatabaseJson should return db map', () {
-    final person = Person(
-        id: 161,
-        firstName: 'Tomislav',
-        lastName: 'Piplica',
-        blocked: false);
+    final person =
+        Person(id: 161, name: 'Tomislav Piplica', blockedSince: null);
 
     final result = personDao.toDatabaseJson(person);
 
     expect(result, {
       'id': 161,
-      'first_name': 'Tomislav',
-      'last_name': 'Piplica',
-      'blocked': 0
+      'name': 'Tomislav Piplica',
+      'blocked_since': null,
+      'comment': ''
     });
   });
 }
