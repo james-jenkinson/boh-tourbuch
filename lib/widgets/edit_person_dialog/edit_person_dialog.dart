@@ -77,8 +77,6 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
                         contentPadding: EdgeInsets.zero,
                         horizontalTitleGap: 0.0,
                         child: CheckboxListTile(
-                            // visualDensity:
-                            //     VisualDensity(horizontal: -4, vertical: 0),
                             title: blockedSince != null
                                 ? Text(
                                     'Gesperrt seit ${blockedSince.toCalendarDate()}')
