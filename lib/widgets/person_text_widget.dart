@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../models/person.dart';
+import '../until/date_time_ext.dart';
 
 class PersonText extends StatelessWidget {
   final Person person;
@@ -10,6 +11,10 @@ class PersonText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('${person.firstName} ${person.lastName}', style: style);
+    final blockedSince = person.blockedSince;
+    return blockedSince != null
+        ? Text('${person.name} (${blockedSince.toCalendarDate()})',
+            style: (style ?? const TextStyle()).copyWith(color: Colors.red))
+        : Text(person.name, style: style);
   }
 }

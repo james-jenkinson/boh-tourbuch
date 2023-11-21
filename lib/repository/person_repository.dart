@@ -6,6 +6,8 @@ class PersonRepository {
 
   Future<int> createPerson(Person person) => _personDao.createPerson(person);
 
+  Future<int> updatePerson(Person person) => _personDao.updatePerson(person);
+
   Future<Person?> getPersonById(int id) => _personDao.getPersonById(id);
 
   Future<List<Person>> getAllPersons() => _personDao.getAllPersons();

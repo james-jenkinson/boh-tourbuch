@@ -1,12 +1,12 @@
 class Person {
   int id;
-  String firstName;
-  String lastName;
-  bool blocked = false;
+  String name;
+  DateTime? blockedSince;
+  String comment;
 
   Person(
       {this.id = -1,
-      required this.firstName,
-      required this.lastName,
-      this.blocked = false});
+      required this.name,
+      this.blockedSince,
+      this.comment = ''});
 }

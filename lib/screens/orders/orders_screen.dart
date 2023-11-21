@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
 import '../../until/date_time_ext.dart';
+import '../../widgets/edit_person_dialog/edit_person_dialog.dart';
 import '../../widgets/person_text_widget.dart';
 import 'bloc/orders_bloc.dart';
 
@@ -39,9 +40,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
         listener: (context, state) {
           if (state is NavigateToNewOrder) {
             Navigator.pushNamed(context, '/new_order',
-                arguments: state.selectedPerson)
-                .then((value) => _ordersBloc.add(NavigateBackFromNewOrderEvent(state.selectedPerson)))
-            ;
+                    arguments: state.selectedPerson)
+                .then((value) => _ordersBloc
+                    .add(NavigateBackFromNewOrderEvent(state.selectedPerson)));
           }
         },
         builder: (context, state) {
@@ -58,7 +59,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   ),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.edit))
+                  IconButton(
+                      onPressed: () async => _ordersBloc.add(PersonEditedEvent(
+                          await EditPersonDialog.open(
+                              context, state.selectedPerson))),
+                      icon: const Icon(Icons.edit))
                 ]),
                 const SizedBox(height: 10),
                 Expanded(
