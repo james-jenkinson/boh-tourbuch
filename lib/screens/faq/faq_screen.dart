@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/faq_bloc.dart';
 
@@ -10,20 +11,6 @@ class FaqScreen extends StatefulWidget {
 }
 
 class _FaqScreenState extends State<FaqScreen> {
-  late FaqBloc _faqBloc;
-
-  @override
-  void initState() {
-    _faqBloc = FaqBloc();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _faqBloc.close();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     const List<(String, String)> questions = [
@@ -32,27 +19,29 @@ class _FaqScreenState extends State<FaqScreen> {
       ('Warum ist die Banane krumm? 3', 'Lorem Ipsum 3')
     ];
 
-    return SafeArea(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              ExpansionPanelList.radio(
-                materialGapSize: 1,
-                children: questions
-                    .asMap()
-                    .entries
-                    .map((q) => ExpansionPanelRadio(
-                        value: q.key,
-                        canTapOnHeader: true,
-                        headerBuilder: (context, isOpen) {
-                          return ListTile(title: Text(q.value.$1));
-                        },
-                        body: ListTile(title: Text(q.value.$2))))
-                    .toList(),
-              )
-            ],
+    return BlocProvider<FaqBloc>(
+      create: (_) => FaqBloc()..add(const FaqEvent.loadData()),
+      child: BlocBuilder<FaqBloc, FaqState>(
+        builder: (context, state) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                ExpansionPanelList.radio(
+                  materialGapSize: 1,
+                  children: questions
+                      .asMap()
+                      .entries
+                      .map((q) => ExpansionPanelRadio(
+                          value: q.key,
+                          canTapOnHeader: true,
+                          headerBuilder: (context, isOpen) =>
+                              ListTile(title: Text(q.value.$1)),
+                          body: ListTile(title: Text(q.value.$2))))
+                      .toList(),
+                )
+              ],
+            ),
           ),
         ),
       ),

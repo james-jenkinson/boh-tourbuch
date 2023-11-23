@@ -25,8 +25,11 @@ void main() {
   });
 
   test('toDatabaseJson should return db map', () {
-    final person =
-        Person(id: 161, name: 'Tomislav Piplica', blockedSince: null);
+    const person = Person(
+      id: 161,
+      name: 'Tomislav Piplica',
+      blockedSince: null,
+    );
 
     final result = personDao.toDatabaseJson(person);
 

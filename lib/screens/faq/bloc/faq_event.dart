@@ -1,4 +1,7 @@
 part of 'faq_bloc.dart';
 
-@immutable
-abstract class FaqEvent {}
+
+@freezed
+class FaqEvent with _$FaqEvent {
+  const factory FaqEvent.loadData() = LoadDataEvent;
+}

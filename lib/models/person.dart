@@ -1,12 +1,13 @@
-class Person {
-  int id;
-  String name;
-  DateTime? blockedSince;
-  String comment;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Person(
-      {this.id = -1,
-      required this.name,
-      this.blockedSince,
-      this.comment = ''});
+part 'person.freezed.dart';
+
+@freezed
+class Person with _$Person {
+  const factory Person({
+      @Default(-1) int id,
+      required String name,
+      @Default(null) DateTime? blockedSince,
+      @Default('') String comment
+  }) = _Person;
 }

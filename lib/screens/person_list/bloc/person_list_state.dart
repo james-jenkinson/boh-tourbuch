@@ -1,19 +1,14 @@
 part of 'person_list_bloc.dart';
 
-@immutable
-abstract class PersonListState {}
+enum PersonListStatus { initial, data, navigateToSelected }
 
-class PersonListInitial extends PersonListState {
-}
-
-class PersonListChanged extends PersonListState {
-  final List<Person> persons;
-
-  PersonListChanged(this.persons);
-}
-
-class PersonListNavigateToOrder extends PersonListState {
-  final Person selectedPerson;
-
-  PersonListNavigateToOrder(this.selectedPerson);
+@freezed
+class PersonListState with _$PersonListState {
+  const factory PersonListState({
+    @Default(PersonListStatus.initial) PersonListStatus status,
+    @Default([]) List<Person> persons,
+    @Default([]) List<Person> filteredPersons,
+    @Default('') String filter,
+    @Default([]) List<Person> selectedPersons
+  }) = _PersonListState;
 }

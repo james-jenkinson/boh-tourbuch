@@ -1,17 +1,14 @@
 part of 'edit_person_dialog_bloc.dart';
 
-@immutable
-abstract class EditPersonDialogState {}
+enum EditPersonDialogStatus { initial, cancel, save, edit }
 
-class EditPersonDialogInitialState extends EditPersonDialogState {
-  final bool formValid;
-  final DateTime? blockedSince;
-
-  EditPersonDialogInitialState(this.formValid, this.blockedSince);
-}
-
-class CloseDialogState extends EditPersonDialogState {
-  final Person? person;
-
-  CloseDialogState(this.person);
+@freezed
+class EditPersonDialogState with _$EditPersonDialogState {
+  const factory EditPersonDialogState({
+    @Default(EditPersonDialogStatus.initial) EditPersonDialogStatus status,
+    @Default(-1) int id,
+    @Default('') String name,
+    @Default(null) DateTime? blockedSince,
+    @Default('') String comment,
+  }) = _EditPersonDialogState;
 }

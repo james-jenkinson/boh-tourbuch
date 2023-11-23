@@ -1,6 +1,6 @@
 part of 'faq_bloc.dart';
 
-@immutable
-abstract class FaqState {}
-
-class FaqInitial extends FaqState {}
+@freezed
+class FaqState with _$FaqState {
+  const factory FaqState() = _FaqState;
+}
