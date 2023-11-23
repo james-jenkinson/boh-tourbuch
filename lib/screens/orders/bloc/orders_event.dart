@@ -21,7 +21,7 @@ class NavigateBackFromNewOrderEvent extends OrdersEvent {
 }
 
 class PersonEditedEvent extends OrdersEvent {
-  final Person? person;
+  final bool? personEdited;
 
-  PersonEditedEvent(this.person);
+  PersonEditedEvent(this.personEdited);
 }

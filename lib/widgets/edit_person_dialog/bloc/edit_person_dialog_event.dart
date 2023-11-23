@@ -1,18 +1,11 @@
 part of 'edit_person_dialog_bloc.dart';
 
-@immutable
-abstract class EditPersonDialogEvent {}
-
-class FormChangedEvent extends EditPersonDialogEvent {
-  final bool? formValid;
-
-  FormChangedEvent(this.formValid);
+@freezed
+class EditPersonDialogEvent with _$EditPersonDialogEvent {
+const factory EditPersonDialogEvent.setPerson(Person person) = SetPersonEvent;
+const factory EditPersonDialogEvent.updateName(String name) = UpdateNameEvent;
+const factory EditPersonDialogEvent.updateBlocked(bool blocked) = UpdateBlockedEvent;
+const factory EditPersonDialogEvent.updateComment(String comment) = UpdateCommentEvent;
+const factory EditPersonDialogEvent.cancel() = CancelEvent;
+const factory EditPersonDialogEvent.save() = SaveEvent;
 }
-
-class BlockedStatusChangedEvent extends EditPersonDialogEvent {
-  final bool? formValid;
-  BlockedStatusChangedEvent(this.formValid);
-}
-
-class CancelClickedEvent extends EditPersonDialogEvent {}
-class SaveClickedEvent extends EditPersonDialogEvent {}

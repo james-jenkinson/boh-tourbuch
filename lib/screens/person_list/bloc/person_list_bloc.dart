@@ -1,46 +1,66 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 
 import '../../../models/person.dart';
 import '../../../repository/person_repository.dart';
+
+part 'person_list_bloc.freezed.dart';
 
 part 'person_list_event.dart';
 
 part 'person_list_state.dart';
 
 class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
-  final _personRepository = PersonRepository();
+  final PersonRepository _personRepository;
 
-  String _filter = '';
-
-  PersonListBloc() : super(PersonListInitial()) {
-    on<PersonListFilterEvent>((event, emit) async {
-      _filter = event.filter;
-      final persons = await _personRepository.getAllPersons();
-      if (_filter.isEmpty) {
-        emit(PersonListChanged(persons));
-        return;
-      }
-      final filteredPersons = extractAllSorted(
-          query: event.filter,
-          choices: persons,
-          cutoff: 35,
-          getter: (person) => person.name);
-      emit(PersonListChanged(filteredPersons
-          .map((extractedResult) => extractedResult.choice)
-          .toList()));
+  PersonListBloc(this._personRepository) : super(const PersonListState()) {
+    on<PersonListEvent>((event, emit) async {
+      await event.when(
+        loadPersons: () async {
+          final persons = await _personRepository.getAllPersons();
+          emit(
+            state.copyWith(
+                status: PersonListStatus.data,
+                persons: persons,
+                filteredPersons: applyFilter(persons, state.filter)),
+          );
+        },
+        updateFilter: (filter) async => emit(state.copyWith(
+          filter: filter,
+          filteredPersons: applyFilter(state.persons, filter),
+        )),
+        addPerson: () async {
+          final id = await _personRepository.createPerson(Person(
+            name: state.filter,
+          ));
+          final person = await _personRepository.getPersonById(id);
+          if (person == null) {
+            throw Exception('Person not found');
+          }
+          emit(state.copyWith(
+              status: PersonListStatus.navigateToSelected,
+              selectedPersons: [person]));
+        },
+        selectPerson: (person) async => emit(state.copyWith(
+            status: PersonListStatus.navigateToSelected,
+            selectedPersons: [person])),
+      );
     });
+  }
 
-    on<PersonListAddEvent>((event, emit) async {
-      await _personRepository
-          .createPerson(Person(name: _filter));
-      final persons = await _personRepository.getAllPersons();
-      emit(PersonListChanged(persons));
-    });
+  static List<Person> applyFilter(List<Person> persons, String filter) {
+    if (filter.isEmpty) {
+      return persons;
+    }
 
-    on<PersonListNavigateEvent>((event, emit) async {
-      emit(PersonListNavigateToOrder(event.person));
-    });
+    return extractAll(
+        query: filter,
+        choices: persons,
+        cutoff: 35,
+        getter: (person) => person.name)
+        .map((result) => result.choice)
+        .toList();
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
+import '../../repository/person_repository.dart';
 import '../../until/date_time_ext.dart';
 import 'bloc/edit_person_dialog_bloc.dart';
 
@@ -13,8 +14,8 @@ class EditPersonDialog extends StatefulWidget {
   @override
   State<EditPersonDialog> createState() => _EditPersonDialogState();
 
-  static Future<Person?> open(BuildContext context, Person person) async {
-    return showDialog<Person>(
+  static Future<bool?> open(BuildContext context, Person person) async {
+    return showDialog<bool>(
         barrierDismissible: false,
         context: context,
         builder: (context) => EditPersonDialog(person: person));
@@ -22,107 +23,113 @@ class EditPersonDialog extends StatefulWidget {
 }
 
 class _EditPersonDialogState extends State<EditPersonDialog> {
-  late EditPersonDialogBloc _editPersonDialogBloc;
+  final formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    _editPersonDialogBloc = EditPersonDialogBloc(widget.person);
-    super.initState();
+  Widget build(BuildContext _) {
+    return BlocProvider(
+      create: (_) => EditPersonDialogBloc(PersonRepository())
+        ..add(EditPersonDialogEvent.setPerson(widget.person)),
+      child: Builder(
+          builder: (context) =>
+              BlocConsumer<EditPersonDialogBloc, EditPersonDialogState>(
+                  bloc: context.read<EditPersonDialogBloc>(),
+                  listener: (context, state) {
+                    switch (state.status) {
+                      case EditPersonDialogStatus.save:
+                        return Navigator.pop(context, true);
+                      case EditPersonDialogStatus.cancel:
+                        return Navigator.pop(context, false);
+                      default:
+                      // nothing to do
+                    }
+                  },
+                  builder: (context, state) {
+                    final addEvent = context.read<EditPersonDialogBloc>().add;
+
+                    switch (state.status) {
+                      case EditPersonDialogStatus.edit:
+                        return buildEdit(addEvent, state);
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  })),
+    );
   }
 
-  @override
-  void dispose() {
-    _editPersonDialogBloc.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    return BlocConsumer<EditPersonDialogBloc, EditPersonDialogState>(
-        bloc: _editPersonDialogBloc,
-        listener: (context, state) {
-          if (state is CloseDialogState) {
-            Navigator.pop(context, state.person);
-          }
-        },
-        builder: (context, state) {
-          if (state is EditPersonDialogInitialState) {
-            final blockedSince = state.blockedSince;
-            return AlertDialog(
-              titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-              title: const Center(child: Text('Gast bearbeiten')),
-              content: SizedBox(
-                width: 450,
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: _editPersonDialogBloc.name,
-                        maxLength: 50,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        autovalidateMode: AutovalidateMode.disabled,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Name darf nicht leer sein!';
-                          }
-                          return null;
-                        },
-                      ),
-                      ListTileTheme(
-                        contentPadding: EdgeInsets.zero,
-                        horizontalTitleGap: 0.0,
-                        child: CheckboxListTile(
-                            title: blockedSince != null
-                                ? Text(
-                                    'Gesperrt seit ${blockedSince.toCalendarDate()}')
-                                : const Text('Gesperrt'),
-                            value: blockedSince != null,
-                            controlAffinity: ListTileControlAffinity.leading,
-                            onChanged: (value) => _editPersonDialogBloc.add(
-                                BlockedStatusChangedEvent(
-                                    formKey.currentState?.validate()))),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                          child: TextFormField(
-                            controller: _editPersonDialogBloc.comment,
-                            maxLength: 500,
-                            minLines: 1,
-                            maxLines: 4,
-                            keyboardType: TextInputType.multiline,
-                            decoration: const InputDecoration(
-                                labelText: 'Kommentar',
-                                enabledBorder: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder()),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  onChanged: () => _editPersonDialogBloc
-                      .add(FormChangedEvent(formKey.currentState?.validate())),
-                ),
+  Widget buildEdit(
+      void Function(EditPersonDialogEvent) addEvent, EditPersonDialogState state) {
+    final blockedSince = state.blockedSince;
+    return AlertDialog(
+      titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+      actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      title: const Center(child: Text('Gast bearbeiten')),
+      content: SizedBox(
+        width: 450,
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                initialValue: state.name,
+                maxLength: 50,
+                decoration: const InputDecoration(labelText: 'Name'),
+                autovalidateMode: AutovalidateMode.always,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name darf nicht leer sein!';
+                  }
+                  return null;
+                },
+                onChanged: (value) =>
+                    addEvent(EditPersonDialogEvent.updateName(value)),
               ),
-              actions: [
-                TextButton(
-                    onPressed: () =>
-                        _editPersonDialogBloc.add(CancelClickedEvent()),
-                    child: const Text('Abbrechen')),
-                ElevatedButton(
-                    onPressed: state.formValid
-                        ? () => _editPersonDialogBloc.add(SaveClickedEvent())
-                        : null,
-                    child: const Text('Speichern'))
-              ],
-            );
-          }
-          return Container();
-        });
+              ListTileTheme(
+                contentPadding: EdgeInsets.zero,
+                horizontalTitleGap: 0.0,
+                child: CheckboxListTile(
+                    title: blockedSince != null
+                        ? Text('Gesperrt seit ${blockedSince.toCalendarDate()}')
+                        : const Text('Gesperrt'),
+                    value: blockedSince != null,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (value) => addEvent(
+                        EditPersonDialogEvent.updateBlocked(value == true))),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                  child: TextFormField(
+                    initialValue: state.comment,
+                    onChanged: (value) =>
+                        addEvent(EditPersonDialogEvent.updateComment(value)),
+                    maxLength: 500,
+                    minLines: 1,
+                    maxLines: 4,
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                        labelText: 'Kommentar',
+                        enabledBorder: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder()),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => addEvent(const EditPersonDialogEvent.cancel()),
+            child: const Text('Abbrechen')),
+        ElevatedButton(
+            onPressed: formKey.currentState?.validate() == true
+                ? () => addEvent(const EditPersonDialogEvent.save())
+                : null,
+            child: const Text('Speichern'))
+      ],
+    );
   }
 }

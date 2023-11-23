@@ -41,6 +41,7 @@ dependencies:
   sqflite_sqlcipher: ^2.2.1
   path_provider: ^2.1.1
   intl: ^0.18.1
+  freezed_annotation: ^2.4.1
 
 
 dev_dependencies:
@@ -54,8 +55,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
   mockito: ^5.4.2
+  bloc_test: ^9.1.5
   test: ^1.24.3
-  import_lint: ^1.0.0
+  build_runner: ^2.4.6
+  freezed: ^2.4.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

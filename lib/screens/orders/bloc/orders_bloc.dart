@@ -4,23 +4,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/order.dart';
 import '../../../models/person.dart';
 import '../../../repository/order_repository.dart';
+import '../../../repository/person_repository.dart';
 
 part 'orders_event.dart';
 
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
+  final PersonRepository _personRepository = PersonRepository();
   final OrderRepository _orderRepository = OrderRepository();
 
   late Person _selectedPerson;
+  late List<Order> _orders;
 
   OrdersBloc() : super(OrdersInitial()) {
     on<OrdersEvent>((event, emit) async {
       if (event is OrdersInitialEvent) {
         _selectedPerson = event.selectedPerson;
-        final List<Order> orders =
+        _orders =
             await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
-        emit(OrdersLoaded(_selectedPerson, orders));
+        emit(OrdersLoaded(_selectedPerson, _orders));
       } else if (event is OrdersAddEvent) {
         emit(NavigateToNewOrder(_selectedPerson));
         /*
@@ -35,12 +38,10 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
             await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
         emit(OrdersLoaded(_selectedPerson, orders));
       } else if (event is PersonEditedEvent) {
-        final person = event.person;
-        if (person != null) {
-          _selectedPerson = person;
-          final List<Order> orders =
-              await _orderRepository.getOrdersByPersonId(_selectedPerson.id);
-          emit(OrdersLoaded(_selectedPerson, orders));
+        if (event.personEdited == true) {
+          _selectedPerson = (await _personRepository
+              .getPersonById(_selectedPerson.id))!; // person must be defined
+          emit(OrdersLoaded(_selectedPerson, _orders));
         }
       }
     });
