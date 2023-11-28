@@ -1,14 +1,14 @@
-class Order {
+class Comment {
   int id;
   int personId;
-  DateTime createDate;
-  String comment;
+  DateTime issuedDate;
+  String content;
   bool commentDone;
 
-  Order(
+  Comment(
       {this.id = -1,
       required this.personId,
-      required this.createDate,
-      this.comment = '',
+      required this.issuedDate,
+      this.content = '',
       this.commentDone = false});
 }

@@ -4,10 +4,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
 const personTable = 'Persons';
-const orderTable = 'Orders';
-const commentTable = 'Comments';
-const productTable = 'Products';
 const productTypeTable = 'ProductTypes';
+const productOrderTable = 'ProductOrders';
+const commentTable = 'Comments';
 
 class DatabaseInstance {
   static final DatabaseInstance databaseInstance = DatabaseInstance();
@@ -42,23 +41,6 @@ class DatabaseInstance {
     )
     ''');
 
-    await database.execute('create table $orderTable ('
-        'id integer primary key, '
-        'person_id integer not null, '
-        'comment text not null, '
-        'comment_done integer not null, '
-        'create_date text not null, '
-        'foreign key(person_id) references $personTable(id)'
-        ')');
-    await database.execute('create table $productTable ('
-        'id integer primary key, '
-        'order_id integer not null, '
-        'product_type_id integer not null, '
-        'status text not null, '
-        'received_date text, '
-        'foreign key(product_type_id) references $productTypeTable(id), '
-        'foreign key(order_id) references $orderTable(id)'
-        ')');
     await database.execute('create table $productTypeTable ('
         'id integer primary key, '
         'name text not null, '
@@ -66,6 +48,25 @@ class DatabaseInstance {
         'deletable int not null, '
         'days_blocked int not null'
         ')');
+    await database.execute('create table $commentTable ('
+        'id integer primary key, '
+        'person_id integer not null, '
+        'issued_date text not null, '
+        'content text not null, '
+        'comment_done integer not null, '
+        'foreign key(person_id) references $personTable(id)'
+        ')');
+    await database.execute('create table $productOrderTable ('
+        'id integer primary key, '
+        'person_id integer not null, '
+        'last_issue_date text, '
+        'product_type_id integer not null, '
+        'received_date text, '
+        'status text not null, '
+        'foreign key(person_id) references $personTable(id), '
+        'foreign key(product_type_id) references $productTypeTable(id)'
+        ')');
+
     await database.insert(productTypeTable,
         {'name': 'Zelt', 'symbol': '⛺', 'days_blocked': 90, 'deletable': 0});
     await database.insert(productTypeTable, {

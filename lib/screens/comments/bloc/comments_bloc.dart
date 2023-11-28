@@ -1,14 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../models/order.dart';
-import '../../../repository/order_repository.dart';
+import '../../../models/comment.dart';
+import '../../../repository/comment_repository.dart';
 
 part 'comments_event.dart';
+
 part 'comments_state.dart';
 
 class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
-  final OrderRepository _orderRepository = OrderRepository();
+  final CommentRepository _commentRepository = CommentRepository();
 
   bool _selectedStatusOpen = true;
 
@@ -29,7 +30,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
 
   Future<CommentsLoadedState> createCommentsLoadedState() async {
     return CommentsLoadedState(
-        await _orderRepository.getAllOrdersWithComment(_selectedStatusOpen), [
+        await _commentRepository.getAllCommentsByStatus(_selectedStatusOpen), [
       _selectedStatusOpen,
       !_selectedStatusOpen,
     ]);
