@@ -81,7 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Einstellungen')),
       body: body,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.large(
         child: const Icon(Icons.add),
         onPressed: () => _settingsBloc.add(OpenProductTypeDialogEvent(null)),
       ),

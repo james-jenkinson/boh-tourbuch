@@ -73,23 +73,29 @@ class _PersonListScreenState extends State<PersonListScreen> {
                   child: ListView.builder(
                       itemCount: state.filteredPersons.length,
                       itemBuilder: (context, index) => ListTile(
-                        title: PersonText(
-                            person: state.filteredPersons[index]),
-                        onTap: () => addEvent(
-                            PersonListEvent.selectPerson(
+                            title: PersonText(
+                                person: state.filteredPersons[index]),
+                            onTap: () => addEvent(PersonListEvent.selectPerson(
                                 state.filteredPersons[index])),
-                        onLongPress: () => addEvent(
-                            PersonListEvent.magnifyPerson(
-                                state.filteredPersons[index])),
-                      ),
+                            onLongPress: () => addEvent(
+                                PersonListEvent.magnifyPerson(
+                                    state.filteredPersons[index])),
+                          ),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true)),
-              ElevatedButton(
-                  onPressed: state.filter.isEmpty
-                      ? null
-                      : () => addEvent(const PersonListEvent.addPerson()),
-                  child: const Text('Add')),
             ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Visibility(
+            visible: state.filter.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FloatingActionButton.large(
+                  onPressed: () => addEvent(const PersonListEvent.addPerson()),
+                  child: const Icon(Icons.add)),
+            ),
           ),
         ),
         state.magnifiedPerson != null
