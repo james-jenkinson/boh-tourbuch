@@ -6,4 +6,6 @@ class PersonListEvent with _$PersonListEvent {
   const factory PersonListEvent.updateFilter(String name) = _updateFilterEvent;
   const factory PersonListEvent.addPerson() = _AddPersonEvent;
   const factory PersonListEvent.selectPerson(Person person) = _SelectPersonEvent;
+  const factory PersonListEvent.magnifyPerson(Person person) = _MagnifyPersonEvent;
+  const factory PersonListEvent.stopMagnifyPerson() = _StopMagnifyPersonEvent;
 }

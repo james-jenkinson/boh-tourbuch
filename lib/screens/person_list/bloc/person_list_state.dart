@@ -9,6 +9,7 @@ class PersonListState with _$PersonListState {
     @Default([]) List<Person> persons,
     @Default([]) List<Person> filteredPersons,
     @Default('') String filter,
-    @Default([]) List<Person> selectedPersons
+    @Default([]) List<Person> selectedPersons,
+    @Default(null) Person? magnifiedPerson,
   }) = _PersonListState;
 }

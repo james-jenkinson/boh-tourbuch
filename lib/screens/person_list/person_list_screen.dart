@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
 import '../../repository/person_repository.dart';
+import '../../widgets/magnify_text_widget.dart';
 import '../../widgets/person_text_widget.dart';
 import 'bloc/person_list_bloc.dart';
 
@@ -53,34 +54,51 @@ class _PersonListScreenState extends State<PersonListScreen> {
 
   Widget buildList(
       void Function(PersonListEvent) addEvent, PersonListState state) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          TextFormField(
-            initialValue: state.filter,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Name',
-            ),
-            onChanged: (value) => addEvent(PersonListEvent.updateFilter(value)),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextFormField(
+                initialValue: state.filter,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Name',
+                ),
+                onChanged: (value) =>
+                    addEvent(PersonListEvent.updateFilter(value)),
+              ),
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: state.filteredPersons.length,
+                      itemBuilder: (context, index) => ListTile(
+                        title: PersonText(
+                            person: state.filteredPersons[index]),
+                        onTap: () => addEvent(
+                            PersonListEvent.selectPerson(
+                                state.filteredPersons[index])),
+                        onLongPress: () => addEvent(
+                            PersonListEvent.magnifyPerson(
+                                state.filteredPersons[index])),
+                      ),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true)),
+              ElevatedButton(
+                  onPressed: state.filter.isEmpty
+                      ? null
+                      : () => addEvent(const PersonListEvent.addPerson()),
+                  child: const Text('Add')),
+            ],
           ),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: state.filteredPersons.length,
-                  itemBuilder: (context, index) => ListTile(
-                      title: PersonText(person: state.filteredPersons[index]),
-                      onTap: () => addEvent(PersonListEvent.selectPerson(
-                          state.filteredPersons[index]))),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true)),
-          ElevatedButton(
-              onPressed: state.filter.isEmpty
-                  ? null
-                  : () => addEvent(const PersonListEvent.addPerson()),
-              child: const Text('Add'))
-        ],
-      ),
+        ),
+        state.magnifiedPerson != null
+            ? MagnifyText(
+                text: state.magnifiedPerson!.name,
+                onClose: () =>
+                    addEvent(const PersonListEvent.stopMagnifyPerson()))
+            : Container(),
+      ],
     );
   }
 }
