@@ -46,6 +46,10 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
         selectPerson: (person) async => emit(state.copyWith(
             status: PersonListStatus.navigateToSelected,
             selectedPersons: [person])),
+        magnifyPerson: (person) async => emit(state.copyWith(
+            magnifiedPerson: person)),
+        stopMagnifyPerson: () async => emit(state.copyWith(
+            magnifiedPerson: null)),
       );
     });
   }
