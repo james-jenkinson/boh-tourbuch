@@ -14,7 +14,7 @@ class PersonListScreen extends StatefulWidget {
 }
 
 Future<void> navigateToPerson(BuildContext context, Person person) async {
-  await Navigator.pushNamed(context, '/order', arguments: person).then(
+  await Navigator.pushNamed(context, '/person', arguments: person).then(
       (value) => context
           .read<PersonListBloc>()
           .add(const PersonListEvent.loadPersons()));

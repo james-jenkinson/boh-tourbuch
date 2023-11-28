@@ -80,23 +80,23 @@ class _CommentsScreenState extends State<CommentsScreen> {
   ]);
 
   Widget buildTable(BuildContext context, CommentsLoadedState state) {
-    if (state.orders.isEmpty) {
+    if (state.comments.isEmpty) {
       return const Center(child: Text('Keine Einträge vorhanden'));
     }
 
-    final contentRows = state.orders.map((item) => TableRow(children: [
+    final contentRows = state.comments.map((item) => TableRow(children: [
           TableCell(
               child: TableRowInkWell(
-            onTap: () => goToOrder(item.id),
+            onTap: () => goToOrder(item.personId),
             child: Padding(
                 padding: _tableCellPadding,
-                child: Text(item.createDate.toCalendarDate())),
+                child: Text(item.issuedDate.toCalendarDate())),
           )),
           TableCell(
               child: TableRowInkWell(
-            onTap: () => goToOrder(item.id),
-            child: Padding(
-                padding: _tableCellPadding, child: Text(item.comment)),
+            onTap: () => goToOrder(item.personId),
+            child:
+                Padding(padding: _tableCellPadding, child: Text(item.content)),
           ))
         ]));
 
@@ -118,10 +118,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
             )));
   }
 
-  void goToOrder(int orderId) {
-    // TODO replace with navigation to order
-    if (kDebugMode) {
-      print('goTo orderId $orderId');
-    }
+  void goToOrder(int personId) {
+    // TODO
+    // Navigator.pushNamed(context, '/person');
   }
 }

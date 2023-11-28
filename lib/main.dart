@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'screens/home/home_screen.dart';
-import 'screens/new_order/new_order_screen.dart';
-import 'screens/orders/orders_screen.dart';
+import 'screens/person/person_screen.dart';
 import 'screens/settings/settings_screen.dart';
 
 void main() {
@@ -26,8 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       routes: {
-        '/order': (context) => const OrdersScreen(),
-        '/new_order': (context) => const NewOrderScreen(),
+        '/person': (context) => const PersonScreen(),
         '/settings': (context) => const SettingsScreen()
       },
     );
