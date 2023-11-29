@@ -19,6 +19,17 @@ class ProductOrderDao {
         .toList();
   }
 
+  Future<List<ProductOrder>> getAllByStatusAndIds(
+      OrderStatus status, List<int> productIds) async {
+    final db = await _database.database;
+    return (await db.query(productOrderTable,
+            where:
+                'status = ? and product_type_id IN (${productIds.join(',')})',
+            whereArgs: [status.name]))
+        .map((productOrder) => fromDatabaseJson(productOrder))
+        .toList();
+  }
+
   Future<int> updateProductOrder(ProductOrder productOrder) async {
     final Database db = await _database.database;
     return await db.update(productOrderTable, toDatabaseJson(productOrder),

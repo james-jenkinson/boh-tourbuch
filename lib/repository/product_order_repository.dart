@@ -12,4 +12,7 @@ class ProductOrderRepository {
 
   Future<List<ProductOrder>> getProductOrdersByPersonId(int id) =>
       _productOrderDao.getProductOrdersByPersonId(id);
+
+  Future<List<ProductOrder>> getAllByStatusAndIds(OrderStatus status, List<int> productIds) =>
+      _productOrderDao.getAllByStatusAndIds(status, productIds);
 }

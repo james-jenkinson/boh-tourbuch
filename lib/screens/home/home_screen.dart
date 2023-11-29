@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/main_menu_tab.dart';
-import '../comments/comments_screen.dart';
 import '../faq/faq_screen.dart';
+import '../orders/orders_screen.dart';
 import '../person_list/person_list_screen.dart';
 import 'bloc/home_bloc.dart';
 
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: DefaultTabController(
-          length: 3,
+          length: 4,
           child: Scaffold(
               appBar: AppBar(
                 title: const Text('Tourbuch'),
@@ -60,15 +60,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     MainMenuTab(
                         title: 'Personen', iconData: Icons.person_search),
                     MainMenuTab(
-                        title: 'Kommentare', iconData: Icons.list_alt_sharp),
+                        title: 'Bestellungen', iconData: Icons.list_alt_sharp),
+                    MainMenuTab(
+                        title: 'Kommentare', iconData: Icons.comment),
                     MainMenuTab(title: 'FAQ', iconData: Icons.question_answer)
                   ],
                 ),
               ),
-              body: const TabBarView(children: [
-                PersonListScreen(),
-                CommentsScreen(),
-                FaqScreen()
+              body: TabBarView(children: [
+                const PersonListScreen(),
+                const OrdersScreen(),
+                Container(),
+                const FaqScreen()
               ])),
         ));
   }
@@ -111,3 +114,4 @@ class _HomeScreenState extends State<HomeScreen> {
     return state == true;
   }
 }
+
