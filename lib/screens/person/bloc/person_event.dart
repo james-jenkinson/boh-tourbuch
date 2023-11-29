@@ -17,9 +17,10 @@ class PersonEditedEvent extends PersonEvent {
 
 class ProductOrderClickedEvent extends PersonEvent {
   final ProductOrder productOrder;
-  final ClickType clickType;
+  final bool clickAllowed;
 
-  ProductOrderClickedEvent({required this.productOrder, required this.clickType});
+  ProductOrderClickedEvent(
+      {required this.productOrder, required this.clickAllowed});
 }
 
 class CommentEditedEvent extends PersonEvent {
@@ -35,6 +36,3 @@ class CommentStatusChangedEvent extends PersonEvent {
 
   CommentStatusChangedEvent(this.comment, this.newValue);
 }
-
-enum ClickType {shortTap, longTap}
-

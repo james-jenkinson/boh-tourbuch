@@ -1,51 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/edit_comment_dialog_bloc.dart';
+import 'bloc/edit_text_dialog_bloc.dart';
 
-class EditCommentDialog extends StatefulWidget {
+class EditTextDialog extends StatefulWidget {
   final String content;
 
-  const EditCommentDialog({super.key, required this.content});
+  const EditTextDialog({super.key, required this.content});
 
   @override
-  State<EditCommentDialog> createState() => _EditCommentDialogState();
+  State<EditTextDialog> createState() => _EditTextDialogState();
 
   static Future<String?> open(BuildContext context, String content) async {
     return showDialog<String?>(
         barrierDismissible: false,
         context: context,
-        builder: (context) => EditCommentDialog(content: content));
+        builder: (context) => EditTextDialog(content: content));
   }
 }
 
-class _EditCommentDialogState extends State<EditCommentDialog> {
+class _EditTextDialogState extends State<EditTextDialog> {
   @override
   Widget build(BuildContext _) {
     return BlocProvider(
       create: (_) {
-        return EditCommentDialogBloc()
-          ..add(EditCommentDialogEvent.setComment(widget.content));
+        return EditTextDialogBloc()
+          ..add(EditTextDialogEvent.setText(widget.content));
       },
       child: Builder(
           builder: (context) =>
-              BlocConsumer<EditCommentDialogBloc, EditCommentDialogState>(
-                  bloc: context.read<EditCommentDialogBloc>(),
+              BlocConsumer<EditTextDialogBloc, EditTextDialogState>(
+                  bloc: context.read<EditTextDialogBloc>(),
                   listener: (context, state) {
                     switch (state.status) {
-                      case EditCommentDialogStatus.save:
+                      case EditTextDialogStatus.save:
                         return Navigator.pop(context, state.content);
-                      case EditCommentDialogStatus.cancel:
+                      case EditTextDialogStatus.cancel:
                         return Navigator.pop(context, null);
                       default:
                         break;
                     }
                   },
                   builder: (context, state) {
-                    final addEvent = context.read<EditCommentDialogBloc>().add;
+                    final addEvent = context.read<EditTextDialogBloc>().add;
 
                     switch (state.status) {
-                      case EditCommentDialogStatus.edit:
+                      case EditTextDialogStatus.edit:
                         return buildEdit(addEvent, state);
                       default:
                         return const CircularProgressIndicator();
@@ -54,8 +54,8 @@ class _EditCommentDialogState extends State<EditCommentDialog> {
     );
   }
 
-  Widget buildEdit(void Function(EditCommentDialogEvent) addEvent,
-      EditCommentDialogState state) {
+  Widget buildEdit(
+      void Function(EditTextDialogEvent) addEvent, EditTextDialogState state) {
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -66,7 +66,7 @@ class _EditCommentDialogState extends State<EditCommentDialog> {
         child: TextFormField(
           initialValue: state.content,
           onChanged: (value) =>
-              addEvent(EditCommentDialogEvent.updateContent(value)),
+              addEvent(EditTextDialogEvent.updateContent(value)),
           maxLength: 500,
           minLines: 1,
           maxLines: 4,
@@ -79,10 +79,10 @@ class _EditCommentDialogState extends State<EditCommentDialog> {
       ),
       actions: [
         TextButton(
-            onPressed: () => addEvent(const EditCommentDialogEvent.cancel()),
+            onPressed: () => addEvent(const EditTextDialogEvent.cancel()),
             child: const Text('Abbrechen')),
         ElevatedButton(
-            onPressed: () => addEvent(const EditCommentDialogEvent.save()),
+            onPressed: () => addEvent(const EditTextDialogEvent.save()),
             child: const Text('Speichern'))
       ],
     );
