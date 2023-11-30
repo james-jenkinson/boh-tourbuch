@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../repository/person_repository.dart';
+import '../../repository/product_order_repository.dart';
+import '../../repository/product_type_repository.dart';
 import '../../until/date_time_ext.dart';
+import 'bloc/model/order_table_row.dart';
+import 'bloc/model/product_type_with_selection.dart';
 import 'bloc/orders_bloc.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -12,73 +17,73 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  late OrdersBloc _ordersBloc;
-
-  @override
-  void initState() {
-    _ordersBloc = OrdersBloc();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _ordersBloc.add(InitialOrdersEvents());
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _ordersBloc.close();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrdersBloc, OrdersState>(
-        bloc: _ordersBloc,
-        listener: (context, state) {
-          if (state is NavigateToPersonOrdersState) {
-            Navigator.pushNamed(context, '/person', arguments: state.person)
-                .then((value) => _ordersBloc.add(ReturnFromPersonOrdersEvent()));
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadedOrdersState) {
-            return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        spacing: 8,
-                        children: state.productTypes
-                            .map((productType) => FilterChip(
-                                  label: Text(
-                                      '${productType.symbol} ${productType.name}'),
-                                  onSelected: (visible) => _ordersBloc.add(
-                                      FilterChangedOrdersEvent(
-                                          visible, productType.productTypeId)),
-                                  selected: productType.selected,
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: getScrollableDataTable(state),
-                      ),
-                    ),
-                  ],
-                ));
-          } else {
-            return Container();
-          }
-        });
+    return BlocProvider(
+      create: (context) => OrdersBloc(
+          ProductTypeRepository(), PersonRepository(), ProductOrderRepository())
+        ..add(const OrdersEvent.initial()),
+      child: Builder(builder: (context) {
+        return BlocConsumer<OrdersBloc, OrdersState>(
+            bloc: context.read<OrdersBloc>(),
+            listener: (context, state) async {
+              switch (state.status) {
+                case OrdersScreenState.navigateToPerson:
+                  await Navigator.pushNamed(context, '/person',
+                          arguments: state.person)
+                      .then((value) => context
+                          .read<OrdersBloc>()
+                          .add(const OrdersEvent.returnFromNavigation()));
+                default:
+              }
+            },
+            builder: (context, state) {
+              final ordersBloc = context.read<OrdersBloc>();
+              switch (state.status) {
+                case OrdersScreenState.initial:
+                case OrdersScreenState.navigateToPerson:
+                  return const Center(child: CircularProgressIndicator());
+                case OrdersScreenState.data:
+                  return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: getFilterChips(state, ordersBloc.add),
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child:
+                                  getScrollableDataTable(state, ordersBloc.add),
+                            ),
+                          ),
+                        ],
+                      ));
+              }
+            });
+      }),
+    );
   }
 
-  LayoutBuilder getScrollableDataTable(LoadedOrdersState state) {
+  Wrap getFilterChips(OrdersState state, void Function(OrdersEvent) addEvent) {
+    return Wrap(
+      spacing: 8,
+      children: state.productTypes
+          .map((productType) => FilterChip(
+                label: Text('${productType.symbol} ${productType.name}'),
+                onSelected: (visible) => addEvent(OrdersEvent.filterChanged(
+                    visible, productType.productTypeId)),
+                selected: productType.selected,
+              ))
+          .toList(),
+    );
+  }
+
+  LayoutBuilder getScrollableDataTable(
+      OrdersState state, void Function(OrdersEvent) addEvent) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -94,11 +99,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 DataColumn(
                     label: const Text('Name'),
                     onSort: (index, asc) {
-                      _ordersBloc.add(SortChangedOrdersEvent(index, -1, asc));
+                      addEvent(OrdersEvent.sortChanged(index, -1, asc));
                     }),
-                ...getDataColumns(state.productTypes)
+                ...getDataColumns(state.productTypes, addEvent)
               ],
-              rows: tableRowsToDataRows(state.tableRows, state.productTypes),
+              rows: tableRowsToDataRows(
+                  state.tableRows, state.productTypes, addEvent),
             ),
           ),
         ),
@@ -106,12 +112,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  List<DataRow> tableRowsToDataRows(List<OrderTableRow> tableRows,
-      List<ProductTypeWithSelection> productTypes) {
+  List<DataRow> tableRowsToDataRows(
+      List<OrderTableRow> tableRows,
+      List<ProductTypeWithSelection> productTypes,
+      void Function(OrdersEvent) addEvent) {
     return tableRows
         .map((row) => DataRow(
               onSelectChanged: (selected) =>
-                  _ordersBloc.add(NavigateToPersonOrdersEvent(row.person)),
+                  addEvent(OrdersEvent.navigate(row.person)),
               cells: [
                 DataCell(Text(row.person.name)),
                 ...productTypes
@@ -130,14 +138,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
         .toList();
   }
 
-  List<DataColumn> getDataColumns(List<ProductTypeWithSelection> productTypes) {
+  List<DataColumn> getDataColumns(List<ProductTypeWithSelection> productTypes,
+      void Function(OrdersEvent) addEvent) {
     return productTypes
         .where((productType) => productType.selected)
         .map((productType) => DataColumn(
             label: Text(
                 '${productType.symbol} ${productType.name} (${productType.amount})'),
-            onSort: (index, asc) => _ordersBloc
-                .add(SortChangedOrdersEvent(index, productType.productTypeId, asc))))
+            onSort: (index, asc) => addEvent(OrdersEvent.sortChanged(
+                index, productType.productTypeId, asc))))
         .toList();
   }
 }

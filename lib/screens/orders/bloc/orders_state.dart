@@ -1,21 +1,16 @@
 part of 'orders_bloc.dart';
 
-@immutable
-abstract class OrdersState {}
+enum OrdersScreenState { initial, data, navigateToPerson }
 
-class InitialOrdersState extends OrdersState {}
-
-class LoadedOrdersState extends OrdersState {
-  final List<ProductTypeWithSelection> productTypes;
-  final List<OrderTableRow> tableRows;
-  final int? sortIndex;
-  final bool asc;
-
-  LoadedOrdersState({required this.productTypes, required this.tableRows, this.sortIndex, required this.asc});
-}
-
-class NavigateToPersonOrdersState extends OrdersState {
-  final Person person;
-
-  NavigateToPersonOrdersState(this.person);
+@freezed
+class OrdersState with _$OrdersState {
+  const factory OrdersState({
+    @Default(OrdersScreenState.initial) OrdersScreenState status,
+    @Default([]) List<ProductTypeWithSelection> productTypes,
+    @Default([]) List<OrderTableRow> tableRows,
+    @Default(null) int? sortIndex,
+    @Default(-1) int sortFieldId,
+    @Default(true) bool asc,
+    @Default(null) Person? person,
+  }) = _OrdersState;
 }

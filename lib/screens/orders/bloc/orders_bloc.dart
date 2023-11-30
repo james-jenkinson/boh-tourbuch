@@ -2,92 +2,90 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../models/person.dart';
 import '../../../models/product_order.dart';
 import '../../../repository/person_repository.dart';
 import '../../../repository/product_order_repository.dart';
 import '../../../repository/product_type_repository.dart';
+import 'model/order_table_row.dart';
+import 'model/product_type_with_selection.dart';
+
+part 'orders_bloc.freezed.dart';
 
 part 'orders_event.dart';
 
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
-  final ProductTypeRepository _productTypeRepository = ProductTypeRepository();
-  final PersonRepository _personRepository = PersonRepository();
-  final ProductOrderRepository _productOrderRepository =
-      ProductOrderRepository();
+  final ProductTypeRepository _productTypeRepository;
+  final PersonRepository _personRepository;
+  final ProductOrderRepository _productOrderRepository;
 
-  late List<ProductTypeWithSelection> _productTypeWithSelections;
-
-  int? _sortIndex;
-  bool _asc = true;
-  int _sortFieldId = -1;
-
-  OrdersBloc() : super(InitialOrdersState()) {
+  OrdersBloc(this._productTypeRepository, this._personRepository,
+      this._productOrderRepository)
+      : super(const OrdersState()) {
     on<OrdersEvent>((event, emit) async {
-      if (event is InitialOrdersEvents) {
-        _productTypeWithSelections =
-            (await _productTypeRepository.getProductTypes())
-                .map((e) => ProductTypeWithSelection(
-                    name: e.name, symbol: e.symbol, productTypeId: e.id))
-                .toList();
-        final List<OrderTableRow> tableRows =
-            await getRowsForSelection(_productTypeWithSelections);
+      await event.when(
+        initial: () async {
+          List<ProductTypeWithSelection> productTypes =
+              (await _productTypeRepository.getProductTypes())
+                  .map((e) => ProductTypeWithSelection(
+                      name: e.name, symbol: e.symbol, productTypeId: e.id))
+                  .toList();
+          final tableRows = await _getRowsForSelection(productTypes);
 
-        for (final productType in _productTypeWithSelections) {
-          productType.amount = tableRows
-              .map((row) => row.productIdOrdered.keys
-                  .where((key) => key == productType.productTypeId)
-                  .length)
-              .reduce((v, e) => v + e);
-        }
+          productTypes = productTypes
+              .map((productType) => productType.copyWith(
+                  amount: tableRows
+                      .map((row) => row.productIdOrdered.keys
+                          .where((key) => key == productType.productTypeId)
+                          .length)
+                      .reduce((v, e) => v + e)))
+              .toList();
 
-        emit(LoadedOrdersState(
-            sortIndex: _sortIndex,
-            asc: _asc,
-            productTypes: _productTypeWithSelections,
-            tableRows: tableRows));
-      } else if (event is FilterChangedOrdersEvent) {
-        _productTypeWithSelections
-            .firstWhere((productType) =>
-                productType.productTypeId == event.productTypeId)
-            .selected = event.visible;
-        emit(LoadedOrdersState(
-            productTypes: _productTypeWithSelections,
-            tableRows: await getRowsForSelection(_productTypeWithSelections),
-            sortIndex: _sortIndex == null
-                ? null
-                : min(
-                    _sortIndex!,
-                    _productTypeWithSelections
-                        .where((productType) => productType.selected)
-                        .length),
-            asc: _asc));
-      } else if (event is SortChangedOrdersEvent) {
-        _sortIndex = event.sortIndex;
-        _asc = event.sortAsc;
-        _sortFieldId = event.sortFieldId;
+          emit(state.copyWith(
+              status: OrdersScreenState.data,
+              productTypes: productTypes,
+              tableRows: tableRows));
+        },
+        filterChanged: (visible, productTypeId) async {
+          final List<ProductTypeWithSelection> productTypes = state.productTypes
+              .map((productType) => productType.productTypeId == productTypeId
+                  ? productType.copyWith(selected: visible)
+                  : productType)
+              .toList();
 
-        emit(LoadedOrdersState(
-            productTypes: _productTypeWithSelections,
-            tableRows: await getSortedRows(_productTypeWithSelections),
-            sortIndex: _sortIndex,
-            asc: _asc));
-      } else if (event is NavigateToPersonOrdersEvent) {
-        emit(NavigateToPersonOrdersState(event.person));
-      } else if (event is ReturnFromPersonOrdersEvent) {
-        emit(LoadedOrdersState(
-            productTypes: _productTypeWithSelections,
-            tableRows: await getSortedRows(_productTypeWithSelections),
-            sortIndex: _sortIndex,
-            asc: _asc));
-      }
+          emit(state.copyWith(
+              productTypes: productTypes,
+              tableRows: await _getSortedRows(
+                  productTypes, state.sortFieldId, state.asc),
+              sortIndex: state.sortIndex == null
+                  ? null
+                  : min(
+                      state.sortIndex!,
+                      productTypes
+                          .where((productType) => productType.selected)
+                          .length)));
+        },
+        sortChanged: (sortIndex, sortFieldId, sortAsc) async => emit(
+          state.copyWith(
+              sortIndex: sortIndex,
+              sortFieldId: sortFieldId,
+              asc: sortAsc,
+              tableRows: await _getSortedRows(
+                  state.productTypes, sortFieldId, sortAsc)),
+        ),
+        navigate: (person) async => emit(state.copyWith(
+            status: OrdersScreenState.navigateToPerson, person: person)),
+        returnFromNavigation: () async =>
+            emit(state.copyWith(status: OrdersScreenState.data, person: null)),
+      );
     });
   }
 
-  Future<List<OrderTableRow>> getRowsForSelection(
+  Future<List<OrderTableRow>> _getRowsForSelection(
       List<ProductTypeWithSelection> selectedProductTypes) async {
     final List<Person> persons = await _personRepository.getAllPersons();
     final List<ProductOrder> productOrders =
@@ -95,7 +93,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
             OrderStatus.ordered,
             selectedProductTypes
                 .where((productType) => productType.selected)
-                .map((e) => e.productTypeId)
+                .map((productType) => productType.productTypeId)
                 .toList());
     final List<OrderTableRow> personsWithProducts = [];
 
@@ -115,43 +113,23 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     return personsWithProducts;
   }
 
-  Future<List<OrderTableRow>> getSortedRows(
-      List<ProductTypeWithSelection> selectedProductIds) async {
+  Future<List<OrderTableRow>> _getSortedRows(
+      List<ProductTypeWithSelection> selectedProductIds,
+      int sortFieldId,
+      bool asc) async {
     final List<OrderTableRow> personsWithProducts =
-        await getRowsForSelection(_productTypeWithSelections);
+        await _getRowsForSelection(selectedProductIds);
     personsWithProducts.sort((a, b) {
-      if (_sortFieldId == -1) {
-        return a.person.name.compareTo(b.person.name) * (_asc ? 1 : -1);
+      if (sortFieldId == -1) {
+        return a.person.name.compareTo(b.person.name) * (asc ? 1 : -1);
       } else {
-        return (a.productIdOrdered[_sortFieldId] ??
-                    (_asc ? DateTime(2161) : DateTime(1161)))
-                .compareTo(b.productIdOrdered[_sortFieldId] ??
-                    (_asc ? DateTime(2161) : DateTime(1161))) *
-            (_asc ? 1 : -1);
+        return (a.productIdOrdered[sortFieldId] ??
+                    (asc ? DateTime(2161) : DateTime(1161)))
+                .compareTo(b.productIdOrdered[sortFieldId] ??
+                    (asc ? DateTime(2161) : DateTime(1161))) *
+            (asc ? 1 : -1);
       }
     });
     return personsWithProducts;
   }
-}
-
-class ProductTypeWithSelection {
-  bool selected;
-  int productTypeId;
-  String name;
-  String symbol;
-  int amount;
-
-  ProductTypeWithSelection(
-      {this.selected = true,
-      required this.productTypeId,
-      required this.name,
-      required this.symbol,
-      this.amount = 0});
-}
-
-class OrderTableRow {
-  Person person;
-  Map<int, DateTime?> productIdOrdered;
-
-  OrderTableRow({required this.person, required this.productIdOrdered});
 }
