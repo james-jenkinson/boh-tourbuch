@@ -51,70 +51,28 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
         }
         emit(await fetchAndEmitPersonLoaded());
       } else if (event is ProductOrderClickedEvent) {
-        final editCopy = event.productOrder;
-        switch (editCopy.status) {
-          case OrderStatus.notOrdered:
-          case OrderStatus.received:
-            {
-              editCopy.status = OrderStatus.ordered;
-              editCopy.lastIssueDate = DateTime.now();
-            }
-          case OrderStatus.ordered:
-            {
-              editCopy.status = OrderStatus.received;
-              editCopy.lastReceivedDate = DateTime.now();
-            }
-        }
-        if (editCopy.id == -1) {
-          await _productOrderRepository.createProductOrder(editCopy);
-        } else {
-          await _productOrderRepository.updateProductOrder(editCopy);
-        }
-        emit(await fetchAndEmitPersonLoaded());
-
-        /*
-        switch (event.clickType) {
-          case ClickType.shortTap:
-            {
-              switch (editCopy.status) {
-                case OrderStatus.notOrdered:
-                case OrderStatus.received:
-                  {
-                    editCopy.status = OrderStatus.ordered;
-                    editCopy.lastIssueDate = DateTime.now();
-                  }
-                case OrderStatus.ordered:
-                  {
-                    editCopy.status = OrderStatus.received;
-                    editCopy.lastReceivedDate = DateTime.now();
-                  }
+        if (event.clickAllowed) {
+          final editCopy = event.productOrder;
+          switch (editCopy.status) {
+            case OrderStatus.notOrdered:
+            case OrderStatus.received:
+              {
+                editCopy.status = OrderStatus.ordered;
+                editCopy.lastIssueDate = DateTime.now();
               }
-            }
-          case ClickType.longTap:
-            {
-              switch (editCopy.status) {
-                case OrderStatus.notOrdered: {
-                  break;
-                }
-                case OrderStatus.received:
-                  {
-                    editCopy.status = OrderStatus.ordered;
-                    editCopy.lastReceivedDate = null;
-                  }
-                case OrderStatus.ordered:
-                  {
-                    if (editCopy.lastReceivedDate == null) {
-                      editCopy.status = OrderStatus.notOrdered;
-                      editCopy.lastIssueDate = null;
-                    } else {
-                      editCopy.status = OrderStatus.received;
-                      editCopy.lastIssueDate = null;
-                    }
-                  }
+            case OrderStatus.ordered:
+              {
+                editCopy.status = OrderStatus.received;
+                editCopy.lastReceivedDate = DateTime.now();
               }
-            }
+          }
+          if (editCopy.id == -1) {
+            await _productOrderRepository.createProductOrder(editCopy);
+          } else {
+            await _productOrderRepository.updateProductOrder(editCopy);
+          }
+          emit(await fetchAndEmitPersonLoaded());
         }
-        */
       } else if (event is CommentStatusChangedEvent) {
         final editCopy = event.comment;
         editCopy.commentDone = event.newValue;

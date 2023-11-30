@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/person.dart';
 import '../../models/product_order.dart';
-import '../../widgets/edit_comment_dialog/edit_comment_dialog.dart';
+import '../../widgets/binary_choice_dialog/binary_choice_dialog.dart';
 import '../../widgets/edit_person_dialog/edit_person_dialog.dart';
+import '../../widgets/edit_text_dialog/edit_text_dialog.dart';
 import '../../widgets/person_text_widget.dart';
 import 'bloc/person_bloc.dart';
 
@@ -47,7 +48,7 @@ class _PersonScreenState extends State<PersonScreen> {
                 appBar: getAppBar(),
                 floatingActionButton: FloatingActionButton.large(
                     onPressed: () async => _personBloc.add(CommentEditedEvent(
-                          await EditCommentDialog.open(context, ''),
+                          await EditTextDialog.open(context, ''),
                           null,
                         )),
                     child: const Icon(Icons.add)),
@@ -58,7 +59,7 @@ class _PersonScreenState extends State<PersonScreen> {
                       PersonText(
                         person: state.selectedPerson,
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                            fontWeight: FontWeight.bold, fontSize: 30),
                       ),
                       IconButton(
                           onPressed: () async => _personBloc.add(
@@ -79,53 +80,35 @@ class _PersonScreenState extends State<PersonScreen> {
                             delegate: SliverChildListDelegate([
                               ...state.productOrdersWithSymbols
                                   .map((productOrder) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    _personBloc.add(ProductOrderClickedEvent(
-                                        productOrder: productOrder,
-                                        clickType: ClickType.shortTap));
-                                  },
-                                  onLongPress: () {
-                                    _personBloc.add(ProductOrderClickedEvent(
-                                        productOrder: productOrder,
-                                        clickType: ClickType.longTap));
-                                  },
-                                  child: Card(
+                                return Card(
+                                    clipBehavior: Clip.hardEdge,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        _personBloc.add(ProductOrderClickedEvent(
+                                            productOrder: productOrder,
+                                            clickAllowed: isBlockedProduct(
+                                                    productOrder)
+                                                ? (await BinaryChoiceDialog.open(
+                                                    context,
+                                                    'Das Produkt ist für den Gast aufgrund einer kürzlichen Bestellung noch gesperrt. Soll es dennoch bestellt werden?'))!
+                                                : true));
+                                      },
                                       child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(width: 40),
-                                            Text(productOrder.symbol),
-                                            const SizedBox(width: 40),
-                                            Visibility(
-                                                visible: productOrder.status ==
-                                                    OrderStatus.notOrdered,
-                                                child: Column(children: [
-                                                  Text(productOrder.name),
-                                                  const Text('Nicht bestellt'),
-                                                ])),
-                                            Visibility(
-                                                visible: productOrder.status ==
-                                                    OrderStatus.ordered,
-                                                child: Column(children: [
-                                                  Text(productOrder.name),
-                                                  Text(
-                                                      'Bestellt am ${productOrder.lastIssueDate}'),
-                                                ])),
-                                            Visibility(
-                                                visible: productOrder.status ==
-                                                    OrderStatus.received,
-                                                child: Column(children: [
-                                                  Text(productOrder.name),
-                                                  Text(
-                                                      'Erhalten am ${productOrder.lastReceivedDate}'),
-                                                ])),
-                                          ],
-                                        ),
-                                      )),
-                                );
+                                        child: ListTile(
+                                            leading: Text(productOrder.symbol),
+                                            title: Text(productOrder.name),
+                                            subtitle: Text((() {
+                                              switch (productOrder.status) {
+                                                case OrderStatus.notOrdered:
+                                                  return 'Nicht bestellt';
+                                                case OrderStatus.ordered:
+                                                  return 'Bestellt am ${productOrder.lastIssueDate}';
+                                                case OrderStatus.received:
+                                                  return 'Erhalten am ${productOrder.lastReceivedDate}';
+                                              }
+                                            })())),
+                                      ),
+                                    ));
                               }),
                               // comment list
                             ])),
@@ -141,7 +124,7 @@ class _PersonScreenState extends State<PersonScreen> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () async => _personBloc.add(
                                           CommentEditedEvent(
-                                              await EditCommentDialog.open(
+                                              await EditTextDialog.open(
                                                   context, comment.content),
                                               comment.id)),
                                     ),
@@ -172,5 +155,12 @@ class _PersonScreenState extends State<PersonScreen> {
 
   AppBar getAppBar() {
     return AppBar(title: const Text('Bestellungen'));
+  }
+
+  bool isBlockedProduct(ProductOrderWithSymbol order) {
+    return order.status == OrderStatus.received
+        ? DateTime.now().isBefore(
+            order.lastReceivedDate!.add(Duration(days: order.blockedPeriod)))
+        : false;
   }
 }
