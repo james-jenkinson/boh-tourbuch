@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/main_menu_tab.dart';
+import '../comment/comment_screen.dart';
 import '../faq/faq_screen.dart';
 import '../orders/orders_screen.dart';
 import '../person_list/person_list_screen.dart';
@@ -67,11 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              body: TabBarView(children: [
-                const PersonListScreen(),
-                const OrdersScreen(),
-                Container(),
-                const FaqScreen()
+              body: const TabBarView(children: [
+                PersonListScreen(),
+                OrdersScreen(),
+                CommentScreen(),
+                FaqScreen()
               ])),
         ));
   }

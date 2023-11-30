@@ -74,8 +74,7 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           emit(await fetchAndEmitPersonLoaded());
         }
       } else if (event is CommentStatusChangedEvent) {
-        final editCopy = event.comment;
-        editCopy.commentDone = event.newValue;
+        final editCopy = event.comment.copyWith(commentDone: event.newValue);
         await _commentRepository.updateComment(editCopy);
         emit(await fetchAndEmitPersonLoaded());
       }

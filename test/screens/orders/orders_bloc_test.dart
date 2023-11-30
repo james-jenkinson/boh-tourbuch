@@ -71,14 +71,15 @@ void main() {
         productTypeRepository, personRepository, productOrderRepository);
 
     when(productTypeRepository.getProductTypes())
-        .thenAnswer((_) => Future(() => productTypes));
+        .thenAnswer((_) => Future.value(productTypes));
     when(personRepository.getAllPersons())
-        .thenAnswer((_) => Future(() => persons));
+        .thenAnswer((_) => Future.value(persons));
 
-    when(productOrderRepository.getAllByStatusAndIds(
-        OrderStatus.ordered, [1, 2])).thenAnswer((_) => Future(() => [orders[0], orders[1], orders[2]]));
+    when(productOrderRepository
+            .getAllByStatusAndIds(OrderStatus.ordered, [1, 2]))
+        .thenAnswer((_) => Future.value([orders[0], orders[1], orders[2]]));
     when(productOrderRepository.getAllByStatusAndIds(OrderStatus.ordered, [1]))
-        .thenAnswer((_) => Future(() => [orders[0]]));
+        .thenAnswer((_) => Future.value([orders[0]]));
 
     initialState = OrdersState(
         status: OrdersScreenState.data,
@@ -148,8 +149,7 @@ void main() {
                   1: now,
                   2: now,
                 }),
-                OrderTableRow(
-                    person: persons[1], productIdOrdered: {1: now})
+                OrderTableRow(person: persons[1], productIdOrdered: {1: now})
               ], sortIndex: 1, sortFieldId: 1)
             ]);
 
@@ -160,8 +160,7 @@ void main() {
         wait: const Duration(milliseconds: 100),
         expect: () => [
               initialState.copyWith(tableRows: [
-                OrderTableRow(
-                    person: persons[1], productIdOrdered: {1: now}),
+                OrderTableRow(person: persons[1], productIdOrdered: {1: now}),
                 OrderTableRow(person: persons[0], productIdOrdered: {
                   1: now,
                   2: now,

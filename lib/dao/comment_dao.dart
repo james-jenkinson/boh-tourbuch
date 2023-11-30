@@ -39,14 +39,14 @@ class CommentDao {
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
-  Future<Iterable<Comment>> getAllCommentsByStatus(bool commentOpen) async {
+  Future<List<Comment>> getAllCommentsByStatus(bool commentOpen) async {
     final db = await _database.database;
     final List<Map<String, dynamic>> result = await db.query(commentTable,
         where: 'comment_done != ?',
         whereArgs: [commentOpen ? 1 : 0],
-        orderBy: 'issued_date desc',
+        orderBy: 'issued_date asc',
         limit: 1000);
-    return result.map((e) => fromDatabaseJson(e));
+    return result.map((e) => fromDatabaseJson(e)).toList();
   }
 
   Comment fromDatabaseJson(Map<String, dynamic> data) {
