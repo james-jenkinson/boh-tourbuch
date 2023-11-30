@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -13,9 +11,7 @@ import 'model/order_table_row.dart';
 import 'model/product_type_with_selection.dart';
 
 part 'orders_bloc.freezed.dart';
-
 part 'orders_event.dart';
-
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
@@ -63,11 +59,10 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
                   productTypes, state.sortFieldId, state.asc),
               sortIndex: state.sortIndex == null
                   ? null
-                  : min(
-                      state.sortIndex!,
-                      productTypes
-                          .where((productType) => productType.selected)
-                          .length)));
+                  : _getSortIndexFromSortField(
+                      state.sortFieldId,
+                      productTypes,
+                    )));
         },
         sortChanged: (sortIndex, sortFieldId, sortAsc) async => emit(
           state.copyWith(
@@ -79,8 +74,11 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
         ),
         navigate: (person) async => emit(state.copyWith(
             status: OrdersScreenState.navigateToPerson, person: person)),
-        returnFromNavigation: () async =>
-            emit(state.copyWith(status: OrdersScreenState.data, person: null)),
+        returnFromNavigation: () async => emit(state.copyWith(
+            status: OrdersScreenState.data,
+            person: null,
+            tableRows: await _getSortedRows(
+                state.productTypes, state.sortFieldId, state.asc))),
       );
     });
   }
@@ -89,7 +87,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       List<ProductTypeWithSelection> selectedProductTypes) async {
     final List<Person> persons = await _personRepository.getAllPersons();
     final List<ProductOrder> productOrders =
-        await _productOrderRepository.getAllByStatusAndIds(
+        await _productOrderRepository.getAllByStatusAndType(
             OrderStatus.ordered,
             selectedProductTypes
                 .where((productType) => productType.selected)
@@ -123,13 +121,28 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       if (sortFieldId == -1) {
         return a.person.name.compareTo(b.person.name) * (asc ? 1 : -1);
       } else {
+        // sort not ordered products to list end
         return (a.productIdOrdered[sortFieldId] ??
-                    (asc ? DateTime(2161) : DateTime(1161)))
+                    (asc ? DateTime(9999) : DateTime(0)))
                 .compareTo(b.productIdOrdered[sortFieldId] ??
-                    (asc ? DateTime(2161) : DateTime(1161))) *
+                    (asc ? DateTime(9999) : DateTime(0))) *
             (asc ? 1 : -1);
       }
     });
     return personsWithProducts;
+  }
+
+  int? _getSortIndexFromSortField(
+      int sortFieldId, List<ProductTypeWithSelection> productTypes) {
+    if (sortFieldId == -1) {
+      return 0;
+    } else {
+      final int index = productTypes
+          .where((type) => type.selected)
+          .map((type) => type.productTypeId)
+          .toList()
+          .indexOf(sortFieldId);
+      return index == -1 ? null : index + 1;
+    }
   }
 }

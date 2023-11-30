@@ -76,9 +76,9 @@ void main() {
         .thenAnswer((_) => Future.value(persons));
 
     when(productOrderRepository
-            .getAllByStatusAndIds(OrderStatus.ordered, [1, 2]))
+            .getAllByStatusAndType(OrderStatus.ordered, [1, 2]))
         .thenAnswer((_) => Future.value([orders[0], orders[1], orders[2]]));
-    when(productOrderRepository.getAllByStatusAndIds(OrderStatus.ordered, [1]))
+    when(productOrderRepository.getAllByStatusAndType(OrderStatus.ordered, [1]))
         .thenAnswer((_) => Future.value([orders[0]]));
 
     initialState = OrdersState(
@@ -116,6 +116,64 @@ void main() {
         wait: const Duration(milliseconds: 100),
         expect: () => [
               initialState.copyWith(
+                productTypes: [
+                  const ProductTypeWithSelection(
+                      productTypeId: 1,
+                      name: 'p1',
+                      symbol: 'x',
+                      amount: 2,
+                      selected: true),
+                  const ProductTypeWithSelection(
+                      productTypeId: 2,
+                      name: 'p2',
+                      symbol: 'y',
+                      amount: 1,
+                      selected: false),
+                ],
+                tableRows: [
+                  OrderTableRow(person: persons[0], productIdOrdered: {
+                    1: now,
+                  })
+                ],
+              )
+            ]);
+
+    blocTest<OrdersBloc, OrdersState>('filterChanged set correct sort index',
+        build: () => bloc,
+        seed: () => initialState.copyWith(sortFieldId: 2, sortIndex: 2),
+        act: (bloc) => bloc.add(const OrdersEvent.filterChanged(false, 1)),
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+              initialState.copyWith(
+                sortIndex: 1,
+                sortFieldId: 2,
+                productTypes: [
+                  const ProductTypeWithSelection(
+                      productTypeId: 1,
+                      name: 'p1',
+                      symbol: 'x',
+                      amount: 2,
+                      selected: false),
+                  const ProductTypeWithSelection(
+                      productTypeId: 2,
+                      name: 'p2',
+                      symbol: 'y',
+                      amount: 1,
+                      selected: true),
+                ],
+                tableRows: [],
+              )
+            ]);
+
+    blocTest<OrdersBloc, OrdersState>('filterChanged set sort index to null',
+        build: () => bloc,
+        seed: () => initialState.copyWith(sortFieldId: 2, sortIndex: 2),
+        act: (bloc) => bloc.add(const OrdersEvent.filterChanged(false, 2)),
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+              initialState.copyWith(
+                sortIndex: null,
+                sortFieldId: 2,
                 productTypes: [
                   const ProductTypeWithSelection(
                       productTypeId: 1,

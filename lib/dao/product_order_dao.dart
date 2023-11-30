@@ -19,7 +19,7 @@ class ProductOrderDao {
         .toList();
   }
 
-  Future<List<ProductOrder>> getAllByStatusAndIds(
+  Future<List<ProductOrder>> getAllByStatusAndType(
       OrderStatus status, List<int> productIds) async {
     final db = await _database.database;
     return (await db.query(productOrderTable,
