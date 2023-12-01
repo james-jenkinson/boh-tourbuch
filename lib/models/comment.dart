@@ -1,14 +1,14 @@
-class Comment {
-  int id;
-  int personId;
-  DateTime issuedDate;
-  String content;
-  bool commentDone;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Comment(
-      {this.id = -1,
-      required this.personId,
-      required this.issuedDate,
-      this.content = '',
-      this.commentDone = false});
+part 'comment.freezed.dart';
+
+@freezed
+class Comment with _$Comment {
+  const factory Comment({
+    @Default(-1) int id,
+    required int personId,
+    required DateTime issuedDate,
+    @Default('') String content,
+    @Default(false) bool commentDone,
+  }) = _Comment;
 }

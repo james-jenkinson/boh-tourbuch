@@ -15,6 +15,6 @@ class CommentRepository {
   Future<List<Comment>> getCommentsByPersonId(int personId) =>
       _commentDao.getCommentsByPersonId(personId);
 
-  Future<Iterable<Comment>> getAllCommentsByStatus(bool commentDone) =>
-      _commentDao.getAllCommentsByStatus(commentDone);
+  Future<List<Comment>> getAllCommentsByStatus(bool commentOpen) =>
+      _commentDao.getAllCommentsByStatus(commentOpen);
 }
