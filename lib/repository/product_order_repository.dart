@@ -13,6 +13,6 @@ class ProductOrderRepository {
   Future<List<ProductOrder>> getProductOrdersByPersonId(int id) =>
       _productOrderDao.getProductOrdersByPersonId(id);
 
-  Future<List<ProductOrder>> getAllByStatusAndType(OrderStatus status, List<int> productIds) =>
-      _productOrderDao.getAllByStatusAndType(status, productIds);
+  Future<List<ProductOrder>> getAllByStatusAndType(OrderStatus status, List<int> productTypeIds) =>
+      _productOrderDao.getAllByStatusAndType(status, productTypeIds);
 }

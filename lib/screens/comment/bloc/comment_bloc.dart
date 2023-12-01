@@ -43,10 +43,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     });
   }
 
-  Future<List<CommentWithPerson>> getCommentsWithPerson(bool done) async {
+  Future<List<CommentWithPerson>> getCommentsWithPerson(bool open) async {
     final List<Person> persons = await _personRepository.getAllPersons();
     final List<CommentWithPerson> commentsAndPerson =
-        (await _commentRepository.getAllCommentsByStatus(done))
+        (await _commentRepository.getAllCommentsByStatus(open))
             .map((comment) => CommentWithPerson(comment: comment,
                 person: persons.firstWhere((person) => person.id == comment.personId)))
             .toList();

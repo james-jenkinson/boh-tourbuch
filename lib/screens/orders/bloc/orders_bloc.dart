@@ -11,7 +11,9 @@ import 'model/order_table_row.dart';
 import 'model/product_type_with_selection.dart';
 
 part 'orders_bloc.freezed.dart';
+
 part 'orders_event.dart';
+
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
@@ -34,11 +36,13 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
           productTypes = productTypes
               .map((productType) => productType.copyWith(
-                  amount: tableRows
-                      .map((row) => row.productIdOrdered.keys
-                          .where((key) => key == productType.productTypeId)
-                          .length)
-                      .reduce((v, e) => v + e)))
+                  amount: tableRows.isNotEmpty
+                      ? tableRows
+                          .map((row) => row.productIdOrdered.keys
+                              .where((key) => key == productType.productTypeId)
+                              .length)
+                          .reduce((v, e) => v + e)
+                      : 0))
               .toList();
 
           emit(state.copyWith(

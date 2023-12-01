@@ -79,7 +79,7 @@ void main() {
             .getAllByStatusAndType(OrderStatus.ordered, [1, 2]))
         .thenAnswer((_) => Future.value([orders[0], orders[1], orders[2]]));
     when(productOrderRepository.getAllByStatusAndType(OrderStatus.ordered, [1]))
-        .thenAnswer((_) => Future.value([orders[0]]));
+        .thenAnswer((_) => Future.value([orders[0], orders[2]]));
 
     initialState = OrdersState(
         status: OrdersScreenState.data,
@@ -132,6 +132,9 @@ void main() {
                 ],
                 tableRows: [
                   OrderTableRow(person: persons[0], productIdOrdered: {
+                    1: now,
+                  }),
+                  OrderTableRow(person: persons[1], productIdOrdered: {
                     1: now,
                   })
                 ],
@@ -190,6 +193,9 @@ void main() {
                 ],
                 tableRows: [
                   OrderTableRow(person: persons[0], productIdOrdered: {
+                    1: now,
+                  }),
+                  OrderTableRow(person: persons[1], productIdOrdered: {
                     1: now,
                   })
                 ],
