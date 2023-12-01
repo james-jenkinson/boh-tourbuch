@@ -42,7 +42,7 @@ void main() {
 
     test('apply filter on filter', () {
       expect(PersonListBloc.applyFilter([p0, p1, pX], 'x'), <Person>[pX]);
-      expect(PersonListBloc.applyFilter([p0, p1, pX], 'p'), <Person>[p0, p1]);
+      expect(PersonListBloc.applyFilter([p0, p1, pX], 'p'), <Person>[p1, p0]);
       expect(PersonListBloc.applyFilter([p0, p1, pX], 'z'), <Person>[]);
     });
   });
@@ -59,7 +59,7 @@ void main() {
         act: (bloc) => bloc.add(const PersonListEvent.updateFilter('p')),
         expect: () => [
               loadPersonsState.copyWith(
-                filteredPersons: [p0, p1],
+                filteredPersons: [p1, p0],
                 filter: 'p',
               )
             ]);
