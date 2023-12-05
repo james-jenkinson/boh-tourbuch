@@ -10,5 +10,6 @@ class EditPersonDialogState with _$EditPersonDialogState {
     @Default('') String name,
     @Default(null) DateTime? blockedSince,
     @Default('') String comment,
+    @Default(null) Person? personToMerge,
   }) = _EditPersonDialogState;
 }

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,13 +22,12 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
         loadPersons: () async {
           final persons = await _personRepository.getAllPersons();
           const initialFilter = '';
-          emit(
-            state.copyWith(
-                status: PersonListStatus.data,
-                persons: persons,
-                filter: initialFilter,
-                filteredPersons: applyFilter(persons, initialFilter)),
-          );
+          emit(PersonListState(
+              status: PersonListStatus.data,
+              persons: persons,
+              selectedPersons: [],
+              filter: initialFilter,
+              filteredPersons: applyFilter(persons, initialFilter)));
         },
         updateFilter: (filter) async => emit(state.copyWith(
           filter: filter,
@@ -45,13 +45,37 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
               status: PersonListStatus.navigateToSelected,
               selectedPersons: [person]));
         },
-        selectPerson: (person) async => emit(state.copyWith(
+        navigateToPerson: (person) async => emit(state.copyWith(
             status: PersonListStatus.navigateToSelected,
             selectedPersons: [person])),
-        magnifyPerson: (person) async => emit(state.copyWith(
-            magnifiedPerson: person)),
-        stopMagnifyPerson: () async => emit(state.copyWith(
-            magnifiedPerson: null)),
+        togglePerson: (person) async {
+          final isSelected = state.selectedPersons
+              .firstWhereOrNull((item) => item.id == person.id);
+          if (isSelected == null) {
+            emit(state
+                .copyWith(selectedPersons: [...state.selectedPersons, person]));
+          } else {
+            emit(state.copyWith(selectedPersons: [
+              ...state.selectedPersons.where((item) => item.id != person.id)
+            ]));
+          }
+        },
+        setPersonSelectedAndOpenEdit: (person) async {
+          final nextSelectedPersons = null ==
+                  state.selectedPersons
+                      .firstWhereOrNull((item) => item.id == person.id)
+              ? [...state.selectedPersons, person]
+              : state.selectedPersons;
+          emit(state.copyWith(
+              selectedPersons: nextSelectedPersons,
+              status: PersonListStatus.editSelectedPersons));
+        },
+        clearSelection: () async => emit(
+            state.copyWith(status: PersonListStatus.data, selectedPersons: [])),
+        magnifyPerson: (person) async =>
+            emit(state.copyWith(magnifiedPerson: person)),
+        stopMagnifyPerson: () async =>
+            emit(state.copyWith(magnifiedPerson: null)),
       );
     });
   }
@@ -62,10 +86,10 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
     }
 
     return extractAllSorted(
-        query: filter,
-        choices: persons,
-        cutoff: 35,
-        getter: (person) => person.name)
+            query: filter,
+            choices: persons,
+            cutoff: 35,
+            getter: (person) => person.name)
         .map((result) => result.choice)
         .toList();
   }

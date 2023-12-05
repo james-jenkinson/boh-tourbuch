@@ -8,17 +8,20 @@ import 'bloc/edit_person_dialog_bloc.dart';
 
 class EditPersonDialog extends StatefulWidget {
   final Person person;
+  final Person? personToMerge;
 
-  const EditPersonDialog({super.key, required this.person});
+  const EditPersonDialog({super.key, required this.person, this.personToMerge});
 
   @override
   State<EditPersonDialog> createState() => _EditPersonDialogState();
 
-  static Future<bool?> open(BuildContext context, Person person) async {
+  static Future<bool?> open(
+      BuildContext context, Person person, Person? personToMerge) async {
     return showDialog<bool>(
         barrierDismissible: false,
         context: context,
-        builder: (context) => EditPersonDialog(person: person));
+        builder: (context) =>
+            EditPersonDialog(person: person, personToMerge: personToMerge));
   }
 }
 
@@ -29,7 +32,7 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
   Widget build(BuildContext _) {
     return BlocProvider(
       create: (_) => EditPersonDialogBloc(PersonRepository())
-        ..add(EditPersonDialogEvent.setPerson(widget.person)),
+        ..add(EditPersonDialogEvent.setPerson(widget.person, widget.personToMerge)),
       child: Builder(
           builder: (context) =>
               BlocConsumer<EditPersonDialogBloc, EditPersonDialogState>(
@@ -57,8 +60,8 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
     );
   }
 
-  Widget buildEdit(
-      void Function(EditPersonDialogEvent) addEvent, EditPersonDialogState state) {
+  Widget buildEdit(void Function(EditPersonDialogEvent) addEvent,
+      EditPersonDialogState state) {
     final blockedSince = state.blockedSince;
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),

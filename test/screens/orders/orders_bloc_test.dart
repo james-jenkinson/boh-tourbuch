@@ -56,7 +56,7 @@ void main() {
         productTypeId: 1,
         status: OrderStatus.ordered,
         lastIssueDate: now),
-    ProductOrder(
+    const ProductOrder(
         id: 4, personId: 2, productTypeId: 2, status: OrderStatus.notOrdered),
   ];
 
