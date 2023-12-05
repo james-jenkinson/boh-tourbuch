@@ -3,11 +3,13 @@ import 'package:collection/collection.dart';
 import '../dao/person_dao.dart';
 import '../models/person.dart';
 import '../models/product_order.dart';
+import 'comment_repository.dart';
 import 'product_order_repository.dart';
 
 class PersonRepository {
   final _personDao = PersonDao();
   final _productOrderRepository = ProductOrderRepository();
+  final _commentRepository = CommentRepository();
 
   Future<int> createPerson(Person person) => _personDao.createPerson(person);
 
@@ -35,6 +37,13 @@ class PersonRepository {
         await _productOrderRepository
             .updateProductOrder(orderToMerge.copyWith(personId: person.id));
       }
+    }
+
+    final commentsToMerge =
+        await _commentRepository.getCommentsByPersonId(personToMerge.id);
+    for (final comment in commentsToMerge) {
+      await _commentRepository
+          .updateComment(comment.copyWith(personId: person.id));
     }
 
     await _personDao.delete(personToMerge.id);
