@@ -20,11 +20,13 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
       await event.when(
         loadPersons: () async {
           final persons = await _personRepository.getAllPersons();
+          const initialFilter = '';
           emit(
             state.copyWith(
                 status: PersonListStatus.data,
                 persons: persons,
-                filteredPersons: applyFilter(persons, state.filter)),
+                filter: initialFilter,
+                filteredPersons: applyFilter(persons, initialFilter)),
           );
         },
         updateFilter: (filter) async => emit(state.copyWith(
@@ -59,7 +61,7 @@ class PersonListBloc extends Bloc<PersonListEvent, PersonListState> {
       return persons;
     }
 
-    return extractAll(
+    return extractAllSorted(
         query: filter,
         choices: persons,
         cutoff: 35,
