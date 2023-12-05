@@ -71,6 +71,7 @@ class PersonRepository {
     // @formatter:on
 
     await _productOrderRepository.updateProductOrder(orderToUpdate.copyWith(
+      status: dominantOrder.status,
       lastIssueDate: dominantOrder.lastIssueDate,
       lastReceivedDate: dominantOrder.lastReceivedDate,
     ));

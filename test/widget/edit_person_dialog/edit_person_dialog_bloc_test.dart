@@ -71,6 +71,50 @@ void main() {
                   personToMerge: testPerson)
             ]);
 
+    blocTest<EditPersonDialogBloc, EditPersonDialogState>(
+        'setPerson with merge with empty comment 1/2',
+        build: () => bloc,
+        act: (bloc) => bloc.add(const EditPersonDialogEvent.setPerson(
+              Person(
+                id: 3,
+                name: 'peter',
+                comment: '',
+                blockedSince: null,
+              ),
+              testPerson,
+            )),
+        expect: () => [
+              const EditPersonDialogState(
+                  id: 3,
+                  name: 'peter / testPerson',
+                  comment: 'testComment',
+                  blockedSince: null,
+                  status: EditPersonDialogStatus.edit,
+                  personToMerge: testPerson)
+            ]);
+
+    blocTest<EditPersonDialogBloc, EditPersonDialogState>(
+        'setPerson with merge with empty comment 2/2',
+        build: () => bloc,
+        act: (bloc) => bloc.add(EditPersonDialogEvent.setPerson(
+              const Person(
+                id: 3,
+                name: 'peter',
+                comment: 'special',
+                blockedSince: null,
+              ),
+              testPerson.copyWith(comment: ''),
+            )),
+        expect: () => [
+              EditPersonDialogState(
+                  id: 3,
+                  name: 'peter / testPerson',
+                  comment: 'special',
+                  blockedSince: null,
+                  status: EditPersonDialogStatus.edit,
+                  personToMerge: testPerson.copyWith(comment: ''))
+            ]);
+
     blocTest<EditPersonDialogBloc, EditPersonDialogState>('updateName',
         build: () => bloc,
         seed: () => editState,

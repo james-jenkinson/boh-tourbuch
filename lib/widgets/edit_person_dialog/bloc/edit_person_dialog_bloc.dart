@@ -27,8 +27,12 @@ class EditPersonDialogBloc
                 (personToMerge == null ? '' : ' / ${personToMerge.name}'),
             blockedSince:
                 minDateTime(person.blockedSince, personToMerge?.blockedSince),
-            comment: person.comment +
-                (personToMerge == null ? '' : ' / ${personToMerge.comment}'),
+            comment: personToMerge == null
+                ? person.comment
+                : person.comment.isEmpty || personToMerge.comment.isEmpty
+                    // one or both are empty => concat is OK
+                    ? person.comment + personToMerge.comment
+                    : '${person.comment} / ${personToMerge.comment}',
             personToMerge: personToMerge,
           ));
         },
