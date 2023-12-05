@@ -64,7 +64,7 @@ class _PersonScreenState extends State<PersonScreen> {
                       IconButton(
                           onPressed: () async => _personBloc.add(
                               PersonEditedEvent(await EditPersonDialog.open(
-                                  context, state.selectedPerson))),
+                                  context, state.selectedPerson, null))),
                           icon: const Icon(Icons.edit))
                     ]),
                     Flexible(

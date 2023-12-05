@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../models/person.dart';
 import '../../../repository/person_repository.dart';
+import '../../../until/date_time_ext.dart';
 
 part 'edit_person_dialog_bloc.freezed.dart';
 
@@ -14,16 +15,27 @@ class EditPersonDialogBloc
     extends Bloc<EditPersonDialogEvent, EditPersonDialogState> {
   final PersonRepository _personRepository;
 
-  EditPersonDialogBloc(this._personRepository) : super(const EditPersonDialogState()) {
+  EditPersonDialogBloc(this._personRepository)
+      : super(const EditPersonDialogState()) {
     on<EditPersonDialogEvent>((event, emit) async {
       await event.when(
-        setPerson: (person) async => emit(EditPersonDialogState(
+        setPerson: (person, personToMerge) async {
+          emit(EditPersonDialogState(
             status: EditPersonDialogStatus.edit,
             id: person.id,
-            name: person.name,
-            blockedSince: person.blockedSince,
-            comment: person.comment,
-          )),
+            name: person.name +
+                (personToMerge == null ? '' : ' / ${personToMerge.name}'),
+            blockedSince:
+                minDateTime(person.blockedSince, personToMerge?.blockedSince),
+            comment: personToMerge == null
+                ? person.comment
+                : person.comment.isEmpty || personToMerge.comment.isEmpty
+                    // one or both are empty => concat is OK
+                    ? person.comment + personToMerge.comment
+                    : '${person.comment} / ${personToMerge.comment}',
+            personToMerge: personToMerge,
+          ));
+        },
         updateName: (name) async => emit(state.copyWith(name: name)),
         updateBlocked: (blocked) async =>
             emit(state.copyWith(blockedSince: blocked ? DateTime.now() : null)),
@@ -38,7 +50,14 @@ class EditPersonDialogBloc
             blockedSince: state.blockedSince,
             comment: state.comment,
           );
-          await _personRepository.updatePerson(person);
+
+          final personToMerge = state.personToMerge;
+          if (personToMerge == null) {
+            await _personRepository.updatePerson(person);
+          } else {
+            await _personRepository.mergePersons(person, personToMerge);
+          }
+
           emit(state.copyWith(status: EditPersonDialogStatus.save));
         },
       );

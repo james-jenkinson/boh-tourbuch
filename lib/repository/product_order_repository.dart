@@ -13,6 +13,10 @@ class ProductOrderRepository {
   Future<List<ProductOrder>> getProductOrdersByPersonId(int id) =>
       _productOrderDao.getProductOrdersByPersonId(id);
 
-  Future<List<ProductOrder>> getAllByStatusAndType(OrderStatus status, List<int> productTypeIds) =>
+  Future<List<ProductOrder>> getAllByStatusAndType(
+          OrderStatus status, List<int> productTypeIds) =>
       _productOrderDao.getAllByStatusAndType(status, productTypeIds);
+
+  Future<void> delete(ProductOrder productOrder) =>
+      _productOrderDao.delete(productOrder);
 }

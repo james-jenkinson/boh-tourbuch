@@ -39,6 +39,11 @@ class PersonDao {
     }
   }
 
+  Future<void> delete(int id) async {
+    final db = await _database.database;
+    await db.delete(personTable, where: 'id = ?', whereArgs: [id]);
+  }
+
   Person fromDatabaseJson(Map<String, dynamic> data) {
     final blockedSince = data['blocked_since'];
     return Person(

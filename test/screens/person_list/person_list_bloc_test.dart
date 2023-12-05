@@ -64,13 +64,14 @@ void main() {
               )
             ]);
 
-    blocTest<PersonListBloc, PersonListState>('selectPerson',
+    blocTest<PersonListBloc, PersonListState>('setPersonSelectedAndOpenEdit',
         build: () => bloc,
         seed: () => loadPersonsState,
-        act: (bloc) => bloc.add(const PersonListEvent.selectPerson(pX)),
+        act: (bloc) =>
+            bloc.add(const PersonListEvent.setPersonSelectedAndOpenEdit(pX)),
         expect: () => [
               loadPersonsState.copyWith(
-                status: PersonListStatus.navigateToSelected,
+                status: PersonListStatus.editSelectedPersons,
                 selectedPersons: [pX],
               )
             ]);
@@ -86,6 +87,94 @@ void main() {
         stateWithFilter.copyWith(
             status: PersonListStatus.navigateToSelected,
             selectedPersons: [newPerson])
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'navigateToPerson',
+      build: () => bloc,
+      seed: () => loadPersonsState,
+      act: (bloc) => bloc.add(const PersonListEvent.navigateToPerson(p0)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          status: PersonListStatus.navigateToSelected,
+          selectedPersons: [p0],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'togglePerson with empty',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(selectedPersons: []),
+      act: (bloc) => bloc.add(const PersonListEvent.togglePerson(p0)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          selectedPersons: [p0],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'togglePerson with 1 entry',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(selectedPersons: [p0]),
+      act: (bloc) => bloc.add(const PersonListEvent.togglePerson(p1)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          selectedPersons: [p0, p1],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'togglePerson with same entry',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(selectedPersons: [p0]),
+      act: (bloc) => bloc.add(const PersonListEvent.togglePerson(p0)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          selectedPersons: [],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'setPersonSelectedAndOpenEdit with empty',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(selectedPersons: []),
+      act: (bloc) => bloc.add(const PersonListEvent.setPersonSelectedAndOpenEdit(p0)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          status: PersonListStatus.editSelectedPersons,
+          selectedPersons: [p0],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'setPersonSelectedAndOpenEdit with 1 entry',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(selectedPersons: [p0]),
+      act: (bloc) => bloc.add(const PersonListEvent.setPersonSelectedAndOpenEdit(p1)),
+      expect: () => [
+        loadPersonsState.copyWith(
+          status: PersonListStatus.editSelectedPersons,
+          selectedPersons: [p0, p1],
+        )
+      ],
+    );
+
+    blocTest<PersonListBloc, PersonListState>(
+      'clearSelection',
+      build: () => bloc,
+      seed: () => loadPersonsState.copyWith(status: PersonListStatus.navigateToSelected, selectedPersons: [p0]),
+      act: (bloc) => bloc.add(const PersonListEvent.clearSelection()),
+      expect: () => [
+        loadPersonsState.copyWith(
+          status: PersonListStatus.data,
+          selectedPersons: [],
+        )
       ],
     );
   });

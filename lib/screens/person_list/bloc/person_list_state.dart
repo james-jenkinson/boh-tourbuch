@@ -1,6 +1,6 @@
 part of 'person_list_bloc.dart';
 
-enum PersonListStatus { initial, data, navigateToSelected }
+enum PersonListStatus { initial, data, navigateToSelected, editSelectedPersons }
 
 @freezed
 class PersonListState with _$PersonListState {

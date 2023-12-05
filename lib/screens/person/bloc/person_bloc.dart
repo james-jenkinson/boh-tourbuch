@@ -52,20 +52,17 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
         emit(await fetchAndEmitPersonLoaded());
       } else if (event is ProductOrderClickedEvent) {
         if (event.clickAllowed) {
-          final editCopy = event.productOrder;
-          switch (editCopy.status) {
-            case OrderStatus.notOrdered:
-            case OrderStatus.received:
-              {
-                editCopy.status = OrderStatus.ordered;
-                editCopy.lastIssueDate = DateTime.now();
-              }
-            case OrderStatus.ordered:
-              {
-                editCopy.status = OrderStatus.received;
-                editCopy.lastReceivedDate = DateTime.now();
-              }
-          }
+          final o = event.productOrder;
+          final editCopy = isNotOrdered(o) || isReceived(o)
+              ? o.copyWith(
+                  status: OrderStatus.ordered,
+                  lastIssueDate: DateTime.now(),
+                )
+              : o.copyWith(
+                  status: OrderStatus.received,
+                  lastReceivedDate: DateTime.now(),
+                );
+
           if (editCopy.id == -1) {
             await _productOrderRepository.createProductOrder(editCopy);
           } else {
@@ -110,21 +107,4 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
     }
     return PersonLoaded(_selectedPerson, productOrdersWithSymbols, comments);
   }
-}
-
-class ProductOrderWithSymbol extends ProductOrder {
-  String name;
-  String symbol;
-  int blockedPeriod;
-
-  ProductOrderWithSymbol(
-      {required this.name,
-      required this.symbol,
-      required this.blockedPeriod,
-      required super.personId,
-      required super.productTypeId,
-      required super.lastIssueDate,
-      required super.lastReceivedDate,
-      required super.status,
-      super.id});
 }

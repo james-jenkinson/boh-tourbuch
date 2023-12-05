@@ -33,39 +33,45 @@ class DatabaseInstance {
 
   Future<void> _initDb(Database database, int version) async {
     await database.execute('''
-    create table $personTable (
-      id integer primary key,
-      name text not null,
-      blocked_since text,
-      comment text not null
-    )
+      create table $personTable (
+        id integer primary key,
+        name text not null,
+        blocked_since text,
+        comment text not null
+      )
     ''');
 
-    await database.execute('create table $productTypeTable ('
-        'id integer primary key, '
-        'name text not null, '
-        'symbol text not null, '
-        'deletable int not null, '
-        'days_blocked int not null'
-        ')');
-    await database.execute('create table $commentTable ('
-        'id integer primary key, '
-        'person_id integer not null, '
-        'issued_date text not null, '
-        'content text not null, '
-        'comment_done integer not null, '
-        'foreign key(person_id) references $personTable(id)'
-        ')');
-    await database.execute('create table $productOrderTable ('
-        'id integer primary key, '
-        'person_id integer not null, '
-        'last_issue_date text, '
-        'product_type_id integer not null, '
-        'received_date text, '
-        'status text not null, '
-        'foreign key(person_id) references $personTable(id), '
-        'foreign key(product_type_id) references $productTypeTable(id)'
-        ')');
+    await database.execute('''
+      create table $productTypeTable (
+        id integer primary key,
+        name text not null,
+        symbol text not null,
+        deletable int not null,
+        days_blocked int not null
+      )
+    ''');
+    await database.execute('''
+      create table $commentTable (
+        id integer primary key,
+        person_id integer not null,
+        issued_date text not null,
+        content text not null,
+        comment_done integer not null,
+        foreign key(person_id) references $personTable(id)
+      )
+    ''');
+    await database.execute('''
+      create table $productOrderTable (
+        id integer primary key,
+        person_id integer not null,
+        last_issue_date text,
+        product_type_id integer not null,
+        received_date text,
+        status text not null,
+        foreign key(person_id) references $personTable(id),
+        foreign key(product_type_id) references $productTypeTable(id)
+      )
+    ''');
 
     await database.insert(productTypeTable,
         {'name': 'Zelt', 'symbol': '⛺', 'days_blocked': 90, 'deletable': 0});

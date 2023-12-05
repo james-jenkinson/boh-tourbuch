@@ -36,6 +36,12 @@ class ProductOrderDao {
         where: 'id = ?', whereArgs: [productOrder.id]);
   }
 
+  Future<void> delete(ProductOrder productOrder) async {
+    final Database db = await _database.database;
+    await db.delete(productOrderTable,
+        where: 'id = ?', whereArgs: [productOrder.id]);
+  }
+
   ProductOrder fromDatabaseJson(Map<String, dynamic> data) {
     return ProductOrder(
       id: int.parse(data['id'].toString()),
