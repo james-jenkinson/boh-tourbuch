@@ -28,7 +28,7 @@ analyze_and_test:
 build_release:
   stage: build_release
   script:
-    - flutter build apk --split-per-abi --build-number=$CI_PIPELINE_ID
+    - flutter build apk --split-per-abi --build-number=$CI_PIPELINE_ID  --dart-define=ADMIN_PASSWORD=$ADMIN_PASSWORD --dart-define=DB_PASSWORD=$DB_PASSWORD
   tags:
     - docker
   only:

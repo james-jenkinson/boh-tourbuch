@@ -27,8 +27,13 @@ class DatabaseInstance {
         await getApplicationDocumentsDirectory();
     final String path = '${documentsDirectory.path}boh.db';
 
-    return await openDatabase(path,
-        version: 1, onCreate: _initDb, password: '123456');
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _initDb,
+      password:
+          const String.fromEnvironment('DB_PASSWORD', defaultValue: '123456'),
+    );
   }
 
   Future<void> _initDb(Database database, int version) async {
