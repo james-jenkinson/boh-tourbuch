@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () => PackageInfo.fromPlatform().then(
                           (packageInfo) => showAboutDialog(
                               context: context,
-                              applicationName: 'Tourbuch',
+                              applicationName: packageInfo.appName,
                               applicationVersion:
                                   'Version: ${packageInfo.version} - ${packageInfo.buildNumber}',
                               children: [const Text(appLicence)])),
