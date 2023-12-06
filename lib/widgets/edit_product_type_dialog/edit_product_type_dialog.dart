@@ -48,58 +48,65 @@ class _EditProductTypeDialogState extends State<EditProductTypeDialog> {
               contentPadding: const EdgeInsets.all(10),
               title: Text(
                   'Produkttyp ${state.productType == null ? 'hinzufügen' : 'bearbeiten'}'),
-              content: Form(
-                key: formKey,
+              content: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextFormField(
-                      controller: _editProductTypeDialogBloc.name,
-                      maxLength: 50,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
+                    Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            controller: _editProductTypeDialogBloc.name,
+                            maxLength: 50,
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
+                            ),
+                            autovalidateMode: AutovalidateMode.disabled,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Bitte Feld ausfüllen.';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: _editProductTypeDialogBloc.daysBlocked,
+                            maxLength: 3,
+                            autovalidateMode: AutovalidateMode.disabled,
+                            decoration: const InputDecoration(
+                              labelText: 'Geblockte Tage',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Bitte Feld ausfüllen.';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: _editProductTypeDialogBloc.symbol,
+                            maxLength: 1,
+                            autovalidateMode: AutovalidateMode.disabled,
+                            decoration: const InputDecoration(
+                              labelText: 'Icon',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Bitte Feld ausfüllen.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
-                      autovalidateMode: AutovalidateMode.disabled,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Bitte Feld ausfüllen.';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: _editProductTypeDialogBloc.daysBlocked,
-                      maxLength: 3,
-                      autovalidateMode: AutovalidateMode.disabled,
-                      decoration: const InputDecoration(
-                        labelText: 'Geblockte Tage',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Bitte Feld ausfüllen.';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _editProductTypeDialogBloc.symbol,
-                      maxLength: 1,
-                      autovalidateMode: AutovalidateMode.disabled,
-                      decoration: const InputDecoration(
-                        labelText: 'Icon',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Bitte Feld ausfüllen.';
-                        }
-                        return null;
-                      },
+                      onChanged: () => _editProductTypeDialogBloc
+                          .add(FormChangedEvent(formKey.currentState?.validate())),
                     ),
                   ],
                 ),
-                onChanged: () => _editProductTypeDialogBloc
-                    .add(FormChangedEvent(formKey.currentState?.validate())),
               ),
               actions: [
                 TextButton(onPressed: () =>

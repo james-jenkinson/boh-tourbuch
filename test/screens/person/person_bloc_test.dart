@@ -238,6 +238,9 @@ void main() {
 
     blocTest<PersonBloc, PersonState>('commentEdited update comment',
         build: () {
+          when(commentRepository.getCommentById(1)).thenAnswer((_) => Future.value(
+              Comment(
+                  id: 1, personId: 1, issuedDate: now, content: 'oldText')));
           return bloc;
         },
         seed: () => initialState,
@@ -245,6 +248,7 @@ void main() {
         wait: const Duration(milliseconds: 100),
         verify: (_) {
           verifyNever(commentRepository.createComment(any));
+          verify(commentRepository.getCommentById(1)).called(1);
           verify(commentRepository.updateComment(any)).called(1);
         },
         expect: () => <PersonState>[]);

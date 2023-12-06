@@ -154,6 +154,11 @@ class _PersonScreenState extends State<PersonScreen> {
                                             comment.content,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: comment.commentDone
+                                                  ? Colors.grey
+                                                  : Colors.black,
+                                            ),
                                           ),
                                           value: comment.commentDone,
                                           onChanged: (bool? value) {

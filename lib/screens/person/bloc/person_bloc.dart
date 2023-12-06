@@ -48,13 +48,13 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
             final o = productOrder;
             final editCopy = isNotOrdered(o) || isReceived(o)
                 ? o.copyWith(
-              status: OrderStatus.ordered,
-              lastIssueDate: DateTime.now(),
-            )
+                    status: OrderStatus.ordered,
+                    lastIssueDate: DateTime.now(),
+                  )
                 : o.copyWith(
-              status: OrderStatus.received,
-              lastReceivedDate: DateTime.now(),
-            );
+                    status: OrderStatus.received,
+                    lastReceivedDate: DateTime.now(),
+                  );
 
             if (editCopy.id == -1) {
               await _productOrderRepository.createProductOrder(editCopy);
@@ -72,12 +72,12 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
               content: content,
             ));
           } else if (commentId != null && content != null) {
-            await _commentRepository.updateComment(Comment(
-              id: commentId,
-              personId: state.selectedPerson.id,
-              issuedDate: DateTime.now(),
-              content: content,
-            ));
+            final commentToUpdate =
+                await _commentRepository.getCommentById(commentId);
+            if (commentToUpdate != null) {
+              await _commentRepository
+                  .updateComment(commentToUpdate.copyWith(content: content));
+            }
           }
           emit(await fetchAndEmitPersonLoaded(state));
         },
@@ -113,7 +113,7 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
 
     for (final type in productTypes) {
       final productOrder = productOrders.firstWhere(
-              (order) => order.productTypeId == type.id,
+          (order) => order.productTypeId == type.id,
           orElse: () => ProductOrder(
               personId: state.selectedPerson.id,
               productTypeId: type.id,
