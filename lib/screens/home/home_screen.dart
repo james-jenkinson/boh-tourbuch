@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../until/licence.dart';
 import '../../widgets/main_menu_tab.dart';
 import '../comment/comment_screen.dart';
 import '../faq/faq_screen.dart';
@@ -54,7 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 actions: [
                   IconButton(
                       onPressed: () => _homeBloc.add(OpenSettingsDialogEvent()),
-                      icon: const Icon(Icons.settings))
+                      icon: const Icon(Icons.settings)),
+                  IconButton(
+                      onPressed: () => PackageInfo.fromPlatform().then(
+                          (packageInfo) => showAboutDialog(
+                              context: context,
+                              applicationName: 'Tourbuch',
+                              applicationVersion:
+                                  'Version: ${packageInfo.version} - ${packageInfo.buildNumber}',
+                              children: [const Text(appLicence)])),
+                      icon: const Icon(Icons.local_police_outlined)),
                 ],
                 bottom: const TabBar(
                   tabs: [
@@ -62,8 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: 'Personen', iconData: Icons.person_search),
                     MainMenuTab(
                         title: 'Bestellungen', iconData: Icons.list_alt_sharp),
-                    MainMenuTab(
-                        title: 'Kommentare', iconData: Icons.comment),
+                    MainMenuTab(title: 'Kommentare', iconData: Icons.comment),
                     MainMenuTab(title: 'FAQ', iconData: Icons.question_answer)
                   ],
                 ),
@@ -115,4 +125,3 @@ class _HomeScreenState extends State<HomeScreen> {
     return state == true;
   }
 }
-
