@@ -27,7 +27,7 @@ void main() {
   });
 
   test('toDatabaseJson should return db map', () {
-    final productType = ProductType(
+    const productType = ProductType(
         id: 161, name: 'Zelt', symbol: '⛺', daysBlocked: 90, deletable: false);
 
     final result = productTypeDao.toDatabaseJson(productType);

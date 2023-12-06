@@ -28,9 +28,9 @@ void main() {
   final DateTime now = DateTime.now();
 
   final List<ProductType> productTypes = [
-    ProductType(
+    const ProductType(
         id: 1, name: 'p1', symbol: 'x', daysBlocked: 1, deletable: true),
-    ProductType(
+    const ProductType(
         id: 2, name: 'p2', symbol: 'y', daysBlocked: 2, deletable: false),
   ];
   final List<Person> persons = [

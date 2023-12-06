@@ -15,6 +15,9 @@ class CommentRepository {
   Future<List<Comment>> getCommentsByPersonId(int personId) =>
       _commentDao.getCommentsByPersonId(personId);
 
+  Future<void> deleteCommentsByPersonId(int personId) =>
+      _commentDao.deleteCommentsByPersonId(personId);
+
   Future<List<Comment>> getAllCommentsByStatus(bool commentOpen) =>
       _commentDao.getAllCommentsByStatus(commentOpen);
 }

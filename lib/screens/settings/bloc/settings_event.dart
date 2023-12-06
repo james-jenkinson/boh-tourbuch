@@ -13,8 +13,9 @@ class AddProductTypeEvent extends SettingsEvent {
 
 class DeleteProductTypeEvent extends SettingsEvent {
   final int productTypeId;
+  final bool? shouldDelete;
 
-  DeleteProductTypeEvent(this.productTypeId);
+  DeleteProductTypeEvent(this.productTypeId, this.shouldDelete);
 }
 
 class OpenProductTypeDialogEvent extends SettingsEvent {
