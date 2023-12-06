@@ -20,9 +20,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         emit(OpenDialog(event.productType));
 
       } else if (event is DeleteProductTypeEvent) {
-        await _productTypeRepository.deleteProductTypeById(event.productTypeId);
-        final List<ProductType> productTypes = await _productTypeRepository.getProductTypes();
-        emit(ProductTypesLoaded(productTypes));
+        if (event.shouldDelete == true) {
+          await _productTypeRepository.deleteProductTypeById(
+              event.productTypeId);
+          final List<ProductType> productTypes = await _productTypeRepository
+              .getProductTypes();
+          emit(ProductTypesLoaded(productTypes));
+        }
 
       } else if (event is DialogClosedEvent) {
         final List<ProductType> productTypes = await _productTypeRepository.getProductTypes();

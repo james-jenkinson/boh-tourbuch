@@ -1,14 +1,14 @@
-class ProductType {
-  int id;
-  String name;
-  String symbol;
-  int daysBlocked;
-  bool deletable;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ProductType(
-      {this.id = -1,
-      required this.name,
-      required this.symbol,
-      required this.daysBlocked,
-      required this.deletable});
+part 'product_type.freezed.dart';
+
+@freezed
+class ProductType with _$ProductType {
+  const factory ProductType({
+    @Default(-1) int id,
+    required String name,
+    required String symbol,
+    required int daysBlocked,
+    required bool deletable,
+  }) = _ProductType;
 }

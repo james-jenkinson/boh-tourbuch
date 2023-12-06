@@ -7,6 +7,7 @@ import '../../../models/product_type.dart';
 import '../../../repository/product_type_repository.dart';
 
 part 'edit_product_type_dialog_event.dart';
+
 part 'edit_product_type_dialog_state.dart';
 
 class EditProductTypeDialogBloc
@@ -26,9 +27,7 @@ class EditProductTypeDialogBloc
     on<EditProductTypeDialogEvent>((event, emit) async {
       if (event is FormChangedEvent) {
         emit(EditProductTypeDialogInitial(
-            productType,
-            event.validate != null && event.validate == true
-        ));
+            productType, event.validate != null && event.validate == true));
       } else if (event is CancelClickedEvent) {
         emit(ClosedDialog(false));
       } else if (event is SaveClickedEvent) {
@@ -39,16 +38,14 @@ class EditProductTypeDialogBloc
               daysBlocked: int.parse(daysBlocked.value.text),
               deletable: true));
         } else {
-          productType?.name = name.value.text;
-          productType?.daysBlocked = int.parse(daysBlocked.value.text);
-          productType?.symbol = symbol.value.text;
-          await _productTypeRepository.updateProductType(productType!);
+          await _productTypeRepository.updateProductType(productType!.copyWith(
+              name: name.value.text,
+              daysBlocked: int.parse(daysBlocked.value.text),
+              symbol: symbol.value.text));
         }
         emit(ClosedDialog(true));
       }
     });
-
-
   }
 
   @override

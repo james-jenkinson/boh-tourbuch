@@ -1,14 +1,13 @@
 part of 'person_bloc.dart';
 
-@immutable
-abstract class PersonState {}
+enum PersonScreenState { initial, data, navigateHome }
 
-class PersonInitial extends PersonState {}
-
-class PersonLoaded extends PersonState {
-  final Person selectedPerson;
-  final List<ProductOrderWithSymbol> productOrdersWithSymbols;
-  final List<Comment> comments;
-
-  PersonLoaded(this.selectedPerson, this.productOrdersWithSymbols, this.comments);
+@freezed
+class PersonState with _$PersonState {
+  const factory PersonState({
+    @Default(PersonScreenState.initial) PersonScreenState status,
+    required Person selectedPerson,
+    @Default([]) List<ProductOrderWithSymbol> productOrdersWithSymbols,
+    @Default([]) List<Comment> comments,
+  }) = _PersonState;
 }

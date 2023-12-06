@@ -19,6 +19,18 @@ class ProductOrderDao {
         .toList();
   }
 
+  Future<int> deleteProductOrdersByPersonId(int personId) async {
+    final db = await _database.database;
+    return await db.delete(productOrderTable,
+            where: 'person_id = ?', whereArgs: [personId]);
+  }
+
+  Future<int> deleteProductOrdersByProductTypeId(int productTypeId) async {
+    final db = await _database.database;
+    return await db.delete(productOrderTable,
+            where: 'product_type_id = ?', whereArgs: [productTypeId]);
+  }
+
   Future<List<ProductOrder>> getAllByStatusAndType(
       OrderStatus status, List<int> productIds) async {
     final db = await _database.database;

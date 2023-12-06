@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/product_type.dart';
+import '../../widgets/binary_choice_dialog/binary_choice_dialog.dart';
 import '../../widgets/edit_product_type_dialog/edit_product_type_dialog.dart';
 import 'bloc/settings_bloc.dart';
 
@@ -56,9 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       if (state.productTypes[index].deletable)
                         IconButton(
-                            onPressed: () => _settingsBloc.add(
+                            onPressed: () async => _settingsBloc.add(
                                 DeleteProductTypeEvent(
-                                    state.productTypes[index].id)),
+                                    state.productTypes[index].id,
+                                    await BinaryChoiceDialog.open(context,
+                                        'Soll ${state.productTypes[index].name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.'))),
                             icon: const Icon(Icons.delete)),
                       IconButton(
                           onPressed: () => _settingsBloc.add(
@@ -92,12 +95,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _settingsBloc.add(
       DialogClosedEvent(
         await showDialog<bool>(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) {
-            return EditProductTypeDialog(productType: productType);
-          },
-        ) == true,
+              barrierDismissible: false,
+              context: context,
+              builder: (context) {
+                return EditProductTypeDialog(productType: productType);
+              },
+            ) ==
+            true,
       ),
     );
   }

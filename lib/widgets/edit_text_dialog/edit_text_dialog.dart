@@ -64,6 +64,7 @@ class _EditTextDialogState extends State<EditTextDialog> {
       content: SizedBox(
         width: 450,
         child: TextFormField(
+          autofocus: true,
           initialValue: state.content,
           onChanged: (value) =>
               addEvent(EditTextDialogEvent.updateContent(value)),

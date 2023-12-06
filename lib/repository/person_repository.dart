@@ -19,6 +19,12 @@ class PersonRepository {
 
   Future<List<Person>> getAllPersons() => _personDao.getAllPersons();
 
+  Future<void> deletePerson(int id) async {
+    await _commentRepository.deleteCommentsByPersonId(id);
+    await _productOrderRepository.deleteProductOrdersByPersonId(id);
+    await _personDao.delete(id);
+  }
+
   Future<Person> mergePersons(Person person, Person personToMerge) async {
     await _personDao.updatePerson(person);
 
@@ -46,7 +52,7 @@ class PersonRepository {
           .updateComment(comment.copyWith(personId: person.id));
     }
 
-    await _personDao.delete(personToMerge.id);
+    await deletePerson(personToMerge.id);
 
     return person;
   }
