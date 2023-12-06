@@ -19,28 +19,31 @@ class _FaqScreenState extends State<FaqScreen> {
       ('Warum ist die Banane krumm? 3', 'Lorem Ipsum 3')
     ];
 
-    return BlocProvider<FaqBloc>(
-      create: (_) => FaqBloc()..add(const FaqEvent.loadData()),
-      child: BlocBuilder<FaqBloc, FaqState>(
-        builder: (context, state) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                ExpansionPanelList.radio(
-                  materialGapSize: 1,
-                  children: questions
-                      .asMap()
-                      .entries
-                      .map((q) => ExpansionPanelRadio(
-                          value: q.key,
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isOpen) =>
-                              ListTile(title: Text(q.value.$1)),
-                          body: ListTile(title: Text(q.value.$2))))
-                      .toList(),
-                )
-              ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('FAQ'),),
+      body: BlocProvider<FaqBloc>(
+        create: (_) => FaqBloc()..add(const FaqEvent.loadData()),
+        child: BlocBuilder<FaqBloc, FaqState>(
+          builder: (context, state) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  ExpansionPanelList.radio(
+                    materialGapSize: 1,
+                    children: questions
+                        .asMap()
+                        .entries
+                        .map((q) => ExpansionPanelRadio(
+                            value: q.key,
+                            canTapOnHeader: true,
+                            headerBuilder: (context, isOpen) =>
+                                ListTile(title: Text(q.value.$1)),
+                            body: ListTile(title: Text(q.value.$2))))
+                        .toList(),
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -61,6 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 DeleteProductTypeEvent(
                                     state.productTypes[index].id,
                                     await BinaryChoiceDialog.open(context,
+                                        '${state.productTypes[index].name} löschen',
                                         'Soll ${state.productTypes[index].name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.'))),
                             icon: const Icon(Icons.delete)),
                       IconButton(

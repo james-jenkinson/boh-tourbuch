@@ -4,18 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/binary_choice_dialog_bloc.dart';
 
 class BinaryChoiceDialog extends StatefulWidget {
-  final String text;
+  final String title;
+  final String content;
 
-  const BinaryChoiceDialog({super.key, required this.text});
+  const BinaryChoiceDialog({super.key, required this.content, required this.title});
 
   @override
   State<BinaryChoiceDialog> createState() => _BinaryChoiceDialogState();
 
-  static Future<bool?> open(BuildContext context, String text) async {
+  static Future<bool?> open(BuildContext context, String title, String content) async {
     return showDialog<bool>(
         barrierDismissible: false,
         context: context,
-        builder: (context) => BinaryChoiceDialog(text: text));
+        builder: (context) => BinaryChoiceDialog(content: content, title: title,));
   }
 }
 
@@ -46,7 +47,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
 
                     switch (state.status) {
                       case BinaryChoiceDialogStatus.initial:
-                        return buildEdit(addEvent, widget.text);
+                        return buildEdit(addEvent, widget.title, widget.content);
                       default:
                         return const SizedBox.shrink();
                     }
@@ -55,11 +56,9 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
   }
 
   Widget buildEdit(
-      void Function(BinaryChoiceDialogEvent) addEvent, String textContent) {
+      void Function(BinaryChoiceDialogEvent) addEvent, String title, String textContent) {
     return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-      actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      title: Text(title),
       content: SizedBox(
         width: 450,
         child: Text(textContent),

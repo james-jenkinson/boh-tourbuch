@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/comment_repository.dart';
 import '../../repository/person_repository.dart';
 import '../../until/date_time_ext.dart';
+import '../../widgets/person_text_widget.dart';
 import 'bloc/comment_bloc.dart';
 
 class CommentScreen extends StatefulWidget {
@@ -47,10 +48,18 @@ class _CommentScreenState extends State<CommentScreen> {
                     children: [
                       buildToggleButtons(state.selected, commentBloc.add),
                       Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: buildDataTable(state, commentBloc.add),
-                        ),
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                        minWidth: constraints.maxWidth),
+                                    child: buildDataTable(
+                                        state, commentBloc.add))),
+                          );
+                        }),
                       )
                     ]),
               );
@@ -82,9 +91,7 @@ class _CommentScreenState extends State<CommentScreen> {
   }
 
   DataTable buildDataTable(
-    CommentState state,
-    void Function(CommentEvent) addEvent,
-  ) {
+      CommentState state, void Function(CommentEvent) addEvent) {
     return DataTable(
         showCheckboxColumn: false,
         dataRowMaxHeight: double.infinity,
@@ -101,12 +108,17 @@ class _CommentScreenState extends State<CommentScreen> {
                       DataCell(Text(
                         commentWithPerson.comment.issuedDate.toCalendarDate(),
                       )),
-                      DataCell(Text(
-                        commentWithPerson.comment.content,
-                        maxLines: 4,
-                        overflow: TextOverflow.fade,
-                      )),
-                      DataCell(Text(commentWithPerson.person.name)),
+                      DataCell(
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            commentWithPerson.comment.content,
+                            maxLines: 4,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                      ),
+                      DataCell(PersonText(person: commentWithPerson.person)),
                     ]))
             .toList());
   }

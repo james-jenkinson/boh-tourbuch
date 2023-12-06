@@ -34,8 +34,12 @@ class CommentDao {
 
   Future<List<Comment>> getCommentsByPersonId(int personId) async {
     final db = await _database.database;
-    final List<Map<String, dynamic>> result = await db
-        .query(commentTable, where: 'person_id = ?', whereArgs: [personId]);
+    final List<Map<String, dynamic>> result = await db.query(
+      commentTable,
+      where: 'person_id = ?',
+      whereArgs: [personId],
+      orderBy: 'comment_done asc, issued_date asc',
+    );
     return result.map((e) => fromDatabaseJson(e)).toList();
   }
 

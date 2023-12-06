@@ -5,6 +5,7 @@ import '../../repository/person_repository.dart';
 import '../../repository/product_order_repository.dart';
 import '../../repository/product_type_repository.dart';
 import '../../until/date_time_ext.dart';
+import '../../widgets/person_text_widget.dart';
 import 'bloc/model/order_table_row.dart';
 import 'bloc/model/product_type_with_selection.dart';
 import 'bloc/orders_bloc.dart';
@@ -121,7 +122,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onSelectChanged: (selected) =>
                   addEvent(OrdersEvent.navigate(row.person)),
               cells: [
-                DataCell(Text(row.person.name)),
+                DataCell(PersonText(person: row.person)),
                 ...productTypes
                     .where((productType) => productType.selected)
                     .map(

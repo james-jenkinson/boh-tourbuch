@@ -22,6 +22,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             emit(WrongPassword());
           }
         }
+      } else if (event is OpenFAQEvent) {
+        emit(NavigateToFAQ());
       }
     });
   }

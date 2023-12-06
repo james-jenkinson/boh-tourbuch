@@ -15,3 +15,7 @@ class DialogCompletedEvent extends HomeEvent {
 class CloseDialogEvent extends HomeEvent {
   CloseDialogEvent();
 }
+
+class OpenFAQEvent extends HomeEvent {
+  OpenFAQEvent();
+}
