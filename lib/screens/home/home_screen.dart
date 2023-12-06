@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
+import '../../theme_provider.dart';
 import '../../until/licence.dart';
 import '../../widgets/main_menu_tab.dart';
 import '../comment/comment_screen.dart';
-import '../faq/faq_screen.dart';
 import '../orders/orders_screen.dart';
 import '../person_list/person_list_screen.dart';
 import 'bloc/home_bloc.dart';
@@ -46,26 +47,30 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (state is NavigateToSettings) {
             await Navigator.pushNamed(context, '/settings')
                 .then((value) => _homeBloc.add(CloseDialogEvent()));
+          } else if (state is NavigateToFAQ) {
+            await Navigator.pushNamed(context, '/faq');
           }
         },
         child: DefaultTabController(
-          length: 4,
+          length: 3,
           child: Scaffold(
               appBar: AppBar(
                 title: const Text('Tourbuch'),
                 actions: [
-                  IconButton(
-                      onPressed: () => _homeBloc.add(OpenSettingsDialogEvent()),
-                      icon: const Icon(Icons.settings)),
-                  IconButton(
-                      onPressed: () => PackageInfo.fromPlatform().then(
-                          (packageInfo) => showAboutDialog(
-                              context: context,
-                              applicationName: 'Tourbuch',
-                              applicationVersion:
-                                  'Version: ${packageInfo.version} - ${packageInfo.buildNumber}',
-                              children: [const Text(appLicence)])),
-                      icon: const Icon(Icons.local_police_outlined)),
+                  IconButton(onPressed: () => Provider.of<ThemeProvider>(context, listen: false).zoomOut(), icon: const Icon(Icons.zoom_out)),
+                  IconButton(onPressed: () => Provider.of<ThemeProvider>(context, listen: false).zoomIn(), icon: const Icon(Icons.zoom_in)),
+                  PopupMenuButton<String>(
+                    onSelected: (value) => handleClick(value, _homeBloc.add),
+                    itemBuilder: (BuildContext context) {
+                      return {'FAQ', 'Einstellungen', 'Lizenzen'}
+                          .map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    },
+                  ),
                 ],
                 bottom: const TabBar(
                   tabs: [
@@ -74,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     MainMenuTab(
                         title: 'Bestellungen', iconData: Icons.list_alt_sharp),
                     MainMenuTab(title: 'Kommentare', iconData: Icons.comment),
-                    MainMenuTab(title: 'FAQ', iconData: Icons.question_answer)
                   ],
                 ),
               ),
@@ -82,7 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 PersonListScreen(),
                 OrdersScreen(),
                 CommentScreen(),
-                FaqScreen()
               ])),
         ));
   }
@@ -123,5 +126,22 @@ class _HomeScreenState extends State<HomeScreen> {
         });
 
     return state == true;
+  }
+
+  void handleClick(String value, void Function(HomeEvent) addEvent) {
+    switch (value) {
+      case 'FAQ':
+        addEvent(OpenFAQEvent());
+      case 'Einstellungen':
+        addEvent(OpenSettingsDialogEvent());
+      case 'Lizenzen':
+        PackageInfo.fromPlatform().then((packageInfo) => showAboutDialog(
+            context: context,
+            applicationName: 'Tourbuch',
+            applicationVersion:
+                'Version: ${packageInfo.version} - ${packageInfo.buildNumber}',
+            children: [const Text(appLicence)]));
+      default:
+    }
   }
 }

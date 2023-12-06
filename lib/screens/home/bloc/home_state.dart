@@ -10,3 +10,5 @@ class OpenSettingsDialog extends HomeState {}
 class NavigateToSettings extends HomeState {}
 
 class WrongPassword extends HomeState {}
+
+class NavigateToFAQ extends HomeState {}

@@ -71,8 +71,12 @@ class _PersonScreenState extends State<PersonScreen> {
                                 CustomScrollView(shrinkWrap: false, slivers: [
                               SliverGrid(
                                   gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount:
+                                        MediaQuery.of(context).orientation ==
+                                                Orientation.portrait
+                                            ? 2
+                                            : 3,
                                     crossAxisSpacing: 50,
                                     mainAxisSpacing: 20,
                                     childAspectRatio: 3,
@@ -88,7 +92,9 @@ class _PersonScreenState extends State<PersonScreen> {
                                                   productOrder,
                                                   isBlockedProduct(productOrder)
                                                       ? (await BinaryChoiceDialog
-                                                          .open(context,
+                                                          .open(
+                                                              context,
+                                                              'Produkt gesperrt',
                                                               'Das Produkt ist für den Gast aufgrund einer kürzlichen Bestellung noch gesperrt. Soll es dennoch bestellt werden?'))!
                                                       : true));
                                             },
@@ -97,11 +103,17 @@ class _PersonScreenState extends State<PersonScreen> {
                                                     productOrder,
                                                     await BinaryChoiceDialog.open(
                                                         context,
+                                                        'Status zurücksetzen',
                                                         'Soll der Status von ${productOrder.name} auf \'Nicht Bestellt\' zurückgesetzt werden?'))),
                                             child: Center(
                                               child: ListTile(
-                                                  leading:
-                                                      Text(productOrder.symbol),
+                                                  leading: SizedBox(
+                                                    height: 100,
+                                                    child: FittedBox(
+                                                        fit: BoxFit.contain,
+                                                        child: Text(productOrder
+                                                            .symbol)),
+                                                  ),
                                                   title:
                                                       Text(productOrder.name),
                                                   subtitle: Text((() {
@@ -181,7 +193,9 @@ class _PersonScreenState extends State<PersonScreen> {
             icon: const Icon(Icons.edit)),
         IconButton(
             onPressed: () async => addEvent(PersonEvent.deletePerson(
-                await BinaryChoiceDialog.open(context,
+                await BinaryChoiceDialog.open(
+                    context,
+                    '${selectedPerson.name} löschen',
                     'Soll ${selectedPerson.name} gelöscht werden? Alle zugehörigen Kommentare und Bestellungen werden unwiderruflich gelöscht.'))),
             icon: const Icon(Icons.delete))
       ],
