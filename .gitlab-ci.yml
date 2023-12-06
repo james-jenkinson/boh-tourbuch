@@ -1,4 +1,4 @@
-image: fischerscode/flutter:stable
+image: growerp/flutter-sdk-image:3.16.0
 
 
 # Cache downloaded dependencies and plugins between builds.
@@ -9,6 +9,7 @@ cache:
 
 stages:
   - analyze_and_test
+  - build_release
 
 before_script:
   - export PATH="$PATH":"$HOME/.flutter-sdk/.pub-cache/bin"
@@ -23,3 +24,16 @@ analyze_and_test:
     - flutter test --coverage
   tags:
     - docker
+
+build_release:
+  stage: build_release
+  script:
+    - flutter build apk --split-per-abi --build-number=$CI_PIPELINE_ID
+  tags:
+    - docker
+  only:
+    - main
+    - release
+  artifacts:
+    paths:
+      - build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
