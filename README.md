@@ -12,6 +12,12 @@ A new Flutter project.
 
 Identify dart (linting) problems `dart fix --dry-run`
 
+
+## Release
+Each push von the main branch creates a release.
+Artefacts can be found here: https://gitlab.spree.de/saurer/boh_tourbuch/-/artifacts
+
+
 ## Bloc + freezed usage example
 
 
