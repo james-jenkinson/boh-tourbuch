@@ -18,10 +18,23 @@ class DeleteProductTypeEvent extends SettingsEvent {
   DeleteProductTypeEvent(this.productTypeId, this.shouldDelete);
 }
 
+class DeleteFAQQuestionEvent extends SettingsEvent {
+  final int faqQuestionId;
+  final bool? shouldDelete;
+
+  DeleteFAQQuestionEvent(this.faqQuestionId, this.shouldDelete);
+}
+
 class OpenProductTypeDialogEvent extends SettingsEvent {
   final ProductType? productType;
 
   OpenProductTypeDialogEvent(this.productType);
+}
+
+class OpenFAQQuestionDialogEvent extends SettingsEvent {
+  final FAQQuestion? faqQuestion;
+
+  OpenFAQQuestionDialogEvent(this.faqQuestion);
 }
 
 class DialogClosedEvent extends SettingsEvent {

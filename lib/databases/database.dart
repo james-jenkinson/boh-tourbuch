@@ -7,6 +7,7 @@ const personTable = 'Persons';
 const productTypeTable = 'ProductTypes';
 const productOrderTable = 'ProductOrders';
 const commentTable = 'Comments';
+const faqTable = 'FAQ';
 
 class DatabaseInstance {
   static final DatabaseInstance databaseInstance = DatabaseInstance();
@@ -76,6 +77,12 @@ class DatabaseInstance {
         foreign key(person_id) references $personTable(id),
         foreign key(product_type_id) references $productTypeTable(id)
       )
+    ''');
+    await database.execute('''
+      create table $faqTable (
+        id integer primary key,
+        question text not null,
+        answer text not null)
     ''');
 
     await database.insert(productTypeTable,
