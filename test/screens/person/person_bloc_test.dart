@@ -51,11 +51,26 @@ void main() {
 
     productTypes = [
       const ProductType(
-          id: 1, name: 'p1', symbol: 'x', daysBlocked: 1, deletable: false),
+          id: 1,
+          name: 'p1',
+          symbol: 'x',
+          image: null,
+          daysBlocked: 1,
+          deletable: false),
       const ProductType(
-          id: 2, name: 'p2', symbol: 'y', daysBlocked: 2, deletable: false),
+          id: 2,
+          name: 'p2',
+          symbol: 'y',
+          image: null,
+          daysBlocked: 2,
+          deletable: false),
       const ProductType(
-          id: 3, name: 'p3', symbol: 'z', daysBlocked: 3, deletable: false),
+          id: 3,
+          name: 'p3',
+          symbol: 'z',
+          image: null,
+          daysBlocked: 3,
+          deletable: false),
     ];
     orders = [
       ProductOrder(
@@ -89,6 +104,7 @@ void main() {
           productTypeId: 1,
           name: 'p1',
           symbol: 'x',
+          image: null,
           blockedPeriod: 1),
       const ProductOrderWithSymbol(
           id: -1,
@@ -99,6 +115,7 @@ void main() {
           productTypeId: 2,
           name: 'p2',
           symbol: 'y',
+          image: null,
           blockedPeriod: 2),
       ProductOrderWithSymbol(
           id: 3,
@@ -109,6 +126,7 @@ void main() {
           productTypeId: 3,
           name: 'p3',
           symbol: 'z',
+          image: null,
           blockedPeriod: 3),
     ];
 
@@ -238,8 +256,8 @@ void main() {
 
     blocTest<PersonBloc, PersonState>('commentEdited update comment',
         build: () {
-          when(commentRepository.getCommentById(1)).thenAnswer((_) => Future.value(
-              Comment(
+          when(commentRepository.getCommentById(1)).thenAnswer((_) =>
+              Future.value(Comment(
                   id: 1, personId: 1, issuedDate: now, content: 'oldText')));
           return bloc;
         },

@@ -30,7 +30,11 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
           List<ProductTypeWithSelection> productTypes =
               (await _productTypeRepository.getProductTypes())
                   .map((e) => ProductTypeWithSelection(
-                      name: e.name, symbol: e.symbol, productTypeId: e.id))
+                        name: e.name,
+                        symbol: e.symbol,
+                        image: e.image,
+                        productTypeId: e.id,
+                      ))
                   .toList();
           final tableRows = await _getRowsForSelection(productTypes);
 

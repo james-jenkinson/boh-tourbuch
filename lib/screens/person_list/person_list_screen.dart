@@ -74,14 +74,12 @@ class _PersonListScreenState extends State<PersonListScreen> {
     if (state.selectedPersons.isEmpty) {
       return [
         SlidableAction(
-          label: 'Edit',
           icon: Icons.edit,
           onPressed: (_) =>
               addEvent(PersonListEvent.setPersonSelectedAndOpenEdit(person)),
           backgroundColor: Theme.of(context).highlightColor,
         ),
         SlidableAction(
-          label: 'Select',
           icon: Icons.check_box_outline_blank,
           onPressed: (context) =>
               addEvent(PersonListEvent.togglePerson(person)),
@@ -91,20 +89,17 @@ class _PersonListScreenState extends State<PersonListScreen> {
     } else {
       return [
         SlidableAction(
-          label: 'Abort',
           icon: Icons.do_not_disturb,
           onPressed: (_) => addEvent(const PersonListEvent.clearSelection()),
         ),
         personSelected
             ? SlidableAction(
-                label: 'Unselect',
                 icon: Icons.check_box_outlined,
                 onPressed: (_) =>
                     addEvent(PersonListEvent.togglePerson(person)),
                 backgroundColor: Theme.of(context).secondaryHeaderColor,
               )
             : SlidableAction(
-                label: 'Merge',
                 icon: Icons.call_merge,
                 onPressed: (_) => addEvent(
                     PersonListEvent.setPersonSelectedAndOpenEdit(person)),

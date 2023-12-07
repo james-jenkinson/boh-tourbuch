@@ -31,74 +31,75 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       : super(PersonState(selectedPerson: selectedPerson)) {
     on<PersonEvent>((event, emit) async {
       await event.when(
-        initial: () async {
-          emit(await fetchAndEmitPersonLoaded(state));
-        },
-        editedPerson: (bool? personEdited) async {
-          if (personEdited == true) {
-            emit(await fetchAndEmitPersonLoaded(
-              state.copyWith(
-                  selectedPerson: (await _personRepository
-                      .getPersonById(state.selectedPerson.id))!),
-            ));
-          }
-        },
-        orderClicked: (ProductOrder productOrder, bool clickAllowed) async {
-          if (clickAllowed) {
-            final o = productOrder;
-            final editCopy = isNotOrdered(o) || isReceived(o)
-                ? o.copyWith(
-                    status: OrderStatus.ordered,
-                    lastIssueDate: DateTime.now(),
-                  )
-                : o.copyWith(
-                    status: OrderStatus.received,
-                    lastReceivedDate: DateTime.now(),
-                  );
+          initial: () async {
+            emit(await fetchAndEmitPersonLoaded(state));
+          },
+          editedPerson: (personEdited) async {
+            if (personEdited == true) {
+              emit(await fetchAndEmitPersonLoaded(
+                state.copyWith(
+                    selectedPerson: (await _personRepository
+                        .getPersonById(state.selectedPerson.id))!),
+              ));
+            }
+          },
+          orderClicked: (productOrder, clickAllowed) async {
+            if (clickAllowed) {
+              final o = productOrder;
+              final editCopy = isNotOrdered(o) || isReceived(o)
+                  ? o.copyWith(
+                      status: OrderStatus.ordered,
+                      lastIssueDate: DateTime.now(),
+                    )
+                  : o.copyWith(
+                      status: OrderStatus.received,
+                      lastReceivedDate: DateTime.now(),
+                    );
 
-            if (editCopy.id == -1) {
-              await _productOrderRepository.createProductOrder(editCopy);
-            } else {
-              await _productOrderRepository.updateProductOrder(editCopy);
+              if (editCopy.id == -1) {
+                await _productOrderRepository.createProductOrder(editCopy);
+              } else {
+                await _productOrderRepository.updateProductOrder(editCopy);
+              }
+              emit(await fetchAndEmitPersonLoaded(state));
+            }
+          },
+          commentEdited: (content, commentId) async {
+            if (commentId == null && content != null) {
+              await _commentRepository.createComment(Comment(
+                personId: state.selectedPerson.id,
+                issuedDate: DateTime.now(),
+                content: content,
+              ));
+            } else if (commentId != null && content != null) {
+              final commentToUpdate =
+                  await _commentRepository.getCommentById(commentId);
+              if (commentToUpdate != null) {
+                await _commentRepository
+                    .updateComment(commentToUpdate.copyWith(content: content));
+              }
             }
             emit(await fetchAndEmitPersonLoaded(state));
-          }
-        },
-        commentEdited: (String? content, int? commentId) async {
-          if (commentId == null && content != null) {
-            await _commentRepository.createComment(Comment(
-              personId: state.selectedPerson.id,
-              issuedDate: DateTime.now(),
-              content: content,
-            ));
-          } else if (commentId != null && content != null) {
-            final commentToUpdate =
-                await _commentRepository.getCommentById(commentId);
-            if (commentToUpdate != null) {
-              await _commentRepository
-                  .updateComment(commentToUpdate.copyWith(content: content));
-            }
-          }
-          emit(await fetchAndEmitPersonLoaded(state));
-        },
-        commentStatusChanged: (Comment comment, bool newValue) async {
-          final editCopy = comment.copyWith(commentDone: newValue);
-          await _commentRepository.updateComment(editCopy);
-          emit(await fetchAndEmitPersonLoaded(state));
-        },
-        resetOrder: (ProductOrder productOrder, bool? shouldReset) async {
-          if (shouldReset == true) {
-            await _productOrderRepository.delete(productOrder);
+          },
+          commentStatusChanged: (comment, newValue) async {
+            final editCopy = comment.copyWith(commentDone: newValue);
+            await _commentRepository.updateComment(editCopy);
             emit(await fetchAndEmitPersonLoaded(state));
-          }
-        },
-        deletePerson: (bool? shouldDelete) async {
-          if (shouldDelete == true) {
-            await _personRepository.deletePerson(state.selectedPerson.id);
-            emit(state.copyWith(status: PersonScreenState.navigateHome));
-          }
-        },
-      );
+          },
+          resetOrder: (productOrder, shouldReset) async {
+            if (shouldReset == true) {
+              await _productOrderRepository.delete(productOrder);
+              emit(await fetchAndEmitPersonLoaded(state));
+            }
+          },
+          deletePerson: (shouldDelete) async {
+            if (shouldDelete == true) {
+              await _personRepository.deletePerson(state.selectedPerson.id);
+              emit(state.copyWith(status: PersonScreenState.navigateHome));
+            }
+          },
+          magnifyOrder: (order) async =>
+              emit(state.copyWith(magnifiedOrder: order)));
     });
   }
 
@@ -122,6 +123,7 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           id: productOrder.id,
           name: type.name,
           symbol: type.symbol,
+          image: type.image,
           blockedPeriod: type.daysBlocked,
           personId: productOrder.personId,
           productTypeId: productOrder.productTypeId,

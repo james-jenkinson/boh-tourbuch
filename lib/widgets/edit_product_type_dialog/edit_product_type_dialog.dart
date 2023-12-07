@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/product_type.dart';
+import '../../until/utility.dart';
 import 'bloc/edit_product_type_dialog_bloc.dart';
 
 class EditProductTypeDialog extends StatefulWidget {
@@ -14,114 +15,136 @@ class EditProductTypeDialog extends StatefulWidget {
 }
 
 class _EditProductTypeDialogState extends State<EditProductTypeDialog> {
-  late EditProductTypeDialogBloc _editProductTypeDialogBloc;
-
   _EditProductTypeDialogState();
 
-  @override
-  void initState() {
-    _editProductTypeDialogBloc = EditProductTypeDialogBloc(widget.productType);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _editProductTypeDialogBloc.close();
-    super.dispose();
-  }
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    return BlocConsumer(
-        listener: (context, state) {
-          if (state is ClosedDialog) {
-            Navigator.pop(context, state.saveClicked);
-          }
-        },
-        bloc: _editProductTypeDialogBloc,
-        builder: (context, state) {
-          if (state is EditProductTypeDialogInitial) {
-            return AlertDialog(
-              titlePadding: const EdgeInsets.all(10),
-              actionsPadding: const EdgeInsets.all(10),
-              contentPadding: const EdgeInsets.all(10),
-              title: Text(
-                  'Produkttyp ${state.productType == null ? 'hinzufügen' : 'bearbeiten'}'),
-              content: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
+    return BlocProvider(
+      create: (_) => EditProductTypeDialogBloc()
+        ..add(EditProductTypeDialogEvent.setProductType(widget.productType)),
+      child: Builder(
+          builder: (context) => BlocConsumer<EditProductTypeDialogBloc,
+                  EditProductTypeDialogState>(
+              listener: (context, state) {
+                switch (state.status) {
+                  case EditProductTypeDialogStatus.cancel:
+                    Navigator.pop(context, false);
+                  case EditProductTypeDialogStatus.save:
+                    Navigator.pop(context, true);
+                  default:
+                  // nothing to do
+                }
+              },
+              bloc: context.read<EditProductTypeDialogBloc>(),
+              builder: (context, state) {
+                switch (state.status) {
+                  case EditProductTypeDialogStatus.edit:
+                    return buildEdit(
+                        context.read<EditProductTypeDialogBloc>(), state);
+                  default:
+                    return const CircularProgressIndicator();
+                }
+              })),
+    );
+  }
+
+  Widget buildEdit(
+      EditProductTypeDialogBloc bloc, EditProductTypeDialogState state) {
+    return AlertDialog(
+      titlePadding: const EdgeInsets.all(10),
+      actionsPadding: const EdgeInsets.all(10),
+      contentPadding: const EdgeInsets.all(10),
+      title: Text(
+          'Produkttyp ${state.productType == null ? 'hinzufügen' : 'bearbeiten'}'),
+      content: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Form(
+                key: formKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Form(
-                      key: formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            controller: _editProductTypeDialogBloc.name,
-                            maxLength: 50,
-                            decoration: const InputDecoration(
-                              labelText: 'Name',
-                            ),
-                            autovalidateMode: AutovalidateMode.disabled,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Bitte Feld ausfüllen.';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: _editProductTypeDialogBloc.daysBlocked,
-                            maxLength: 3,
-                            autovalidateMode: AutovalidateMode.disabled,
-                            decoration: const InputDecoration(
-                              labelText: 'Geblockte Tage',
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Bitte Feld ausfüllen.';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _editProductTypeDialogBloc.symbol,
-                            maxLength: 1,
-                            autovalidateMode: AutovalidateMode.disabled,
-                            decoration: const InputDecoration(
-                              labelText: 'Icon',
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Bitte Feld ausfüllen.';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
+                    TextFormField(
+                      initialValue: state.name,
+                      maxLength: 50,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
                       ),
-                      onChanged: () => _editProductTypeDialogBloc
-                          .add(FormChangedEvent(formKey.currentState?.validate())),
+                      onChanged: (name) =>
+                          bloc.add(EditProductTypeDialogEvent.updateName(name)),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Bitte Feld ausfüllen.';
+                        }
+                        return null;
+                      },
                     ),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      initialValue: state.daysBlocked,
+                      maxLength: 3,
+                      onChanged: (daysBlocked) => bloc.add(
+                          EditProductTypeDialogEvent.updateDaysBlocked(
+                              daysBlocked)),
+                      decoration: const InputDecoration(
+                        labelText: 'Geblockte Tage',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Bitte Feld ausfüllen.';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Bitte Zahl eingeben.';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      initialValue: state.symbol,
+                      maxLength: 1,
+                      onChanged: (symbol) => bloc
+                          .add(EditProductTypeDialogEvent.updateSymbol(symbol)),
+                      decoration: const InputDecoration(
+                        labelText: 'Icon',
+                      ),
+                    ),
+                    Row(mainAxisSize: MainAxisSize.max, children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child:
+                            state.imageAsBytes?.let((it) => Image.memory(it)) ??
+                                Container(),
+                      ),
+                      TextButton(
+                          onPressed: () => bloc.add(
+                              const EditProductTypeDialogEvent.selectImage()),
+                          child: const Text('open')),
+                      TextButton(
+                          onPressed: () => bloc.add(
+                              const EditProductTypeDialogEvent.clearImage()),
+                          child: const Icon(Icons.clear)),
+                    ])
                   ],
-                ),
-              ),
-              actions: [
-                TextButton(onPressed: () =>
-                        _editProductTypeDialogBloc.add(CancelClickedEvent()),
-                    child: const Text('Abbrechen')),
-                ElevatedButton(
-                    onPressed: state.validate
-                        ? () =>
-                            _editProductTypeDialogBloc.add(SaveClickedEvent())
-                        : null,
-                    child: const Text('Speichern'))
-              ],
-            );
-          }
-          return Container();
-        });
+                )),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () =>
+                bloc.add(const EditProductTypeDialogEvent.cancel()),
+            child: const Text('Abbrechen')),
+        ElevatedButton(
+            onPressed: formKey.currentState?.validate() == true &&
+                    (state.symbol.isNotEmpty || state.imageAsBytes != null)
+                ? () => bloc.add(const EditProductTypeDialogEvent.save())
+                : null,
+            child: const Text('Speichern'))
+      ],
+    );
   }
 }

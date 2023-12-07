@@ -29,9 +29,9 @@ void main() {
 
   final List<ProductType> productTypes = [
     const ProductType(
-        id: 1, name: 'p1', symbol: 'x', daysBlocked: 1, deletable: true),
+        id: 1, name: 'p1', symbol: 'x', image: null, daysBlocked: 1, deletable: true),
     const ProductType(
-        id: 2, name: 'p2', symbol: 'y', daysBlocked: 2, deletable: false),
+        id: 2, name: 'p2', symbol: 'y', image: null, daysBlocked: 2, deletable: false),
   ];
   final List<Person> persons = [
     const Person(id: 1, name: 'p1'),
@@ -85,9 +85,17 @@ void main() {
         status: OrdersScreenState.data,
         productTypes: [
           const ProductTypeWithSelection(
-              productTypeId: 1, name: 'p1', symbol: 'x', amount: 2),
+              productTypeId: 1,
+              name: 'p1',
+              symbol: 'x',
+              image: null,
+              amount: 2),
           const ProductTypeWithSelection(
-              productTypeId: 2, name: 'p2', symbol: 'y', amount: 1),
+              productTypeId: 2,
+              name: 'p2',
+              symbol: 'y',
+              image: null,
+              amount: 1),
         ],
         tableRows: [
           OrderTableRow(person: persons[0], productIdOrdered: {
@@ -121,12 +129,14 @@ void main() {
                       productTypeId: 1,
                       name: 'p1',
                       symbol: 'x',
+                      image: null,
                       amount: 2,
                       selected: true),
                   const ProductTypeWithSelection(
                       productTypeId: 2,
                       name: 'p2',
                       symbol: 'y',
+                      image: null,
                       amount: 1,
                       selected: false),
                 ],
@@ -155,12 +165,14 @@ void main() {
                       productTypeId: 1,
                       name: 'p1',
                       symbol: 'x',
+                      image: null,
                       amount: 2,
                       selected: false),
                   const ProductTypeWithSelection(
                       productTypeId: 2,
                       name: 'p2',
                       symbol: 'y',
+                      image: null,
                       amount: 1,
                       selected: true),
                 ],
@@ -182,12 +194,14 @@ void main() {
                       productTypeId: 1,
                       name: 'p1',
                       symbol: 'x',
+                      image: null,
                       amount: 2,
                       selected: true),
                   const ProductTypeWithSelection(
                       productTypeId: 2,
                       name: 'p2',
                       symbol: 'y',
+                      image: null,
                       amount: 1,
                       selected: false),
                 ],

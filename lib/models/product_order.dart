@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'product_order.freezed.dart';
@@ -17,7 +19,8 @@ class ProductOrder with _$ProductOrder {
   const factory ProductOrder.withSymbol({
     // base values
     required String name,
-    required String symbol,
+    required String? symbol,
+    required Uint8List? image,
     required int blockedPeriod,
 
     // extend values

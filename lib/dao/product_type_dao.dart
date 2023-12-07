@@ -2,6 +2,7 @@ import 'package:sqflite_sqlcipher/sqflite.dart';
 
 import '../databases/database.dart';
 import '../models/product_type.dart';
+import '../until/utility.dart';
 
 class ProductTypeDao {
   final _database = DatabaseInstance.databaseInstance;
@@ -32,16 +33,22 @@ class ProductTypeDao {
     return ProductType(
         id: int.parse(data['id'].toString()),
         name: data['name'].toString(),
-        symbol: data['symbol'].toString(),
-        daysBlocked: int.parse(data['days_blocked'].toString()),
+        symbol: data['symbol']?.toString(),
+        image: data['image']
+            ?.toString()
+            .let((it) => Uint8List.fromList(it.codeUnits)),
+        daysBlocked: data['days_blocked'].toString().let((it) => int.parse(it)),
         deletable: data['deletable'] == 1);
   }
 
-  Map<String, dynamic> toDatabaseJson(ProductType productType) => {
-        'id': productType.id == -1 ? null : productType.id,
-        'name': productType.name,
-        'symbol': productType.symbol,
-        'days_blocked': productType.daysBlocked,
-        'deletable': productType.deletable ? 1 : 0
-      };
+  Map<String, dynamic> toDatabaseJson(ProductType productType) {
+    return {
+      'id': productType.id == -1 ? null : productType.id,
+      'name': productType.name,
+      'symbol': productType.symbol,
+      'image': productType.image?.let((it) => String.fromCharCodes(it)),
+      'days_blocked': productType.daysBlocked,
+      'deletable': productType.deletable ? 1 : 0
+    };
+  }
 }
