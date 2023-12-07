@@ -23,9 +23,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             await _faqQuestionRepository.getAllFAQQuestion();
         emit(DataLoaded(productTypes, faqQuestions));
       } else if (event is OpenProductTypeDialogEvent) {
-        emit(OpenDialog(event.productType, null));
+        emit(OpenDialog(DialogType.product, productType: event.productType));
       } else if (event is OpenFAQQuestionDialogEvent) {
-        emit(OpenDialog(null, event.faqQuestion));
+        emit(OpenDialog(DialogType.faq, faqQuestion: event.faqQuestion));
       } else if (event is DeleteProductTypeEvent) {
         if (event.shouldDelete == true) {
           await _productTypeRepository

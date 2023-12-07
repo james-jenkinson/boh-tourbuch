@@ -15,6 +15,9 @@ class DataLoaded extends SettingsState {
 class OpenDialog extends SettingsState {
   final ProductType? productType;
   final FAQQuestion? faqQuestion;
+  final DialogType dialogType;
 
-  OpenDialog(this.productType, this.faqQuestion);
+  OpenDialog(this.dialogType, {this.productType, this.faqQuestion});
 }
+
+enum DialogType {product, faq}

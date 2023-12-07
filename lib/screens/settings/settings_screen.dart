@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         bloc: _settingsBloc,
         listener: (context, state) async {
           if (state is OpenDialog) {
-            openDialog(state.productType, state.faqQuestion);
+            openDialog(state.dialogType, state.productType, state.faqQuestion);
           }
         },
         builder: (context, state) {
@@ -61,6 +61,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
   }
 
+  void openDialog(DialogType dialogType, ProductType? productType,
+      FAQQuestion? faqQuestion) async {
+    _settingsBloc.add(
+      DialogClosedEvent(
+        await showDialog<bool>(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => dialogType == DialogType.product
+                  ? EditProductTypeDialog(productType: productType)
+                  : EditFAQQuestionDialog(faqQuestion: faqQuestion),
+            ) ==
+            true,
+      ),
+    );
+  }
+
   ExpansionPanel getProductTypePanel(DataLoaded state) {
     return ExpansionPanelRadio(
       value: 0,
@@ -75,25 +91,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         itemCount: state.productTypes.length,
         itemBuilder: (context, index) {
           return ListTile(
-            leading: Text(
-              state.productTypes[index].symbol,
-              style: const TextStyle(fontSize: 26),
-            ),
-            title: Text(state.productTypes[index].name),
+            title: Text(
+                '${state.productTypes[index].symbol} ${state.productTypes[index].name}'),
             subtitle: Text(
                 'Sperrung von ${state.productTypes[index].daysBlocked} Tagen'),
-            trailing: Row(
+            leading: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.productTypes[index].deletable)
                   IconButton(
-                      onPressed: () async => _settingsBloc.add(
-                          DeleteProductTypeEvent(
+                      onPressed: state.productTypes[index].deletable
+                          ? () async => _settingsBloc.add(DeleteProductTypeEvent(
                               state.productTypes[index].id,
                               await BinaryChoiceDialog.open(
                                   context,
                                   '${state.productTypes[index].name} löschen',
-                                  'Soll ${state.productTypes[index].name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.'))),
+                                  'Soll ${state.productTypes[index].name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.')))
+                          : null,
                       icon: const Icon(Icons.delete)),
                 IconButton(
                     onPressed: () => _settingsBloc.add(
@@ -105,21 +118,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-      ),
-    );
-  }
-
-  void openDialog(ProductType? productType, FAQQuestion? faqQuestion) async {
-    _settingsBloc.add(
-      DialogClosedEvent(
-        await showDialog<bool>(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => productType != null
-                  ? EditProductTypeDialog(productType: productType)
-                  : EditFAQQuestionDialog(faqQuestion: faqQuestion),
-            ) ==
-            true,
       ),
     );
   }
@@ -143,7 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(
                   state.faqQuestions[index].question,
                 ),
-                trailing: Row(
+                leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
