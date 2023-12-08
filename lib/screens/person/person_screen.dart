@@ -114,15 +114,13 @@ class _PersonScreenState extends State<PersonScreen> {
                         if (productOrder.image != null)
                           SlidableAction(
                             icon: Icons.loupe,
-                            backgroundColor:
-                                Theme.of(context).primaryColor,
+                            backgroundColor: Theme.of(context).primaryColor,
                             onPressed: (_) => bloc
                                 .add(PersonEvent.magnifyOrder(productOrder)),
                           ),
                         SlidableAction(
                           icon: Icons.refresh,
-                          backgroundColor:
-                              Theme.of(context).highlightColor,
+                          backgroundColor: Theme.of(context).highlightColor,
                           onPressed: (_) async => bloc.add(PersonEvent.resetOrder(
                               productOrder,
                               await BinaryChoiceDialog.open(
@@ -145,13 +143,17 @@ class _PersonScreenState extends State<PersonScreen> {
                     child: Center(
                       child: ListTile(
                           leading: SizedBox(
-                              height: 100,
-                              child: productOrder.symbol != null
-                                  ? FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(productOrder.symbol!))
-                                  : Image.memory(productOrder.image!,
-                                      width: 40, height: 40)),
+                            height: 100,
+                            child: productOrder.symbol != null
+                                ? FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(productOrder.symbol!),
+                                  )
+                                : Image.memory(
+                                    productOrder.image!,
+                                    gaplessPlayback: true,
+                                  ),
+                          ),
                           title: Text(productOrder.name),
                           subtitle: Text((() {
                             switch (productOrder.status) {

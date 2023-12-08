@@ -111,23 +111,32 @@ class _EditProductTypeDialogState extends State<EditProductTypeDialog> {
                         labelText: 'Icon',
                       ),
                     ),
-                    Row(mainAxisSize: MainAxisSize.max, children: [
-                      SizedBox(
-                        width: 40,
-                        height: 40,
-                        child:
-                            state.imageAsBytes?.let((it) => Image.memory(it)) ??
-                                Container(),
-                      ),
-                      TextButton(
-                          onPressed: () => bloc.add(
-                              const EditProductTypeDialogEvent.selectImage()),
-                          child: const Text('open')),
-                      TextButton(
-                          onPressed: () => bloc.add(
-                              const EditProductTypeDialogEvent.clearImage()),
-                          child: const Icon(Icons.clear)),
-                    ])
+                    Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          state.imageAsBytes?.let((it) => Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 60,
+                                        child: state.imageAsBytes?.let(
+                                                (it) => Image.memory(it)) ??
+                                            Container(),
+                                      ),
+                                      TextButton(
+                                          onPressed: () => bloc.add(
+                                              const EditProductTypeDialogEvent
+                                                  .clearImage()),
+                                          child: const Icon(Icons.clear))
+                                    ],
+                                  )) ??
+                              Container(),
+                          ElevatedButton(
+                              onPressed: () => bloc.add(
+                                  const EditProductTypeDialogEvent
+                                      .selectImage()),
+                              child: const Text('Bild auswählen')),
+                        ])
                   ],
                 )),
           ],

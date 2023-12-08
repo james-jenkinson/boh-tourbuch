@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
 import '../databases/database.dart';

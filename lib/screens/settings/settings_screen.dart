@@ -93,27 +93,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
           final product = state.productTypes[index];
 
           return ListTile(
-            title: Text(product.symbol == null ? product.name : '${product.symbol} ${product.name}'),
-            subtitle: Text(
-                'Sperrung von ${product.daysBlocked} Tagen'),
+            title: Text(product.symbol == null
+                ? product.name
+                : '${product.symbol} ${product.name}'),
+            subtitle: Text('Sperrung von ${product.daysBlocked} Tagen'),
             leading: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                  IconButton(
-                      onPressed: product.deletable
-                          ? () async => _settingsBloc.add(DeleteProductTypeEvent(
-                              product.id,
-                              await BinaryChoiceDialog.open(
-                                  context,
-                                  '${product.name} löschen',
-                                  'Soll ${product.name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.')))
-                          : null,
-                      icon: const Icon(Icons.delete)),
+                IconButton(
+                    onPressed: product.deletable
+                        ? () async => _settingsBloc.add(DeleteProductTypeEvent(
+                            product.id,
+                            await BinaryChoiceDialog.open(
+                                context,
+                                '${product.name} löschen',
+                                'Soll ${product.name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.')))
+                        : null,
+                    icon: const Icon(Icons.delete)),
                 IconButton(
                     onPressed: () => _settingsBloc.add(
                         OpenProductTypeDialogEvent(state.productTypes[index])),
                     icon: const Icon(Icons.edit)),
-                if (product.image != null) Image.memory(product.image),
+                if (product.image != null) Image.memory(product.image!),
               ],
             ),
           );
