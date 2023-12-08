@@ -13,39 +13,45 @@ class FaqScreen extends StatefulWidget {
 class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
-    const List<(String, String)> questions = [
-      ('Warum ist die Banane krumm?', 'Lorem Ipsum'),
-      ('Warum ist die Banane krumm? 2', 'Lorem Ipsum 2'),
-      ('Warum ist die Banane krumm? 3', 'Lorem Ipsum 3')
-    ];
-
     return Scaffold(
-      appBar: AppBar(title: const Text('FAQ'),),
+      appBar: AppBar(
+        title: const Text('FAQ'),
+      ),
       body: BlocProvider<FaqBloc>(
         create: (_) => FaqBloc()..add(const FaqEvent.loadData()),
         child: BlocBuilder<FaqBloc, FaqState>(
-          builder: (context, state) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  ExpansionPanelList.radio(
-                    materialGapSize: 1,
-                    children: questions
-                        .asMap()
-                        .entries
-                        .map((q) => ExpansionPanelRadio(
-                            value: q.key,
-                            canTapOnHeader: true,
-                            headerBuilder: (context, isOpen) =>
-                                ListTile(title: Text(q.value.$1)),
-                            body: ListTile(title: Text(q.value.$2))))
-                        .toList(),
-                  )
-                ],
-              ),
-            ),
-          ),
+          builder: (context, state) {
+            switch (state.status) {
+              case FaqScreenStatus.initial:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case FaqScreenStatus.data:
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: ExpansionPanelList.radio(
+                      materialGapSize: 1,
+                      children: state.faqQuestions
+                          .asMap()
+                          .entries
+                          .map((q) => ExpansionPanelRadio(
+                              value: q.key,
+                              canTapOnHeader: true,
+                              headerBuilder: (context, isOpen) => ListTile(
+                                      title: Text(
+                                    q.value.question,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              body: ListTile(title: Text(q.value.answer))))
+                          .toList(),
+                    ),
+                  ),
+                );
+            }
+          },
         ),
       ),
     );

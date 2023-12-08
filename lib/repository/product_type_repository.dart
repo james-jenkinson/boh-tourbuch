@@ -12,9 +12,6 @@ class ProductTypeRepository {
   Future<List<ProductType>> getProductTypes() =>
       _productTypeDao.getProductTypes();
 
-  Future<ProductType?> getProductTypeById(int id) =>
-      _productTypeDao.getProductTypeById(id);
-
   Future<int> deleteProductTypeById(int id) async {
     await _productOrderRepository.deleteProductOrdersByProductTypeId(id);
     return _productTypeDao.deleteProductTypeById(id);

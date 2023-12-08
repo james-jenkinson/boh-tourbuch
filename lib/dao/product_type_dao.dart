@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
 import '../databases/database.dart';
@@ -16,20 +15,6 @@ class ProductTypeDao {
     final db = await _database.database;
     final List<Map<String, dynamic>> result = await db.query(productTypeTable);
     return result.map((e) => fromDatabaseJson(e)).toList();
-  }
-
-  Future<ProductType?> getProductTypeById(int id) async {
-    final db = await _database.database;
-    final List<Map<String, dynamic>> result =
-        await db.query(productTypeTable, where: 'id = ?', whereArgs: [id]);
-    if (result.length == 1) {
-      return fromDatabaseJson(result.first);
-    } else {
-      if (kDebugMode) {
-        print('0 or more than 1 productTypes found for id $id');
-      }
-      return null;
-    }
   }
 
   Future<int> deleteProductTypeById(int id) async {
