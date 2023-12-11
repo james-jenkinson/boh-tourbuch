@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           },
           title: 'Tourbuch',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffeb5d40)),
             useMaterial3: true,
           ),
           home: const HomeScreen(),

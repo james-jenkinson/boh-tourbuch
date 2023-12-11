@@ -65,6 +65,9 @@ dev_dependencies:
   test: ^1.24.3
   build_runner: ^2.4.7
   freezed: ^2.4.5
+  flutter_launcher_icons: "^0.13.1"
+  flutter_native_splash: ^2.3.7
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,6 +79,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -107,3 +112,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  adaptive_icon_background: "#eb5d40"
+  adaptive_icon_foreground: "assets/app_icon.png"
+  ios: false
+  image_path: "assets/app_icon.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#eb5d40"
+  icon_background_color: "#eb5d40"
+  image: assets/app_icon.png
+  android_12:
+    color: "#eb5d40"
+  ios: false
