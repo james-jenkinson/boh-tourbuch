@@ -90,28 +90,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView.builder(
         itemCount: state.productTypes.length,
         itemBuilder: (context, index) {
+          final product = state.productTypes[index];
+
           return ListTile(
-            title: Text(
-                '${state.productTypes[index].symbol} ${state.productTypes[index].name}'),
-            subtitle: Text(
-                'Sperrung von ${state.productTypes[index].daysBlocked} Tagen'),
+            title: Text(product.symbol == null
+                ? product.name
+                : '${product.symbol} ${product.name}'),
+            subtitle: Text('Sperrung von ${product.daysBlocked} Tagen'),
             leading: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                  IconButton(
-                      onPressed: state.productTypes[index].deletable
-                          ? () async => _settingsBloc.add(DeleteProductTypeEvent(
-                              state.productTypes[index].id,
-                              await BinaryChoiceDialog.open(
-                                  context,
-                                  '${state.productTypes[index].name} löschen',
-                                  'Soll ${state.productTypes[index].name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.')))
-                          : null,
-                      icon: const Icon(Icons.delete)),
+                IconButton(
+                    onPressed: product.deletable
+                        ? () async => _settingsBloc.add(DeleteProductTypeEvent(
+                            product.id,
+                            await BinaryChoiceDialog.open(
+                                context,
+                                '${product.name} löschen',
+                                'Soll ${product.name} gelöscht werden? Alle zugehörigen Bestellungen werden unwiderruflich gelöscht.')))
+                        : null,
+                    icon: const Icon(Icons.delete)),
                 IconButton(
                     onPressed: () => _settingsBloc.add(
                         OpenProductTypeDialogEvent(state.productTypes[index])),
-                    icon: const Icon(Icons.edit))
+                    icon: const Icon(Icons.edit)),
+                if (product.image != null) Image.memory(product.image!),
               ],
             ),
           );

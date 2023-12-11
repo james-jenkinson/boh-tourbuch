@@ -9,5 +9,6 @@ class PersonState with _$PersonState {
     required Person selectedPerson,
     @Default([]) List<ProductOrderWithSymbol> productOrdersWithSymbols,
     @Default([]) List<Comment> comments,
+    @Default(null) ProductOrderWithSymbol? magnifiedOrder,
   }) = _PersonState;
 }

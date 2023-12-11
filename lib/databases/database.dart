@@ -51,7 +51,8 @@ class DatabaseInstance {
       create table $productTypeTable (
         id integer primary key,
         name text not null,
-        symbol text not null,
+        symbol text,
+        image blob,
         deletable int not null,
         days_blocked int not null
       )
