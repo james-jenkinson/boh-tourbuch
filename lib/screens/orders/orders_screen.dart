@@ -74,7 +74,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       spacing: 8,
       children: state.productTypes
           .map((productType) => FilterChip(
-                label: Text('${productType.symbol} ${productType.name}'),
+                label: Text('${productType.symbol ?? ''} ${productType.name}'),
                 onSelected: (visible) => addEvent(OrdersEvent.filterChanged(
                     visible, productType.productTypeId)),
                 selected: productType.selected,
@@ -145,7 +145,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         .where((productType) => productType.selected)
         .map((productType) => DataColumn(
             label: Text(
-                '${productType.symbol} ${productType.name} (${productType.amount})'),
+                '${productType.symbol ?? ''} ${productType.name} (${productType.amount})'),
             onSort: (index, asc) => addEvent(OrdersEvent.sortChanged(
                 index, productType.productTypeId, asc))))
         .toList();
