@@ -49,6 +49,12 @@ class CommentDao {
         .delete(commentTable, where: 'person_id = ?', whereArgs: [personId]);
   }
 
+  Future<void> deleteCommentsById(int commentId) async {
+    final db = await _database.database;
+    await db
+        .delete(commentTable, where: 'id = ?', whereArgs: [commentId]);
+  }
+
   Future<List<Comment>> getAllCommentsByStatus(bool commentOpen) async {
     final db = await _database.database;
     final List<Map<String, dynamic>> result = await db.query(commentTable,
