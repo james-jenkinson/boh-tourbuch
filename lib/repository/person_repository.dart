@@ -5,10 +5,12 @@ import '../models/person.dart';
 import '../models/product_order.dart';
 import 'comment_repository.dart';
 import 'product_order_repository.dart';
+import 'product_type_repository.dart';
 
 class PersonRepository {
   final _personDao = PersonDao();
   final _productOrderRepository = ProductOrderRepository();
+  final _productTypeRepository = ProductTypeRepository();
   final _commentRepository = CommentRepository();
 
   Future<int> createPerson(Person person) => _personDao.createPerson(person);
@@ -62,11 +64,17 @@ class PersonRepository {
   /// when notOrdered & ordered => ordered
   /// when notOrdered & received => received
   /// when ordered & ordered => min(lastIssueDate)
-  /// when ordered & received => max(o1.lastIssueDate, o2.lastReceivedDate)
-  /// when received & ordered => max(o1.lastReceivedDate, o2.lastIssueDate)
-  /// when received & received => max(lastReceivedDate)
+  /// when ordered & received:
+  ///	  * when received.date is in blocking range => received
+  /// 	* otherwise: max(o1.lastIssueDate, o2.lastReceivedDate)
+  /// when received & received => max(o1.lastReceivedDate, o2.lastReceivedDate)
   Future<void> _mergeOrders(
       ProductOrder orderToUpdate, ProductOrder orderToMerge) async {
+    final type = await _productTypeRepository
+        .getProductTypes()
+        .then((list) => list.firstWhere((item) => item.id == orderToUpdate.id));
+    final blockedUntil = DateTime.now().add(Duration(days: type.daysBlocked));
+
     // @formatter:off
     final dominantOrder = switch ((orderToUpdate, orderToMerge)) {
       (final a, final b) when isNotOrdered(a) && isNotOrdered(b)  => a,
@@ -77,9 +85,13 @@ class PersonRepository {
       (final a, final b) when isReceived(a)   && isNotOrdered(b)  => a,
 
       (final a, final b) when isOrdered(a)    && isOrdered(b)     => minBy(a, b)((x) => x.lastIssueDate, (y) => y.lastIssueDate),
-      (final a, final b) when isOrdered(a)    && isReceived(b)    => maxBy(a, b)((x) => x.lastIssueDate, (y) => y.lastReceivedDate),
-      (final a, final b) when isReceived(a)   && isOrdered(b)     => maxBy(a, b)((x) => x.lastReceivedDate, (y) => y.lastIssueDate),
       (final a, final b) when isReceived(a)   && isReceived(b)    => maxBy(a, b)((x) => x.lastReceivedDate, (y) => y.lastReceivedDate),
+
+      (final a, final b) when isOrdered(a)    && isReceived(b) && b.lastReceivedDate?.isBefore(blockedUntil) == true  => b,
+      (final a, final b) when isReceived(a)   && isOrdered(b)  && a.lastReceivedDate?.isBefore(blockedUntil) == true  => a,
+
+      (final a, final b) when isOrdered(a)    && isReceived(b) && b.lastReceivedDate?.isBefore(blockedUntil) != true  => maxBy(a, b)((x) => x.lastIssueDate, (y) => y.lastReceivedDate),
+      (final a, final b) when isReceived(a)   && isOrdered(b)  && a.lastReceivedDate?.isBefore(blockedUntil) != true  => maxBy(a, b)((x) => x.lastReceivedDate, (y) => y.lastIssueDate),
 
       (final _, final _) => throw UnimplementedError('case not implemented'),
     };
