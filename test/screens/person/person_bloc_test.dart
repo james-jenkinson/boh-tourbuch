@@ -286,29 +286,6 @@ void main() {
         },
         expect: () => <PersonState>[]);
 
-    blocTest<PersonBloc, PersonState>('resetOrder should not reset',
-        build: () {
-          return bloc;
-        },
-        seed: () => initialState,
-        act: (bloc) => bloc.add(PersonEvent.resetOrder(orders[0], false)),
-        wait: const Duration(milliseconds: 100),
-        verify: (_) {
-          verifyNever(productOrderRepository.delete(any));
-        },
-        expect: () => <PersonState>[]);
-
-    blocTest<PersonBloc, PersonState>('resetOrder should reset',
-        build: () {
-          return bloc;
-        },
-        seed: () => initialState,
-        act: (bloc) => bloc.add(PersonEvent.resetOrder(orders[0], true)),
-        wait: const Duration(milliseconds: 100),
-        verify: (_) {
-          verify(productOrderRepository.delete(orders[0])).called(1);
-        },
-        expect: () => <PersonState>[]);
 
     blocTest<PersonBloc, PersonState>('deletePerson should delete',
         build: () {

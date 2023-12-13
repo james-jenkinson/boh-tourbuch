@@ -8,7 +8,6 @@ class PersonEvent with _$PersonEvent {
   const factory PersonEvent.commentDelete(int commentId) = _CommentDeleteEvent;
   const factory PersonEvent.commentEdited(String? content, int? commentId) = _CommentEditedEvent;
   const factory PersonEvent.commentStatusChanged(Comment comment, bool newValue) = _CommentStatusChangedEvent;
-  const factory PersonEvent.resetOrder(ProductOrder productOrder, bool? shouldReset) = _ResetOrderEvent;
   const factory PersonEvent.deletePerson(bool? shouldDelete) = _DeletePersonEvent;
   const factory PersonEvent.magnifyOrder(ProductOrderWithSymbol? productOrder) = _MagnifyOrderEvent;
 }

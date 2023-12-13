@@ -90,12 +90,6 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
             await _commentRepository.updateComment(editCopy);
             emit(await fetchAndEmitPersonLoaded(state));
           },
-          resetOrder: (productOrder, shouldReset) async {
-            if (shouldReset == true) {
-              await _productOrderRepository.delete(productOrder);
-              emit(await fetchAndEmitPersonLoaded(state));
-            }
-          },
           deletePerson: (shouldDelete) async {
             if (shouldDelete == true) {
               await _personRepository.deletePerson(state.selectedPerson.id);

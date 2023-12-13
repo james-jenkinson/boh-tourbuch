@@ -7,6 +7,7 @@ import 'screens/home/home_screen.dart';
 import 'screens/person/person_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'theme_provider.dart';
+import 'until/navigation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           builder: (BuildContext context, Widget? child) {
             final MediaQueryData data = MediaQuery.of(context);
             return MediaQuery(
