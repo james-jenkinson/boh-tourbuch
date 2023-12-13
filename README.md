@@ -1,13 +1,13 @@
 # Tourbuch
 
 The Tourbuch is a pro-bono android-app to support the [Berliner Obdachlosenhilfe e.V. (BOH)](https://www.berliner-obdachlosenhilfe.de/).
-The main goal of the Tourbuch is to easy manage BOH guests and their orders for the daily needs (e.g. a bedroll).
+The main goal of the Tourbuch is to easily manage BOH guests and their orders for the daily needs (e.g. a bedroll).
 
 [//]: # (TODO link zu blog post)
 See also the [blog post](https://blog-de.akquinet.de/).
 
 ## General
-The Tourbuch is an android app created by flutter. The state of the app is stored locally in a [secured sqllite database](https://pub.dev/packages/sqflite_sqlcipher).
+The Tourbuch is an android app created with flutter. The state of the app is stored locally in a [secured sqllite database](https://pub.dev/packages/sqflite_sqlcipher).
 
 It consists of the following main parts:
 - Guest management
