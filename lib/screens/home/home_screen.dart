@@ -95,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            actionsAlignment: MainAxisAlignment.spaceBetween,
             title: const Text('Adminpasswort eingeben'),
             content: Column(
               mainAxisSize: MainAxisSize.min,

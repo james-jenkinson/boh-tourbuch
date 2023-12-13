@@ -43,6 +43,7 @@ class _EditFAQQuestionDialogState extends State<EditFAQQuestionDialog> {
         builder: (context, state) {
           if (state is EditFAQQuestionDialogInitial) {
             return AlertDialog(
+              actionsAlignment: MainAxisAlignment.spaceBetween,
               titlePadding: const EdgeInsets.all(10),
               actionsPadding: const EdgeInsets.all(10),
               contentPadding: const EdgeInsets.all(10),

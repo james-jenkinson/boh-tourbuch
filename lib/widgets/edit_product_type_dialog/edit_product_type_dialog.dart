@@ -53,6 +53,7 @@ class _EditProductTypeDialogState extends State<EditProductTypeDialog> {
   Widget buildEdit(
       EditProductTypeDialogBloc bloc, EditProductTypeDialogState state) {
     return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
       titlePadding: const EdgeInsets.all(10),
       actionsPadding: const EdgeInsets.all(10),
       contentPadding: const EdgeInsets.all(10),
