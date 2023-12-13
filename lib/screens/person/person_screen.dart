@@ -177,11 +177,29 @@ class _PersonScreenState extends State<PersonScreen> {
           children: state.comments
               .map(
                 (comment) => CheckboxListTile(
-                  secondary: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async => bloc.add(PersonEvent.commentEdited(
-                        await EditTextDialog.open(context, comment.content),
-                        comment.id)),
+                  secondary: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => BinaryChoiceDialog.open(
+                                      context,
+                                      'Kommentar löschen?',
+                                      'Soll der ausgewählte Kommentar wirklich gelöscht werden?')
+                                  .then((value) {
+                                if (value == true)
+                                  bloc.add(
+                                      PersonEvent.commentDelete(comment.id));
+                              })),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async => bloc.add(
+                            PersonEvent.commentEdited(
+                                await EditTextDialog.open(
+                                    context, comment.content),
+                                comment.id)),
+                      ),
+                    ],
                   ),
                   title: Text(
                     comment.content,

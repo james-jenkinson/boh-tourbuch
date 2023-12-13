@@ -81,6 +81,10 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
             }
             emit(await fetchAndEmitPersonLoaded(state));
           },
+          commentDelete: (commentId) async {
+            await _commentRepository.deleteCommentById(commentId);
+            emit(await fetchAndEmitPersonLoaded(state));
+          },
           commentStatusChanged: (comment, newValue) async {
             final editCopy = comment.copyWith(commentDone: newValue);
             await _commentRepository.updateComment(editCopy);
