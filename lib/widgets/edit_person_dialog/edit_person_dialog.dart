@@ -65,6 +65,7 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
       EditPersonDialogState state) {
     final blockedSince = state.blockedSince;
     return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
       titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),

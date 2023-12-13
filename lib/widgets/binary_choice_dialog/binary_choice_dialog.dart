@@ -58,6 +58,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
   Widget buildEdit(
       void Function(BinaryChoiceDialogEvent) addEvent, String title, String textContent) {
     return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
       title: Text(title),
       content: SizedBox(
         width: 450,

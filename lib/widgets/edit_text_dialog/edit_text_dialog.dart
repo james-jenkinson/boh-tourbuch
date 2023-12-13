@@ -57,6 +57,7 @@ class _EditTextDialogState extends State<EditTextDialog> {
   Widget buildEdit(
       void Function(EditTextDialogEvent) addEvent, EditTextDialogState state) {
     return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
       titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
