@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: true);
     return BlocListener(
         bloc: _homeBloc,
         listener: (context, state) async {
@@ -55,10 +56,21 @@ class _HomeScreenState extends State<HomeScreen> {
           length: 3,
           child: Scaffold(
               appBar: AppBar(
-                title: const Text('Tourbuch'),
+                title: Row(children: [
+                  Image.asset(
+                    'assets/app_icon.png',
+                    color: Theme.of(context).primaryColor,
+                    height: themeProvider.scale * 30,
+                  ),
+                  const Text('Tourbuch')
+                ]),
                 actions: [
-                  IconButton(onPressed: () => Provider.of<ThemeProvider>(context, listen: false).zoomOut(), icon: const Icon(Icons.zoom_out)),
-                  IconButton(onPressed: () => Provider.of<ThemeProvider>(context, listen: false).zoomIn(), icon: const Icon(Icons.zoom_in)),
+                  IconButton(
+                      onPressed: () => themeProvider.zoomOut(),
+                      icon: const Icon(Icons.zoom_out)),
+                  IconButton(
+                      onPressed: () => themeProvider.zoomIn(),
+                      icon: const Icon(Icons.zoom_in)),
                   PopupMenuButton<String>(
                     onSelected: (value) => handleClick(value, _homeBloc.add),
                     itemBuilder: (BuildContext context) {
