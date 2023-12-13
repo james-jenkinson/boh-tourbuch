@@ -185,7 +185,7 @@ class _PersonScreenState extends State<PersonScreen> {
                           onPressed: () => BinaryChoiceDialog.open(
                                       context,
                                       'Kommentar löschen?',
-                                      'Soll aus ausgewählte Kommentar wirklich gelöscht werden?')
+                                      'Soll der ausgewählte Kommentar wirklich gelöscht werden?')
                                   .then((value) {
                                 if (value == true)
                                   bloc.add(
