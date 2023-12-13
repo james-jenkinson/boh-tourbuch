@@ -32,7 +32,8 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
   Widget build(BuildContext _) {
     return BlocProvider(
       create: (_) => EditPersonDialogBloc(PersonRepository())
-        ..add(EditPersonDialogEvent.setPerson(widget.person, widget.personToMerge)),
+        ..add(EditPersonDialogEvent.setPerson(
+            widget.person, widget.personToMerge)),
       child: Builder(
           builder: (context) =>
               BlocConsumer<EditPersonDialogBloc, EditPersonDialogState>(
@@ -68,58 +69,62 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
       actionsPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       title: const Center(child: Text('Gast bearbeiten')),
-      content: SizedBox(
-        width: 450,
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                initialValue: state.name,
-                maxLength: 50,
-                decoration: const InputDecoration(labelText: 'Name'),
-                autovalidateMode: AutovalidateMode.always,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Name darf nicht leer sein!';
-                  }
-                  return null;
-                },
-                onChanged: (value) =>
-                    addEvent(EditPersonDialogEvent.updateName(value)),
-              ),
-              ListTileTheme(
-                contentPadding: EdgeInsets.zero,
-                horizontalTitleGap: 0.0,
-                child: CheckboxListTile(
-                    title: blockedSince != null
-                        ? Text('Gesperrt seit ${blockedSince.toCalendarDate()}')
-                        : const Text('Gesperrt'),
-                    value: blockedSince != null,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (value) => addEvent(
-                        EditPersonDialogEvent.updateBlocked(value == true))),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                  child: TextFormField(
-                    initialValue: state.comment,
-                    onChanged: (value) =>
-                        addEvent(EditPersonDialogEvent.updateComment(value)),
-                    maxLength: 500,
-                    minLines: 1,
-                    maxLines: 4,
-                    keyboardType: TextInputType.multiline,
-                    decoration: const InputDecoration(
-                        labelText: 'Kommentar',
-                        enabledBorder: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder()),
-                  ),
+      content: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: SizedBox(
+          width: 450,
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  initialValue: state.name,
+                  maxLength: 50,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  autovalidateMode: AutovalidateMode.always,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Name darf nicht leer sein!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) =>
+                      addEvent(EditPersonDialogEvent.updateName(value)),
                 ),
-              )
-            ],
+                ListTileTheme(
+                  contentPadding: EdgeInsets.zero,
+                  horizontalTitleGap: 0.0,
+                  child: CheckboxListTile(
+                      title: blockedSince != null
+                          ? Text(
+                              'Gesperrt seit ${blockedSince.toCalendarDate()}')
+                          : const Text('Gesperrt'),
+                      value: blockedSince != null,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (value) => addEvent(
+                          EditPersonDialogEvent.updateBlocked(value == true))),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                    child: TextFormField(
+                      initialValue: state.comment,
+                      onChanged: (value) =>
+                          addEvent(EditPersonDialogEvent.updateComment(value)),
+                      maxLength: 500,
+                      minLines: 1,
+                      maxLines: 4,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                          labelText: 'Kommentar',
+                          enabledBorder: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder()),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
