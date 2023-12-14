@@ -34,8 +34,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           initial: () async {
             emit(await fetchAndEmitPersonLoaded(state));
           },
-          editedPerson: (personEdited) async {
-            if (personEdited == true) {
+          reloadData: (shouldReload) async {
+            if (shouldReload == true) {
               emit(await fetchAndEmitPersonLoaded(
                 state.copyWith(
                     selectedPerson: (await _personRepository
@@ -89,12 +89,6 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
             final editCopy = comment.copyWith(commentDone: newValue);
             await _commentRepository.updateComment(editCopy);
             emit(await fetchAndEmitPersonLoaded(state));
-          },
-          resetOrder: (productOrder, shouldReset) async {
-            if (shouldReset == true) {
-              await _productOrderRepository.delete(productOrder);
-              emit(await fetchAndEmitPersonLoaded(state));
-            }
           },
           deletePerson: (shouldDelete) async {
             if (shouldDelete == true) {

@@ -10,6 +10,7 @@ import '../../repository/product_order_repository.dart';
 import '../../repository/product_type_repository.dart';
 import '../../until/date_time_ext.dart';
 import '../../widgets/binary_choice_dialog/binary_choice_dialog.dart';
+import '../../widgets/edit_order_dialog/edit_order_dialog.dart';
 import '../../widgets/edit_person_dialog/edit_person_dialog.dart';
 import '../../widgets/edit_text_dialog/edit_text_dialog.dart';
 import '../../widgets/magnify_image_widget.dart';
@@ -119,15 +120,12 @@ class _PersonScreenState extends State<PersonScreen> {
                                 .add(PersonEvent.magnifyOrder(productOrder)),
                           ),
                         SlidableAction(
-                          icon: Icons.refresh,
-                          backgroundColor: Theme.of(context).highlightColor,
-                          onPressed: (_) async => bloc.add(PersonEvent.resetOrder(
-                              productOrder,
-                              await BinaryChoiceDialog.open(
-                                  context,
-                                  'Status zurücksetzen',
-                                  'Soll der Status von ${productOrder.name} auf \'Nicht Bestellt\' zurückgesetzt werden?'))),
-                        )
+                            icon: Icons.edit,
+                            backgroundColor: Theme.of(context).highlightColor,
+                            onPressed: (_) async => bloc.add(
+                                PersonEvent.reloadData(
+                                    await EditOrderDialog.open(
+                                        context, productOrder)))),
                       ]),
                   child: InkWell(
                     onTap: () async {
@@ -234,7 +232,7 @@ class _PersonScreenState extends State<PersonScreen> {
       ),
       actions: [
         IconButton(
-            onPressed: () async => addEvent(PersonEvent.editedPerson(
+            onPressed: () async => addEvent(PersonEvent.reloadData(
                 await EditPersonDialog.open(context, selectedPerson, null))),
             icon: const Icon(Icons.edit)),
         IconButton(
