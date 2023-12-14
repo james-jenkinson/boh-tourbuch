@@ -44,6 +44,7 @@ A configurable FAQ section is provided to help the users of the app.
 
 ## Contributors
 [//]: # (TODO Emilio url)
+- [Sarah Ganter](https://github.com/sarahkami)
 - [Emilio Kempkes](TODO)
 - [Tom Smukalski](https://github.com/Smklsk)
 - [René Kloth](https://github.com/renekloth)
