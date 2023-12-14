@@ -34,8 +34,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           initial: () async {
             emit(await fetchAndEmitPersonLoaded(state));
           },
-          editedPerson: (personEdited) async {
-            if (personEdited == true) {
+          reloadData: (shouldReload) async {
+            if (shouldReload == true) {
               emit(await fetchAndEmitPersonLoaded(
                 state.copyWith(
                     selectedPerson: (await _personRepository

@@ -156,7 +156,7 @@ void main() {
     blocTest<PersonBloc, PersonState>('editedPerson ok',
         build: () => bloc,
         seed: () => initialState,
-        act: (bloc) => bloc.add(const PersonEvent.editedPerson(true)),
+        act: (bloc) => bloc.add(const PersonEvent.reloadData(true)),
         verify: (_) => verify(personRepository.getPersonById(1)).called(1),
         wait: const Duration(milliseconds: 100),
         expect: () => <PersonState>[]);
@@ -164,7 +164,7 @@ void main() {
     blocTest<PersonBloc, PersonState>('editedPerson cancel',
         build: () => bloc,
         seed: () => initialState,
-        act: (bloc) => bloc.add(const PersonEvent.editedPerson(false)),
+        act: (bloc) => bloc.add(const PersonEvent.reloadData(false)),
         wait: const Duration(milliseconds: 100),
         expect: () => <PersonState>[]);
 

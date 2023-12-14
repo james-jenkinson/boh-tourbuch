@@ -123,7 +123,7 @@ class _PersonScreenState extends State<PersonScreen> {
                             icon: Icons.edit,
                             backgroundColor: Theme.of(context).highlightColor,
                             onPressed: (_) async => bloc.add(
-                                PersonEvent.editedPerson(
+                                PersonEvent.reloadData(
                                     await EditOrderDialog.open(
                                         context, productOrder)))),
                       ]),
@@ -232,7 +232,7 @@ class _PersonScreenState extends State<PersonScreen> {
       ),
       actions: [
         IconButton(
-            onPressed: () async => addEvent(PersonEvent.editedPerson(
+            onPressed: () async => addEvent(PersonEvent.reloadData(
                 await EditPersonDialog.open(context, selectedPerson, null))),
             icon: const Icon(Icons.edit)),
         IconButton(
