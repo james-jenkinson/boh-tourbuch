@@ -38,16 +38,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
                   .toList();
           final tableRows = await _getRowsForSelection(productTypes);
 
-          productTypes = productTypes
-              .map((productType) => productType.copyWith(
-                  amount: tableRows.isNotEmpty
-                      ? tableRows
-                          .map((row) => row.productIdOrdered.keys
-                              .where((key) => key == productType.productTypeId)
-                              .length)
-                          .reduce((v, e) => v + e)
-                      : 0))
-              .toList();
+          productTypes = _updateProductCount(productTypes, tableRows);
 
           emit(state.copyWith(
               status: OrdersScreenState.data,
@@ -82,13 +73,32 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
         ),
         navigate: (person) async => emit(state.copyWith(
             status: OrdersScreenState.navigateToPerson, person: person)),
-        returnFromNavigation: () async => emit(state.copyWith(
+        returnFromNavigation: () async {
+          final tableRows = await _getSortedRows(
+                state.productTypes, state.sortFieldId, state.asc);
+          return emit(state.copyWith(
             status: OrdersScreenState.data,
             person: null,
-            tableRows: await _getSortedRows(
-                state.productTypes, state.sortFieldId, state.asc))),
+            productTypes: _updateProductCount(state.productTypes, tableRows),
+            tableRows: tableRows));
+        },
       );
     });
+  }
+
+  List<ProductTypeWithSelection> _updateProductCount(
+      List<ProductTypeWithSelection> productTypes,
+      List<OrderTableRow> tableRows) {
+    return productTypes
+        .map((productType) => productType.copyWith(
+            amount: tableRows.isNotEmpty
+                ? tableRows
+                    .map((row) => row.productIdOrdered.keys
+                        .where((key) => key == productType.productTypeId)
+                        .length)
+                    .reduce((v, e) => v + e)
+                : 0))
+        .toList();
   }
 
   Future<List<OrderTableRow>> _getRowsForSelection(
