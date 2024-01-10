@@ -19,7 +19,7 @@ It consists of the following main parts:
 New guest can be created, edited or easily be found by a fuzzy search over the total name.
 In case a guest is duplicated, an easy merge of guest is provided.
 
-List of guests:
+List of guests with user-search:
 
 <img src="documentation/guest_list.png" alt="Guest list" width="800" height="auto">
 
