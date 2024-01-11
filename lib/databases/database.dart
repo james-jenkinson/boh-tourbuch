@@ -23,13 +23,15 @@ class DatabaseInstance {
     }
   }
 
-  Future<Database> _createDatabase() async {
+  Future<String> getDbPath() async {
     final Directory documentsDirectory =
         await getApplicationDocumentsDirectory();
-    final String path = '${documentsDirectory.path}boh.db';
+    return '${documentsDirectory.path}boh.db';
+  }
 
+  Future<Database> _createDatabase() async {
     return await openDatabase(
-      path,
+      await getDbPath(),
       version: 1,
       onCreate: _initDb,
       password:

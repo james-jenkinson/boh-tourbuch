@@ -1,12 +1,18 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../../databases/database.dart';
 import '../../models/faq_question.dart';
 import '../../models/product_type.dart';
 import '../../widgets/binary_choice_dialog/binary_choice_dialog.dart';
 import '../../widgets/edit_faq_question_dialog/edit_faq_question_dialog.dart';
 import '../../widgets/edit_product_type_dialog/edit_product_type_dialog.dart';
+import '../../widgets/info_dialog/info_dialog.dart';
 import 'bloc/settings_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -193,8 +199,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
               foregroundColor: Theme.of(context).primaryColor,
               labelStyle: const TextStyle(fontSize: 24),
               onTap: () => _settingsBloc.add(OpenFAQQuestionDialogEvent(null)),
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.download),
+              label: 'Backup DB',
+              foregroundColor: Theme.of(context).primaryColor,
+              labelStyle: const TextStyle(fontSize: 24),
+              onTap: () => saveBackup(),
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.upload),
+              label: 'Restore DB',
+              foregroundColor: Theme.of(context).primaryColor,
+              labelStyle: const TextStyle(fontSize: 24),
+              onTap: () => restoreBackup(),
             )
           ],
         ));
+  }
+
+  final String _downloadDir = '/storage/emulated/0/Download';
+
+  // fixme move to bloc
+  void restoreBackup() async {
+    final result = await BinaryChoiceDialog.open(
+        context,
+        'Backup wiederherstellen?',
+        'Wichtig: Alle bisherigen Daten gehen verloren!!!');
+    if (result != true) {
+      return;
+    }
+
+    final filePickerResult = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Wähle Datei zum Wiederherstellen aus',
+        initialDirectory: _downloadDir);
+    final restoreFilePath = filePickerResult?.files[0].path;
+
+    if (restoreFilePath == null) {
+      // fixme create event for dialog
+      // ignore: use_build_context_synchronously
+      await InfoDialog.open(
+          context, 'Fehler', 'Backup Datei konnte nicht geladen werden.');
+      return;
+    }
+
+    final String dbPath = await DatabaseInstance.databaseInstance.getDbPath();
+    await File(dbPath).writeAsBytes(File(restoreFilePath).readAsBytesSync());
+
+    // fixme create event for dialog
+    // ignore: use_build_context_synchronously
+    await InfoDialog.open(context, 'Import erflogreich',
+        'Die App shließt sich automatisch und muss danach manuell geöffnet werden.');
+    await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
+
+  // fixme move to bloc
+  void saveBackup() async {
+    final String filename = 'tourbuch-${DateTime.now().toIso8601String().replaceAll(':', '_')}.db';
+
+    final result = await BinaryChoiceDialog.open(context, 'Backup speichern?',
+        'Soll das Backup unter "Downloads/$filename" abgespeichert werden?');
+    if (result != true) {
+      return;
+    }
+
+    final String dbPath = await DatabaseInstance.databaseInstance.getDbPath();
+
+    final Directory downloadDir = Directory(_downloadDir);
+    final File destinationFile = File('${downloadDir.path}/$filename');
+
+    await destinationFile.create(recursive: true);
+    final bytes = await File(dbPath).readAsBytes();
+    await destinationFile.writeAsBytes(bytes);
+
+    // fixme create event for dialog
+    // ignore: use_build_context_synchronously
+    await InfoDialog.open(context, 'Speichern erflogreich',
+        'Das Backup wurde erfolgreich unter "Downloads/$filename" erstellt');
   }
 }
