@@ -251,8 +251,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     // ignore is ok, because after the asynchronous-gap a context check is done
     // ignore: use_build_context_synchronously
-    await InfoDialog.open(context, 'Import erflogreich',
-        'Die App shließt sich automatisch und muss danach manuell geöffnet werden.');
+    await InfoDialog.open(context, 'Import erfolgreich',
+        'Die App schließt sich automatisch und muss danach manuell geöffnet werden.');
     if (!context.mounted) return; // check if context still exists after asynchronous-gap
     await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
@@ -281,7 +281,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     // ignore is ok, because after the asynchronous-gap the context isn't used (no check for exising is needed)
     // ignore: use_build_context_synchronously
-    await InfoDialog.open(context, 'Speichern erflogreich',
+    await InfoDialog.open(context, 'Speichern erfolgreich',
         'Das Backup wurde erfolgreich unter "Downloads/$filename" erstellt');
   }
 }
