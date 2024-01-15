@@ -220,15 +220,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   final String _downloadDir = '/storage/emulated/0/Download';
 
-  // fixme move to bloc
+  /// For this method the bloc pattern isn't used.
+  /// Normally the shown dialogs must be moved to the blocListener-section and the logic in the bloc itself.
+  /// But in this case we have to execute logic after showing dialogs.
+  /// Because of this it would end up in a confusing event&listener chain.
   void restoreBackup() async {
     final result = await BinaryChoiceDialog.open(
         context,
         'Backup wiederherstellen?',
         'Wichtig: Alle bisherigen Daten gehen verloren!!!');
-    if (result != true) {
-      return;
-    }
+    if (!context.mounted) return; // check if context still exists after asynchronous-gap
+    if (result != true) return;
+
 
     final filePickerResult = await FilePicker.platform.pickFiles(
         dialogTitle: 'Wähle Datei zum Wiederherstellen aus',
@@ -236,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final restoreFilePath = filePickerResult?.files[0].path;
 
     if (restoreFilePath == null) {
-      // fixme create event for dialog
+      // ignore is ok, because context isn't used afterwards
       // ignore: use_build_context_synchronously
       await InfoDialog.open(
           context, 'Fehler', 'Backup Datei konnte nicht geladen werden.');
@@ -246,22 +249,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final String dbPath = await DatabaseInstance.databaseInstance.getDbPath();
     await File(dbPath).writeAsBytes(File(restoreFilePath).readAsBytesSync());
 
-    // fixme create event for dialog
+    // ignore is ok, because after the asynchronous-gap a context check is done
     // ignore: use_build_context_synchronously
     await InfoDialog.open(context, 'Import erflogreich',
         'Die App shließt sich automatisch und muss danach manuell geöffnet werden.');
+    if (!context.mounted) return; // check if context still exists after asynchronous-gap
     await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
-  // fixme move to bloc
+  /// For this method the bloc pattern isn't used.
+  /// Normally the shown dialogs must be moved to the blocListener-section and the logic in the bloc itself.
+  /// But in this case we have to execute logic after showing the dialogs.
+  /// Because of this it would end up in a confusing event&listener chain.
   void saveBackup() async {
     final String filename = 'tourbuch-${DateTime.now().toIso8601String().replaceAll(':', '_')}.db';
 
     final result = await BinaryChoiceDialog.open(context, 'Backup speichern?',
         'Soll das Backup unter "Downloads/$filename" abgespeichert werden?');
-    if (result != true) {
-      return;
-    }
+    if (!context.mounted) return; // check if context still exists after asynchronous-gap
+    if (result != true) return;
+
 
     final String dbPath = await DatabaseInstance.databaseInstance.getDbPath();
 
@@ -272,7 +279,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final bytes = await File(dbPath).readAsBytes();
     await destinationFile.writeAsBytes(bytes);
 
-    // fixme create event for dialog
+    // ignore is ok, because after the asynchronous-gap the context isn't used (no check for exising is needed)
     // ignore: use_build_context_synchronously
     await InfoDialog.open(context, 'Speichern erflogreich',
         'Das Backup wurde erfolgreich unter "Downloads/$filename" erstellt');
